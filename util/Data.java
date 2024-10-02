@@ -1600,6 +1600,13 @@ public class Data {
 	public static final byte VOLC_POST = 10; // volcano post-atk
 	public static final byte VOLC_SE = 30; // volcano se loop duration
 
+	public static final byte BLAST_PRE = 11;
+	public static final byte BLAST_ITV = 10;
+	public static final byte BLAST_DURATION = 15;
+
+	public static final short[] BLAST_RANGE = new short[] { 150, 100, 100 };
+	public static final byte[] BLAST_MULTIPLIER = new byte[] { 100, 70, 40 };
+
 	public static final byte[] NYPRE = new byte[] { 18, 1, -1, 27, 37, 18, 10, 1 };
 	public static final float[] NYRAN = new float[] { 400, 82.5f, -1, 500, 500, 400, 100, 82.5f };
 	public static final short SNIPER_CD = 300;
