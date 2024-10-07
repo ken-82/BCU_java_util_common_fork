@@ -28,7 +28,7 @@ public class PCoin extends Data {
 		for (String str : qs) {
 			String[] strs = str.trim().split(",");
 
-			if (strs.length == 114) {
+			if (strs.length >= 2) {
 				int[] data = CommonStatic.parseIntsN(str);
 
 				Unit u = Identifier.parseInt(data[0], Unit.class).get();
@@ -85,6 +85,10 @@ public class PCoin extends Data {
 		trait = Trait.convertTalentType(strs[1]);
 
 		for (int i = 0; i < 8; i++) {
+			if (2 + i * 14 >= strs.length) {
+				break;
+			}
+
 			if(strs[2 + i * 14] != 0) {
 				int[] data = new int[14];
 				for (int j = 0; j < 14; j++)
