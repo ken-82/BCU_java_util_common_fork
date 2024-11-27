@@ -1543,13 +1543,16 @@ public abstract class Entity extends AbEntity {
 				dmg = dmg * (100 - getProc().IMUWAVE.mult) / 100;
 		}
 
+		// Sorry for nesting! - Ramen Cat
 		if ((atk.waveType & WT_MOVE) > 0) {
-			if (getProc().IMUMOVING.mult > 0)
-				anim.getEff(P_WAVE);
-			if (getProc().IMUMOVING.mult == 100)
-				return;
-			else
-				dmg = dmg * (100 - getProc().IMUMOVING.mult) / 100;
+			if ((atk.getProc().MOVEWAVE.id == getProc().IMUMOVING.id && getProc().IMUMOVING.useIds) || (!getProc().IMUMOVING.useIds)) {
+				if (getProc().IMUMOVING.mult > 0)
+					anim.getEff(P_WAVE);
+				if (getProc().IMUMOVING.mult == 100)
+					return;
+				else
+					dmg = dmg * (100 - getProc().IMUMOVING.mult) / 100;
+			}
 		}
 
 		if ((atk.waveType & (WT_VOLC | WT_MIVC)) > 0) {

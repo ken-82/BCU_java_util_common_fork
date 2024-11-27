@@ -279,6 +279,7 @@ public class Editors {
 		});
 
 		EditControl<Proc.WAVEI> wavei = new EditControl<>(Proc.WAVEI.class, (t) -> t.mult = Math.min(t.mult, 100));
+		EditControl<Proc.MOVEI> movei = new EditControl<>(Proc.MOVEI.class, (t) -> t.mult = Math.min(t.mult, 100));
 
 		map().put("KB", new EditControl<>(Proc.PTD.class, (t) -> {
 			t.prob = MathUtil.clip(t.prob, 0, 100);
@@ -615,7 +616,7 @@ public class Editors {
 
 		map().put("IMUSEAL", imu);
 
-		map().put("IMUMOVING", wavei);
+		map().put("IMUMOVING", movei);
 
 		map().put("IMUCANNON", new EditControl<>(Proc.CANNI.class, (t) -> {
 			t.mult = Math.min(t.mult, 100);
