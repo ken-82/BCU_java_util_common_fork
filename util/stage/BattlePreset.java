@@ -21,7 +21,8 @@ public class BattlePreset {
         ITF3,  // ItF Ch. 3
         COTC1, // CotC Ch. 1
         COTC2, // CotC Ch. 2
-        COTC3  // CotC Ch. 3
+        COTC3, // CotC Ch. 3
+        BASE   // Base health boost
     }
 
     public static class LevelObject {
@@ -38,6 +39,7 @@ public class BattlePreset {
     public final Level[][] levels = new Level[2][5];
 
     public int cannonType; // Raw ID of cannon that is parsed into BCU ID order
+    public boolean baseHealthBoost; // Add 20k to unit base health if this is true
 
     // Copied treasure data manually
     @JsonField(gen = JsonField.GenType.FILL)

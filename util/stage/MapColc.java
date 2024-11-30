@@ -838,11 +838,14 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 						targetStage.preset.bslv[realIndex] = cannonData.getAsJsonObject(key).get("level").getAsInt();
 					}
 
-					JsonObject treasureObject = presetObject.getAsJsonObject("treasure").getAsJsonObject("data");
+					JsonObject treasureObject = presetObject.getAsJsonObject("treasure");
+					JsonObject treasureDataObject = presetObject.getAsJsonObject("treasure").getAsJsonObject("data");
 
-					for (String key : treasureObject.keySet()) {
+					ArrayList<BattlePreset.ActivatedTreasure> unlistedTreasure = new ArrayList<>(List.of(BattlePreset.ActivatedTreasure.values()));
+
+					for (String key : treasureDataObject.keySet()) {
 						int id = CommonStatic.safeParseInt(key);
-						JsonArray countData = treasureObject.getAsJsonObject(key).getAsJsonArray("count");
+						JsonArray countData = treasureDataObject.getAsJsonObject(key).getAsJsonArray("count");
 
 						int[] count = new int[3];
 
@@ -856,9 +859,60 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 							count[j] = CommonStatic.safeParseInt(countData.get(j).getAsString());
 						}
 
+						BattlePreset.ActivatedTreasure activatedTreasure;
+
+						switch (id) {
+							case 0:
+								activatedTreasure = BattlePreset.ActivatedTreasure.EOC1;
+
+								break;
+							case 1:
+								activatedTreasure = BattlePreset.ActivatedTreasure.EOC2;
+
+								break;
+							case 2:
+								activatedTreasure = BattlePreset.ActivatedTreasure.EOC3;
+
+								break;
+							case 3:
+								activatedTreasure = BattlePreset.ActivatedTreasure.BASE;
+
+								break;
+							case 4:
+								activatedTreasure = BattlePreset.ActivatedTreasure.ITF1;
+
+								break;
+							case 5:
+								activatedTreasure = BattlePreset.ActivatedTreasure.ITF2;
+
+								break;
+							case 6:
+								activatedTreasure = BattlePreset.ActivatedTreasure.ITF3;
+
+								break;
+							case 7:
+								activatedTreasure = BattlePreset.ActivatedTreasure.COTC1;
+
+								break;
+							case 8:
+								activatedTreasure = BattlePreset.ActivatedTreasure.COTC2;
+
+								break;
+							case 9:
+								activatedTreasure = BattlePreset.ActivatedTreasure.COTC3;
+
+								break;
+							default:
+								System.out.printf("W/MapColc::read - Unknown Treasure ID %d found\n", id);
+
+								continue;
+						}
+
+						unlistedTreasure.remove(activatedTreasure);
+
 						boolean activated;
 
-						if (count[2] == 48) {
+						if (count[2] == 48 || id == 3) {
 							activated = true;
 						} else {
 							if (count[2] != 0)
@@ -870,83 +924,13 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 						if (!activated)
 							continue;
 
-						BattlePreset.ActivatedTreasure activatedTreasure;
+						updateTreasureData(activatedTreasure, targetStage.preset);
+					}
 
-						switch (id) {
-							case 0:
-							case 1:
-							case 2:
-								if (id == 0) {
-									activatedTreasure = BattlePreset.ActivatedTreasure.EOC1;
-								} else if (id == 1) {
-									activatedTreasure = BattlePreset.ActivatedTreasure.EOC2;
-								} else {
-									activatedTreasure = BattlePreset.ActivatedTreasure.EOC3;
-								}
-
-								targetStage.preset.trea[T_WORK] += 100;
-								targetStage.preset.trea[T_WALT] += 100;
-								targetStage.preset.trea[T_RES]  += 100;
-								targetStage.preset.trea[T_XP1]  += 100;
-								targetStage.preset.trea[T_BASE] += 100;
-								targetStage.preset.trea[T_ACC]  += 100;
-								targetStage.preset.trea[T_DEF]  += 100;
-								targetStage.preset.trea[T_ATK]  += 100;
-								targetStage.preset.trea[T_CATK] += 100;
-								targetStage.preset.trea[T_RECH] += 100;
-
-								break;
-							case 3:
-								System.out.println("W/MapColc::read - Treasure ID 3 is activated");
-
-								continue;
-							case 4:
-							case 5:
-							case 6:
-								if (id == 4) {
-									activatedTreasure = BattlePreset.ActivatedTreasure.ITF1;
-								} else if (id == 5) {
-									activatedTreasure = BattlePreset.ActivatedTreasure.ITF2;
-								} else {
-									activatedTreasure = BattlePreset.ActivatedTreasure.ITF3;
-								}
-
-								targetStage.preset.alien 		  += 200;
-								targetStage.preset.trea[T_BASE]   += 100;
-								targetStage.preset.trea[T_RECH]   += 100;
-								targetStage.preset.trea[T_CATK]   += 100;
-								targetStage.preset.fruit[T_BLACK] += 100;
-								targetStage.preset.fruit[T_RED]   += 100;
-								targetStage.preset.fruit[T_FLOAT] += 100;
-								targetStage.preset.fruit[T_ANGEL] += 100;
-
-								break;
-							case 7:
-							case 8:
-							case 9:
-								if (id == 7) {
-									activatedTreasure = BattlePreset.ActivatedTreasure.COTC1;
-								} else if (id == 8) {
-									activatedTreasure = BattlePreset.ActivatedTreasure.COTC2;
-								} else {
-									activatedTreasure = BattlePreset.ActivatedTreasure.COTC3;
-								}
-
-								targetStage.preset.star           += 500;
-								targetStage.preset.fruit[T_METAL] += 100;
-								targetStage.preset.fruit[T_ZOMBIE] += 100;
-								targetStage.preset.fruit[T_ALIEN]  += 100;
-								targetStage.preset.trea[T_XP2]     += 100;
-								targetStage.preset.gods[id - 7]    += 100;
-
-								break;
-							default:
-								System.out.printf("W/MapColc::read - Unknown Treasure ID %d found\n", id);
-
-								continue;
+					if (treasureObject.has("defaultData") && treasureObject.getAsJsonObject("defaultData").has("none")) {
+						for (BattlePreset.ActivatedTreasure treasure : unlistedTreasure) {
+							updateTreasureData(treasure, targetStage.preset);
 						}
-
-						targetStage.preset.activatedTreasures.add(activatedTreasure);
 					}
 
 					//validation
@@ -985,6 +969,8 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 							targetStage.preset.gods[j] = 100;
 						}
 					}
+
+					System.out.println(targetStage.preset);
 				}
 			}
 		}
@@ -1159,6 +1145,59 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 			return name + " (" + maps.size() + ")";
 		}
 
+		private static void updateTreasureData(BattlePreset.ActivatedTreasure treasure, BattlePreset preset) {
+			switch (treasure) {
+				case BattlePreset.ActivatedTreasure.EOC1:
+				case BattlePreset.ActivatedTreasure.EOC2:
+				case BattlePreset.ActivatedTreasure.EOC3:
+					preset.trea[T_WORK] += 100;
+					preset.trea[T_WALT] += 100;
+					preset.trea[T_RES]  += 100;
+					preset.trea[T_XP1]  += 100;
+					preset.trea[T_BASE] += 100;
+					preset.trea[T_ACC]  += 100;
+					preset.trea[T_DEF]  += 100;
+					preset.trea[T_ATK]  += 100;
+					preset.trea[T_CATK] += 100;
+					preset.trea[T_RECH] += 100;
+
+					break;
+				case BattlePreset.ActivatedTreasure.BASE:
+					preset.baseHealthBoost = true;
+
+					break;
+				case BattlePreset.ActivatedTreasure.ITF1:
+				case BattlePreset.ActivatedTreasure.ITF2:
+				case BattlePreset.ActivatedTreasure.ITF3:
+					preset.alien 		  += 200;
+					preset.trea[T_BASE]   += 100;
+					preset.trea[T_RECH]   += 100;
+					preset.trea[T_CATK]   += 100;
+					preset.fruit[T_BLACK] += 100;
+					preset.fruit[T_RED]   += 100;
+					preset.fruit[T_FLOAT] += 100;
+					preset.fruit[T_ANGEL] += 100;
+
+					break;
+				case BattlePreset.ActivatedTreasure.COTC1:
+				case BattlePreset.ActivatedTreasure.COTC2:
+				case BattlePreset.ActivatedTreasure.COTC3:
+					preset.star            += 500;
+					preset.fruit[T_METAL]  += 100;
+					preset.fruit[T_ZOMBIE] += 100;
+					preset.fruit[T_ALIEN]  += 100;
+					preset.trea[T_XP2]     += 100;
+					preset.gods[treasure.ordinal() - BattlePreset.ActivatedTreasure.COTC1.ordinal()] += 100;
+
+					break;
+				default:
+					System.out.printf("W/MapColc::read - Unknown Treasure ID %s found\n", treasure);
+			}
+
+			if (treasure != BattlePreset.ActivatedTreasure.BASE) {
+				preset.activatedTreasures.add(treasure);
+			}
+		}
 	}
 
 	@JsonClass
@@ -1262,7 +1301,6 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 				}
 			}
 		}
-
 	}
 
 	public static class ClipMapColc extends MapColc {
@@ -1317,5 +1355,4 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 	public <R> R getList(Class cls, Reductor<R, FixIndexMap> func, R def) {
 		return func.reduce(def, maps);
 	}
-
 }
