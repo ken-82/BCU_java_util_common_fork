@@ -969,8 +969,6 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 							targetStage.preset.gods[j] = 100;
 						}
 					}
-
-					System.out.println(targetStage.preset);
 				}
 			}
 		}
