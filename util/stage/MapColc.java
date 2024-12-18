@@ -841,7 +841,7 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 					JsonObject treasureObject = presetObject.getAsJsonObject("treasure");
 					JsonObject treasureDataObject = presetObject.getAsJsonObject("treasure").getAsJsonObject("data");
 
-					ArrayList<BattlePreset.ActivatedTreasure> unlistedTreasure = new ArrayList<>(List.of(BattlePreset.ActivatedTreasure.values()));
+					ArrayList<BattlePreset.ActivatedTreasure> unlistedTreasure = new ArrayList<>(Arrays.asList(BattlePreset.ActivatedTreasure.values()));
 
 					for (String key : treasureDataObject.keySet()) {
 						int id = CommonStatic.safeParseInt(key);
@@ -1145,9 +1145,9 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 
 		private static void updateTreasureData(BattlePreset.ActivatedTreasure treasure, BattlePreset preset) {
 			switch (treasure) {
-				case BattlePreset.ActivatedTreasure.EOC1:
-				case BattlePreset.ActivatedTreasure.EOC2:
-				case BattlePreset.ActivatedTreasure.EOC3:
+				case EOC1:
+				case EOC2:
+				case EOC3:
 					preset.trea[T_WORK] += 100;
 					preset.trea[T_WALT] += 100;
 					preset.trea[T_RES]  += 100;
@@ -1160,13 +1160,13 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 					preset.trea[T_RECH] += 100;
 
 					break;
-				case BattlePreset.ActivatedTreasure.BASE:
+				case BASE:
 					preset.baseHealthBoost = true;
 
 					break;
-				case BattlePreset.ActivatedTreasure.ITF1:
-				case BattlePreset.ActivatedTreasure.ITF2:
-				case BattlePreset.ActivatedTreasure.ITF3:
+				case ITF1:
+				case ITF2:
+				case ITF3:
 					preset.alien 		  += 200;
 					preset.trea[T_BASE]   += 100;
 					preset.trea[T_RECH]   += 100;
@@ -1177,9 +1177,9 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 					preset.fruit[T_ANGEL] += 100;
 
 					break;
-				case BattlePreset.ActivatedTreasure.COTC1:
-				case BattlePreset.ActivatedTreasure.COTC2:
-				case BattlePreset.ActivatedTreasure.COTC3:
+				case COTC1:
+				case COTC2:
+				case COTC3:
 					preset.star            += 500;
 					preset.fruit[T_METAL]  += 100;
 					preset.fruit[T_ZOMBIE] += 100;
