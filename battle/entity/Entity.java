@@ -334,6 +334,14 @@ public abstract class Entity extends AbEntity {
 				}
 
 				effs[id] = eff.getEAnim(index);
+			} else if (t == P_SPEEDUP) {
+				int id = dire == -1 ? A_SPEED : A_E_SPEED;
+				EffAnim<SpeedEff> eff = dire == -1 ? effas().A_SPEED : effas().A_E_SPEED;
+				SpeedEff index;
+
+				index = status[P_SPEEDUP][0] >= 100 ? SpeedEff.UP : SpeedEff.DOWN;
+
+				effs[id] = eff.getEAnim(index);
 			} else if (t == HEAL) {
 				EffAnim<DefEff> eff = dire == -1 ? effas().A_HEAL : effas().A_E_HEAL;
 
@@ -466,6 +474,10 @@ public abstract class Entity extends AbEntity {
 				status[P_WAVE][0]--;
 			if (status[P_STRONG][0] == 0) {
 				byte id = dire == -1 ? A_UP : A_E_UP;
+				effs[id] = null;
+			}
+			if (status[P_SPEEDUP][0] == 0) {
+				byte id = dire == -1 ? A_SPEED : A_E_SPEED;
 				effs[id] = null;
 			}
 			if (status[P_BREAK][0] == 0) {
@@ -2130,6 +2142,12 @@ public abstract class Entity extends AbEntity {
 			status[P_STRONG][0] = getProc().STRONG.mult;
 			anim.getEff(P_STRONG);
 		}
+		// adrenaline
+		int threshold = getProc().SPEEDUP.health;
+		if ((touchable() & TCH_CORPSE) == 0 && threshold > 0 && health * 100 <= maxH * threshold) {
+			status[P_SPEEDUP][0] = getProc().SPEEDUP.mult;
+			anim.getEff(P_SPEEDUP);
+		}
 		// lethal strike
 		if (getProc().LETHAL.prob > 0 && health <= 0) {
 			boolean b = getProc().LETHAL.prob == 100 || basis.r.nextFloat() * 100 < getProc().LETHAL.prob;
@@ -2425,6 +2443,10 @@ public abstract class Entity extends AbEntity {
 				} else if (status[P_SPEED][2] == 2) {
 					mov = status[P_SPEED][1] * 0.5f;
 				}
+			}
+
+			if (status[P_SPEEDUP][0] > 0) {
+				mov *= status[P_SPEEDUP][0] / 100f;
 			}
 
 			pos += (mov + extmov) * dire;
