@@ -1284,7 +1284,7 @@ public class Data {
 			false, //mini surge
 			true, //spirit summon
 			false, //metal killer
-			false //adrenaline
+			true //adrenaline
 	};
 
 	/**
