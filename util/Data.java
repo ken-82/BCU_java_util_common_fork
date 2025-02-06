@@ -170,8 +170,6 @@ public class Data {
 			public int dis;
 			@Order(5)
 			public int itv;
-			@Order(6)
-			public int id;
 		}
 
 		@JsonClass(noTag = NoTag.LOAD)
@@ -623,15 +621,6 @@ public class Data {
 			@Order(0)
 			public int mult;
 		}
-		@JsonClass(noTag = NoTag.LOAD) // Similar to WAVEI. Supports ids
-		public static class MOVEI extends ProcItem {
-			@Order(0)
-			public int mult;
-			@Order(1)
-			public int id;
-			@Order(2)
-			public boolean useIds;
-		}
 
 		@JsonClass(noTag = NoTag.LOAD)
 		public static class CANNI extends ProcItem {
@@ -802,7 +791,7 @@ public class Data {
 		@Order(37)
 		public final IMU IMUPOIATK = new IMU();
 		@Order(38)
-		public final MOVEI IMUMOVING = new MOVEI();
+		public final WAVEI IMUMOVING = new WAVEI();
 		@Order(39)
 		public final CANNI IMUCANNON = new CANNI();
 		@Order(40)
