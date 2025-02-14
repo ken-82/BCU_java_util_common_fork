@@ -583,7 +583,7 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 									int deployDelay = parameter.get(2).getAsInt();
 
 									for (int i = 0; i < 5; i++) {
-										if ((bitMask | (1 << i)) != 0) {
+										if ((bitMask & (1 << i)) != 0) {
 											indices.add(i);
 										}
 									}
