@@ -18,6 +18,9 @@ public class StageLimit extends Data implements BattleStatic {
     public int[] costMultiplier = { 100, 100, 100, 100, 100, 100 };
     public int[] rarityDeployLimit = { -1, -1, -1, -1, -1, -1 }; // -1 for none
 
+    public int[] deployDuplicationTimes = { 0, 0, 0, 0, 0, 0 }; // 0 for deactivated
+    public int[] deployDuplicationDelay = { 0, 0, 0, 0, 0, 0 }; // unit is frame
+
     public boolean coolStart = false;
 
     @JsonField(generic = Integer.class)

@@ -566,6 +566,42 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 								}
 
 								break;
+							case 8:
+								if (!parameter.isEmpty()) {
+									if (parameter.size() > 3) {
+										System.out.printf(
+												"W/MapColc::read - Unexpected parameter size for map %d : Size = %d\n",
+												mapID,
+												parameter.size()
+										);
+									}
+
+									List<Integer> indices = new ArrayList<>();
+
+									int bitMask = parameter.get(0).getAsInt();
+									int deployTimes = parameter.get(1).getAsInt();
+									int deployDelay = parameter.get(2).getAsInt();
+
+									for (int i = 0; i < 5; i++) {
+										if ((bitMask | (1 << i)) != 0) {
+											indices.add(i);
+										}
+									}
+
+									for (Stage stage : map.list) {
+										if (stage.lim == null)
+											stage.lim = new Limit();
+
+										if (stage.lim.stageLimit == null) {
+											stage.lim.stageLimit = new StageLimit();
+										}
+
+										for (int i = 0; i < indices.size(); i++) {
+											stage.lim.stageLimit.deployDuplicationTimes[indices.get(i)] = deployTimes;
+											stage.lim.stageLimit.deployDuplicationDelay[indices.get(i)] = deployDelay;
+										}
+									}
+								}
 						}
 					}
 				}
