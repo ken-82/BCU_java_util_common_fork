@@ -120,7 +120,7 @@ public class ContVolcano extends ContAb {
 			activate = false;
 		} else {
 			t++;
-			if (t >= VOLC_PRE && t <= VOLC_PRE + aliveTime)
+			if (t > VOLC_PRE && t < VOLC_POST + aliveTime)
 				sb.getAttack(v);
 			updateAnimation();
 		}

@@ -1602,7 +1602,13 @@ public class Data {
 	public static final byte VOLC_SE = 30; // volcano se loop duration
 
 	public static final byte EXPLOSION_PRE = 11;
+	public static final byte EXPLOSION_POST = 15;
+	public static final byte EXPLOSION_ITV = 10;
 	public static final short EXPLOSION_SE = 167;
+	public static final byte EXPLOSION_INNER_1 = 75; // explosion inner width
+	public static final byte EXPLOSION_PIERCE_1 = 75; // explosion pierce width
+	public static final byte EXPLOSION_PIERCE_2 = 100; // explosion pierce width_2
+	public static final short EXPLOSION_PIERCE_3 = 200; // explosion pierce width_3
 
 	public static final byte[] NYPRE = new byte[] { 18, 1, -1, 27, 37, 18, 10, 1 };
 	public static final float[] NYRAN = new float[] { 400, 82.5f, -1, 500, 500, 400, 100, 82.5f };

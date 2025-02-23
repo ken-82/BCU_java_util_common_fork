@@ -9,12 +9,14 @@ import common.util.pack.EffAnim;
 
 public class ContBlast extends ContAb {
     protected final EAnimD<EffAnim.BlastEff> anim;
+    protected final AttackBlast atkBlast;
     private int t = 0;
 
     protected ContBlast(AttackBlast atkBlast, float p, int lay) {
         super(atkBlast.model.b, p, lay);
         anim = (atkBlast.dire == 1 ? effas().A_E_BLAST : effas().A_BLAST).getEAnim(EffAnim.BlastEff.START);
         anim.setTime(1);
+        this.atkBlast = atkBlast;
     }
 
     @Override
@@ -36,13 +38,18 @@ public class ContBlast extends ContAb {
     public void update() { // FIXME: update on same frame as attack
         t++;
         System.out.println("battle frame " + sb.time + "f, blast frame " + t + "f");
-
-        if (t == EXPLOSION_PRE)
+        if (t == EXPLOSION_PRE){
             anim.changeAnim(EffAnim.BlastEff.EXPLODE, true);
-        if (t > 1 && (t - 1) % 10 == 0)
+        }
+        if (t > 1 && (t - 1) % 10 == 0 && t < 3*EXPLOSION_ITV+EXPLOSION_PRE)
             CommonStatic.setSE(EXPLOSION_SE + (t / 11 - 1));
-        if (anim.done())
+        if (t > 2*EXPLOSION_ITV+EXPLOSION_PRE+EXPLOSION_POST)
             activate = false;
+        else{
+            if(t >= EXPLOSION_PRE){
+                sb.getAttack(atkBlast);
+            }
+        }
         updateAnimation();
     }
 
