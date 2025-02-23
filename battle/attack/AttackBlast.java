@@ -81,20 +81,6 @@ public class AttackBlast extends AttackAb {
                     }
             }
         }
-
-        //System.out.println("le1" + le + "le2" + le2 + "capt" + capt + "captured" + captured + "touch" + touch + "dire" + -dire + "sta" + sta + "end" + end + "excludeRightEdge" + excludeRightEdge);
-//        capt.clear();
-//        for (AbEntity e : le)
-//            if (e instanceof Entity && !captured.contains((Entity) e)) {
-//                capt.add(e);
-//            }
-//
-//        if (blastTime >= EXPLOSION_PRE) {
-//            for (AbEntity e : le2)
-//                if (e instanceof Entity && !captured.contains((Entity) e)) {
-//                    capt.add(e);
-//                }
-//        }
     }
 
     @Override
