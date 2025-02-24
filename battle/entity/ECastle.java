@@ -4,6 +4,7 @@ import common.CommonStatic;
 import common.battle.BasisLU;
 import common.battle.StageBasis;
 import common.battle.attack.AttackAb;
+import common.battle.attack.AttackBlast;
 import common.battle.attack.AttackVolcano;
 import common.util.anim.EAnimD;
 import common.util.pack.EffAnim;
@@ -50,7 +51,7 @@ public class ECastle extends AbEntity {
 		}
 		hit = 2;
 
-		if(atk.isLongAtk || atk instanceof AttackVolcano)
+		if(atk.isLongAtk || atk instanceof AttackVolcano || atk instanceof AttackBlast)
 			smoke = effas().A_WHITE_SMOKE.getEAnim(DefEff.DEF);
 		else
 			smoke = effas().A_ATK_SMOKE.getEAnim(DefEff.DEF);

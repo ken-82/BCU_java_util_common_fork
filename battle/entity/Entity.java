@@ -1573,6 +1573,15 @@ public abstract class Entity extends AbEntity {
 				dmg = dmg * (100 - getProc().IMUVOLC.mult) / 100;
 		}
 
+		if ((atk.waveType & WT_BLST) > 0) {
+			if (getProc().IMUBLAST.mult > 0)
+				anim.getEff(P_WAVE);
+			if (getProc().IMUBLAST.mult == 100)
+				return;
+			else
+				dmg = dmg * (100 - getProc().IMUBLAST.mult) / 100;
+		}
+
 		tokens.add(atk);
 
 		Proc.PT imuatk = getProc().IMUATK;
