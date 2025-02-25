@@ -24,8 +24,6 @@ public class ContBlast extends ContAb {
         FakeTransform at = gra.getTransform();
         anim.draw(gra, p, psiz);
         gra.setTransform(at);
-//        if (CommonStatic.getConfig().ref)
-//            drawAxis(gra, p, psiz * 1.25f);
     }
 
     public void drawAxis(FakeGraphics gra, P p, float siz) {
@@ -37,7 +35,6 @@ public class ContBlast extends ContAb {
     @Override
     public void update() { // FIXME: update on same frame as attack
         t++;
-        System.out.println("battle frame " + sb.time + "f, blast frame " + t + "f");
         if (t == EXPLOSION_PRE){
             anim.changeAnim(EffAnim.BlastEff.EXPLODE, true);
         }
