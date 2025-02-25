@@ -35,7 +35,6 @@ public class ContBlast extends ContAb {
     @Override
     public void update() { // FIXME: update on same frame as attack
         t++;
-        System.out.println("battle frame " + sb.time + "f, blast frame " + t + "f");
         if (t == EXPLOSION_PRE){
             anim.changeAnim(EffAnim.BlastEff.EXPLODE, true);
         }
