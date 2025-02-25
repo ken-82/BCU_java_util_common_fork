@@ -24,8 +24,6 @@ public class ContBlast extends ContAb {
         FakeTransform at = gra.getTransform();
         anim.draw(gra, p, psiz);
         gra.setTransform(at);
-//        if (CommonStatic.getConfig().ref)
-//            drawAxis(gra, p, psiz * 1.25f);
     }
 
     public void drawAxis(FakeGraphics gra, P p, float siz) {
