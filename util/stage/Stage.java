@@ -63,6 +63,7 @@ public class Stage extends Data
 	public Identifier<Music> mus0, mus1;
 	public SCDef data;
 	public Limit lim;
+	public BattlePreset preset;
 	@JsonField(generic = Replay.class, alias = ResourceLocation.class)
 	public ArrayList<Replay> recd = new ArrayList<>();
 

@@ -24,8 +24,16 @@ public class StageLimit extends Data implements BattleStatic {
     public StageLimit clone() {
         StageLimit sl = new StageLimit();
         sl.maxMoney = maxMoney;
+        sl.maxUnitSpawn = maxUnitSpawn;
         sl.globalCooldown = globalCooldown;
+        sl.globalCost = globalCost;
+
         sl.bannedCatCombo.addAll(bannedCatCombo);
+
+        sl.cooldownMultiplier = cooldownMultiplier.clone();
+        sl.costMultiplier = costMultiplier.clone();
+        sl.rarityDeployLimit = rarityDeployLimit.clone();
+
         return sl;
     }
 
