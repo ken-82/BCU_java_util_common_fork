@@ -210,9 +210,8 @@ public class DataEnemy extends DefaultData implements MaskEnemy {
 				proc.BLAST.dis_1 = ints[108] / 4 + proc.BLAST.dis_0;
 			}
 
-			if (ints[109] != 0) {
+			if (ints[109] != 0)
 				proc.IMUBLAST.mult = 100;
-			}
 		} catch (IndexOutOfBoundsException ignored) {
 
 		}
