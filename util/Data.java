@@ -826,7 +826,7 @@ public class Data {
 		@Order(50)
 		public final DSHIELD DEMONSHIELD = new DSHIELD();
 		@Order(51)
-        public final VOLC DEATHSURGE = new VOLC();
+		public final VOLC DEATHSURGE = new VOLC();
 		@Order(52)
 		public final MULT BOUNTY = new MULT();
 		@Order(53)
@@ -1384,6 +1384,7 @@ public class Data {
 			{ 0, P_BSTHUNT, 2, -1 }, //64 : beheoth hunter
 			{ 0, P_MINIVOLC, 4, -1 }, //65 : Mini surge
 			{ 1, AB_SKILL, 0, -1 }, //66 : super sage hunter
+			{ 0, P_BLAST, 0, -1 } //67 : blast
 	};
 
 	// foot icon index used in battle

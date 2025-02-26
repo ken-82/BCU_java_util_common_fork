@@ -10,16 +10,16 @@ import java.util.List;
 import java.util.Set;
 
 public class AttackBlast extends AttackAb {
-    protected final Set<Entity>[] captured = new HashSet[3];
-    protected final List<AbEntity>[] capt_blast = new ArrayList[3];
+    protected final List<Set<Entity>> captured = new ArrayList<>();
+    protected final List<List<AbEntity>> capt_blast = new ArrayList<>();
     private byte blastTime = 0;
 
     protected AttackBlast(Entity attacker, AttackSimple src, float sta, float end, int bt) {
         super(attacker, src, sta, end,false);
         waveType = bt;
         for (int i = 0; i < 3; i++) {
-            capt_blast[i] = capt;
-            captured[i] = new HashSet<>();
+            capt_blast.add(new ArrayList<>());
+            captured.add(new HashSet<>());
         }
     }
 
@@ -29,12 +29,11 @@ public class AttackBlast extends AttackAb {
             list.clear();
         }
         List<AbEntity> le;
-        List<AbEntity> le2;
         if (blastTime < EXPLOSION_POST) {
             le = model.b.inRange(touch, -dire, sta, end, excludeRightEdge);
             for (AbEntity e : le)
-                if (e instanceof Entity && !captured[0].contains((Entity) e)) {
-                    capt_blast[0].add(e);
+                if (e instanceof Entity && !captured.get(0).contains((Entity) e)) {
+                    capt_blast.get(0).add(e);
                 }
         }
         if(blastTime >= EXPLOSION_ITV && blastTime < EXPLOSION_ITV+EXPLOSION_POST){
@@ -43,18 +42,12 @@ public class AttackBlast extends AttackAb {
             float sta_in = sta;
             float end_in = sta + EXPLOSION_PIERCE_2;
             le = model.b.inRange(touch, -dire, sta_out, end_out, excludeRightEdge);
-            le2 = model.b.inRange(touch, -dire, sta_in, end_in, excludeRightEdge);
+            le.addAll(model.b.inRange(touch, -dire, sta_in, end_in, excludeRightEdge));
             for (AbEntity e : le)
-                if (e instanceof Entity && !captured[1].contains((Entity) e)) {
-                    capt_blast[1].add(e);
+                if (e instanceof Entity && !captured.get(1).contains((Entity) e)) {
+                    capt_blast.get(1).add(e);
                 }
 
-            if (blastTime >= EXPLOSION_PRE) {
-                for (AbEntity e : le2)
-                    if (e instanceof Entity && !captured[0].contains((Entity) e)) {
-                        capt_blast[1].add(e);
-                    }
-            }
         }
         if(blastTime >= 2*EXPLOSION_ITV && blastTime < 2*EXPLOSION_ITV+EXPLOSION_POST){
             float sta_out = end - EXPLOSION_PIERCE_3;
@@ -62,18 +55,11 @@ public class AttackBlast extends AttackAb {
             float sta_in = sta + EXPLOSION_PIERCE_2;
             float end_in = sta + EXPLOSION_PIERCE_3;
             le = model.b.inRange(touch, -dire, sta_out, end_out, excludeRightEdge);
-            le2 = model.b.inRange(touch, -dire, sta_in, end_in, excludeRightEdge);
+            le.addAll(model.b.inRange(touch, -dire, sta_in, end_in, excludeRightEdge));
             for (AbEntity e : le)
-                if (e instanceof Entity && !captured[2].contains((Entity) e)) {
-                    capt_blast[2].add(e);
+                if (e instanceof Entity && !captured.get(2).contains((Entity) e)) {
+                    capt_blast.get(2).add(e);
                 }
-
-            if (blastTime >= EXPLOSION_PRE) {
-                for (AbEntity e : le2)
-                    if (e instanceof Entity && !captured[2].contains((Entity) e)) {
-                        capt_blast[2].add(e);
-                    }
-            }
         }
     }
 
@@ -88,13 +74,13 @@ public class AttackBlast extends AttackAb {
                 atk = atk * attacker.status[P_WEAK][1] / 100;
         }
         for (int i = 0; i < 3; i++) {
-            for (AbEntity e : capt_blast[i]) {
+            for (AbEntity e : capt_blast.get(i)) {
                 if (e.isBase())
                     continue;
                 atk = (int)(rawAtk * EXPLOSION_MULTI[i]);
                 if (e instanceof Entity) {
                     e.damaged(this);
-                    captured[i].add((Entity) e);
+                    captured.get(i).add((Entity) e);
                 }
             }
         }
