@@ -12,14 +12,10 @@ public class StageLimit extends Data implements BattleStatic {
     public int maxMoney = 0;
     public int globalCooldown = 0;
     public int globalCost = 0;
-    public int maxUnitSpawn = 0;
 
     public int[] cooldownMultiplier = { 100, 100, 100, 100, 100, 100 };
     public int[] costMultiplier = { 100, 100, 100, 100, 100, 100 };
     public int[] rarityDeployLimit = { -1, -1, -1, -1, -1, -1 }; // -1 for none
-
-    public int[] deployDuplicationTimes = { 0, 0, 0, 0, 0, 0 }; // 0 for deactivated
-    public int[] deployDuplicationDelay = { 0, 0, 0, 0, 0, 0 }; // unit is frame
 
     public boolean coolStart = false;
 
@@ -42,16 +38,8 @@ public class StageLimit extends Data implements BattleStatic {
         }
 
         sl.maxMoney = maxMoney;
-        sl.maxUnitSpawn = maxUnitSpawn;
         sl.globalCooldown = globalCooldown;
-        sl.globalCost = globalCost;
-
         sl.bannedCatCombo.addAll(bannedCatCombo);
-
-        sl.cooldownMultiplier = cooldownMultiplier.clone();
-        sl.costMultiplier = costMultiplier.clone();
-        sl.rarityDeployLimit = rarityDeployLimit.clone();
-
         return sl;
     }
 
@@ -60,7 +48,6 @@ public class StageLimit extends Data implements BattleStatic {
         combined.maxMoney = second.maxMoney == 0 ? maxMoney : second.maxMoney;
         combined.globalCooldown = second.globalCooldown == 0 ? globalCooldown : second.globalCooldown;
         combined.globalCost = second.globalCost == 0 ? globalCost : second.globalCost;
-        combined.maxUnitSpawn = second.maxUnitSpawn == 0 ? maxUnitSpawn : second.maxUnitSpawn;
         combined.bannedCatCombo.addAll(bannedCatCombo);
         combined.bannedCatCombo.addAll(second.bannedCatCombo);
         return combined;
