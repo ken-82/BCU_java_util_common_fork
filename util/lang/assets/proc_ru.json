@@ -1295,42 +1295,41 @@
         }
     },
     "BLAST" : {
-        "abbr_name": "blast atk",
-        "full_name": "Blast Attack",
-        "tooltip": "Creates blast attack that spreads to each side with weaker damage over each blasts",
-        "format": "(prob)% chance to create a blast attack (_left)Created [(dis_0==dis_1){at (dis_0) range}(dis_0!=dis_1){within (dis_0) ~ (dis_1) range}](_right)",
+        "abbr_name": "разрыватель",
+        "full_name": "Разрыватель",
+        "tooltip": "Создает взрывную атаку, которая распространяется в каждую сторону с меньшим уроном с каждым взрывом",
+        "format": "(prob)% шанс сделать взрыв (_left)Создаётся [(dis_0==dis_1){на расстоянии (dis_0) }(dis_0!=dis_1){в радиусе (dis_0) ~ (dis_1)}](_right)",
         "class": {
             "prob": {
-                "name": "chance",
+                "name": "шанс",
                 "tooltip": null
             },
             "dis_0": {
-                "name": "point near",
+                "name": "начальная точка",
                 "tooltip": null
             },
             "dis_1": {
-                "name": "point far",
+                "name": "конечная точка",
                 "tooltip": null
             }
         }
     },
-    ,
     "IMUBLAST" : {
-        "abbr_name": "imu. Blast",
-        "full_name": "Immune/Resistant to Blast",
+        "abbr_name": "имунн. Разрыв",
+        "full_name": "Иммунитет/Защита к Разрывателю",
         "tooltip": null,
-        "format": ["[(mult!=0&block!=100){[(mult==100){Immune}(mult<100&mult>0){Resistant}(mult<0){Weak}] to Blast",
-            "[(mult<100&mult>0){ (_left)Decreases damage by (mult)%(_right)}(mult<0){ (_left)Increases damage by (_abs(mult))%(_right)}]",
-            "[(block!=0&block<100){ & }]}][(block!=0){Blast [(block==100){blocker}(block<100&block>0){absorber}(block<0){increaser}]",
-            "[(block<100&block>0){ (_left)Decreases damage by (block)%(_right)}(block<0){ (_left)Increases damage by (_abs(block))%(_right)}]}]"],
+        "format": ["[(mult!=0&block!=100){[(mult==100){Иммунитет}(mult<100&mult>0){Защита}(mult<0){Слабость}] к Разрывателю",
+            "[(mult<100&mult>0){ (_left)Уменьшает урон на (mult)%(_right)}(mult<0){ (_left)Увеличивает урон на (_abs(mult))%(_right)}]",
+            "[(block!=0&block<100){ & }]}][(block!=0){Разрываетль [(block==100){блокируется}(block<100&block>0){поглощается}(block<0){увеличивается}]",
+            "[(block<100&block>0){ (_left)Уменьшает урон на (block)%(_right)}(block<0){ (_left)Увеличивает урон на (_abs(block))%(_right)}]}]"],
         "class": {
             "mult": {
-                "name": "percent",
-                "tooltip": "Set negative to make this unit weak to the effect"
+                "name": "проценты",
+                "tooltip": "Установите отрицательное значение, чтобы сделать этот блок слабым для эффекта"
             },
             "block": {
-                "name": "Blocker",
-                "tooltip": "Set from 1 to 99 to reduce duration amongst all units. Set to 100 to completely block slow. Set negative to increase the effect."
+                "name": "Блокировка",
+                "tooltip": "Установите от 1 до 99, чтобы уменьшить длительность среди всех юнитов. Установите 100, чтобы полностью заблокировать разрывателя. Установите отрицательное значение, чтобы увеличить эффект."
             }
         }
     }
