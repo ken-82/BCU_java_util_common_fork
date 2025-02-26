@@ -834,7 +834,7 @@ public class Data {
 		@Order(50)
 		public final DSHIELD DEMONSHIELD = new DSHIELD();
 		@Order(51)
-        public final VOLC DEATHSURGE = new VOLC();
+		public final VOLC DEATHSURGE = new VOLC();
 		@Order(52)
 		public final MULT BOUNTY = new MULT();
 		@Order(53)

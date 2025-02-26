@@ -76,7 +76,6 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
                 switch (fi.getName()) {
                     case "CH":
                     case "D":
-					case "G":
                     case "DM":
                         continue;
                 }
