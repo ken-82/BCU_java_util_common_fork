@@ -2,7 +2,6 @@ package common.battle.attack;
 
 import common.battle.entity.AbEntity;
 import common.battle.entity.Entity;
-import common.util.Data;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -67,17 +66,17 @@ public class AttackBlast extends AttackAb {
     public void excuse() {
         process();
         blastTime++;
-        if (attacker != null) {
-            if (attacker.status[P_STRONG][0] != 0)
-                atk += atk * attacker.status[P_STRONG][0] / 100;
-            if (attacker.status[P_WEAK][0] != 0)
-                atk = atk * attacker.status[P_WEAK][1] / 100;
-        }
         for (int i = 0; i < 3; i++) {
             for (AbEntity e : capt_blast.get(i)) {
                 if (e.isBase())
                     continue;
                 atk = (int)(rawAtk * EXPLOSION_MULTI[i]);
+                if (attacker != null) {
+                    if (attacker.status[P_STRONG][0] != 0)
+                        atk += atk * attacker.status[P_STRONG][0] / 100;
+                    if (attacker.status[P_WEAK][0] != 0)
+                        atk = atk * attacker.status[P_WEAK][1] / 100;
+                }
                 if (e instanceof Entity) {
                     e.damaged(this);
                     captured.get(i).add((Entity) e);
