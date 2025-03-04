@@ -623,7 +623,7 @@ public class Editors {
 
 		map().put("IMUMOVING", wavei);
 
-		map().put("IMUBLAST", imu);
+		map().put("IMUBLAST", wavei);
 
 		map().put("IMUCANNON", new EditControl<>(Proc.CANNI.class, (t) -> {
 			t.mult = Math.min(t.mult, 100);

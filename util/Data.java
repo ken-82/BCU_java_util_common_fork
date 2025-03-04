@@ -848,7 +848,9 @@ public class Data {
 		@Order(57)
 		public final MULT METALKILL = new MULT();
 		@Order(58)
-		public final SPEEDUP SPEEDUP = new SPEEDUP();
+		public final BLAST BLAST = new BLAST();
+		@Order(59)
+		public final WAVEI IMUBLAST = new WAVEI();
 
 		@Override
 		public Proc clone() {
@@ -1378,17 +1380,17 @@ public class Data {
 			{ 0, P_IMUVOLC, 1, -1 }, // 54: resist to surge ?
 			{ 3, P_IMUVOLC, 0, 55 }, // 55: immune to surge
 			{ 0, P_VOLC, 4, -1 }, // 56: surge, level up to chance up
-			{ 4, TRAIT_DEMON, 0, -1 }, // 57: Targetting Aku
+			{ 4, TRAIT_DEMON, 0, -1 }, // 57: Targeting Aku
 			{ 0, P_SHIELDBREAK, 1, -1 }, //58 : shield piercing
 			{ 1, AB_CKILL, 0, -1 }, //59 : corpse killer
 			{ 0, P_CURSE, 2, -1 }, //60 : curse
 			{ 2, PC2_TBA, 1, -1 }, //61 : tba
 			{ 0, P_MINIWAVE, 3, -1 }, //62 : mini-wave
 			{ 1, AB_BAKILL, 0, -1 }, //63 : baron killer
-			{ 0, P_BSTHUNT, 2, -1 }, //64 : beheoth hunter
-			{ 0, P_MINIVOLC, 4, -1 }, //65 : Mini surge
+			{ 0, P_BSTHUNT, 2, -1 }, //64 : behemoth hunter
+			{ 0, P_MINIVOLC, 5, -1 }, //65 : Mini surge
 			{ 1, AB_SKILL, 0, -1 }, //66 : super sage hunter
-			{ 0, P_BLAST, 0, -1 } //67 : blast
+			{ 0, P_BLAST, 3, -1 } //67 : blast
 	};
 
 	// foot icon index used in battle
