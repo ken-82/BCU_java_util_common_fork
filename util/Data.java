@@ -616,8 +616,6 @@ public class Data {
 
 			@Order(3)
 			public boolean inverted;
-			@Order(4)
-			public boolean randomize;
 		}
 
 		@JsonClass(noTag = NoTag.LOAD)
@@ -632,8 +630,6 @@ public class Data {
 			public int multi;
 			@Order(4)
 			public boolean inverted;
-			@Order(5)
-			public boolean randomize;
 		}
 
 		@JsonClass(noTag = NoTag.LOAD) //Used for procs that lack the block reformat
@@ -697,8 +693,6 @@ public class Data {
 			public int maxtime;
 			@Order(5)
 			public int mult;
-			@Order(6)
-			public boolean randomize;
 		}
 
 		@JsonClass(noTag = NoTag.LOAD)

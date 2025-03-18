@@ -79,7 +79,7 @@
         "abbr_name": "wave",
         "full_name": "Wave",
         "tooltip": null,
-        "format": "(prob)% chance to create a Lv.[(!randomize){(lv)}(randomize){(lv)~(maxlv)}] [(inverted){inverted }]wave attack",
+        "format": "(prob)% chance to create a Lv.[(maxlv<=lv){(lv)}(maxlv>lv){(lv)~(maxlv)}] [(inverted){inverted }]wave attack",
         "class": {
             "prob": {
                 "name": "chance",
@@ -91,15 +91,11 @@
             },
             "maxlv": {
                 "name": "max level",
-                "tooltip": "Only available if random level is enabled"
+                "tooltip": ""
             },
             "inverted": {
                 "name": "Inverted Wave",
                 "tooltip": "Inverts the wave, causing it to go backwards from the end point to the start point"
-            },
-            "randomize": {
-                "name": "Random Level",
-                "tooltip": "Enable max level randomization"
             }
         }
     },
@@ -858,7 +854,7 @@
         "abbr_name": "surge",
         "full_name": "Surge",
         "tooltip": null,
-        "format": "(prob)% chance to make a Lv. [(randomize){(time/20)~(maxtime/20)}(!randomize){(time/20)}] surge attack (_left)Lasts (_dispTime(time)), created within (dis_0) ~ (dis_1) range(_right)",
+        "format": "(prob)% chance to make a Lv. [(maxtime>time){(time/20)~(maxtime/20)}(maxtime<=time){(time/20)}] surge attack (_left)Lasts (_dispTime(time)), created within (dis_0) ~ (dis_1) range(_right)",
         "class": {
             "prob": {
                 "name": "chance",
@@ -878,11 +874,7 @@
             },
             "maxtime": {
                 "name": "max duration",
-                "tooltip": "Only available if random level is enabled"
-            },
-            "randomize": {
-                "name": "Random Level",
-                "tooltip": "Enable max level randomization"
+                "tooltip": ""
             }
         }
     },
@@ -1019,7 +1011,7 @@
         "abbr_name" : "mini-wave",
         "full_name" : "Mini-Wave",
         "tooltip" : "Creates small wave which moves twice faster than normal wave with dynamic damage multiplication parameter",
-        "format" : "(prob)% chance to create a lv.(lv) [(inverted){inverted }]mini-wave [(multi!=20){(_left)Gives target (multi)% of activator's damage(_right)}]",
+        "format" : "(prob)% chance to create a lv.[(maxlv<=lv){(lv)}(maxlv>lv){(lv)~(maxlv)}] [(inverted){inverted }]mini-wave [(multi!=20){(_left)Gives target (multi)% of activator's damage(_right)}]",
         "class" : {
             "prob" : {
                 "name" : "chance",
@@ -1031,7 +1023,7 @@
             },
             "maxlv": {
                 "name": "max level",
-                "tooltip": "Only available if random level is enabled"
+                "tooltip": ""
             },
             "multi" : {
                 "name" : "multi",
@@ -1040,10 +1032,6 @@
             "inverted": {
                 "name": "Inverted Wave",
                 "tooltip": "Inverts the wave, causing it to go backwards from the end point to the start point"
-            },
-            "randomize": {
-                "name": "Random Level",
-                "tooltip": "Enable max level randomization"
             }
         }
     },
@@ -1310,7 +1298,7 @@
         "abbr_name": "m. surge",
         "full_name": "Mini Surge",
         "tooltip": "Creates small surge that does exactly same behavior of normal surge, but with less damage",
-        "format": "(prob)% chance to make a Lv. [(randomize){(time/20)~(maxtime/20)}(!randomize){(time/20)}] mini surge attack (_left)Lasts (_dispTime(time)), created within (dis_0) ~ (dis_1) range, with (mult)% damage of attacker(_right)",
+        "format": "(prob)% chance to make a Lv. [(maxtime>time){(time/20)~(maxtime/20)}(maxtime<=time){(time/20)}] mini surge attack (_left)Lasts (_dispTime(time)), created within (dis_0) ~ (dis_1) range, with (mult)% damage of attacker(_right)",
         "class": {
             "prob": {
                 "name": "chance",
@@ -1330,15 +1318,11 @@
             },
             "maxtime": {
                 "name": "max duration",
-                "tooltip": "Only available if random level is enabled"
+                "tooltip": ""
             },
             "mult" : {
                 "name": "multiplier",
                 "tooltip": null
-            },
-            "randomize": {
-                "name": "Random Level",
-                "tooltip": "Enable max level randomization"
             }
         }
     },

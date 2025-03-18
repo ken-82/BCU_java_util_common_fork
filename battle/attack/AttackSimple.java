@@ -157,7 +157,7 @@ public class AttackSimple extends AttackAb {
 			float addp = (dire == 1 ? W_E_INI : W_U_INI) + wid / 2f;
 			float p0 = model.getPos() + dire * addp;
 
-			if (proc.WAVE.randomize) {
+			if (proc.WAVE.maxlv > proc.WAVE.lv) {
 				proc.WAVE.lv = proc.WAVE.lv + (int)(Math.random() * ((proc.WAVE.maxlv - proc.WAVE.lv) + 1));
 			}
 
@@ -179,7 +179,7 @@ public class AttackSimple extends AttackAb {
 			float addp = (dire == 1 ? W_E_INI : W_U_INI) + wid / 2f;
 			float p0 = model.getPos() + dire * addp;
 
-			if (proc.MINIWAVE.randomize) {
+			if (proc.MINIWAVE.maxlv > proc.MINIWAVE.lv) {
 				proc.MINIWAVE.lv = proc.MINIWAVE.lv + (int)(Math.random() * ((proc.MINIWAVE.maxlv - proc.MINIWAVE.lv) + 1));
 			}
 
@@ -222,7 +222,7 @@ public class AttackSimple extends AttackAb {
 			float sta = p0 + (dire == 1 ? W_VOLC_PIERCE : W_VOLC_INNER);
 			float end = p0 - (dire == 1 ? W_VOLC_INNER : W_VOLC_PIERCE);
 
-			if (proc.MINIVOLC.randomize) {
+			if (volc.maxtime > volc.time) {
 				volc.time = volc.time + (int)(Math.random() * ((volc.maxtime - volc.time) + 1));
 				volc.time = (int) (Math.floor(volc.time / 20.0) * 20);
 			}
