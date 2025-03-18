@@ -306,9 +306,15 @@ public class Editors {
 
 		map().put("WAVE", new EditControl<>(Proc.WAVE.class, (t) -> {
 			t.prob = MathUtil.clip(t.prob, 0, 100);
-			t.lv = MathUtil.clip(t.lv, 1, 20);
-			if (t.prob == 0)
+			t.lv = MathUtil.clip(t.lv, 1, 100);
+			t.maxlv = MathUtil.clip(t.maxlv, t.lv, 100);
+			if (t.prob == 0) {
 				t.lv = 0;
+				t.maxlv = 0;
+				t.randomize = false;
+			}
+			if (!t.randomize)
+				t.maxlv = -1;
 		}));
 
 		map().put("WEAK", new EditControl<>(Proc.WEAK.class, (t) -> {
@@ -548,8 +554,15 @@ public class Editors {
 			if (t.prob == 0) {
 				t.dis_0 = t.dis_1 = 0;
 				t.time = 0;
+				t.maxtime = 0;
+				t.randomize = false;
 			} else {
 				t.time = Math.max(1, t.time / Data.VOLC_ITV) * Data.VOLC_ITV;
+				if (t.randomize) {
+					t.maxtime = Math.max(t.time / Data.VOLC_ITV, t.maxtime / Data.VOLC_ITV) * Data.VOLC_ITV;
+				} else {
+					t.maxtime = 0;
+				}
 			}
 		}));
 
@@ -557,8 +570,15 @@ public class Editors {
 			t.prob = MathUtil.clip(t.prob, 0, 100);
 			if (t.prob == 0) {
 				t.dis_0 = t.dis_1 = t.time = t.mult = 0;
+				t.maxtime = 0;
+				t.randomize = false;
 			} else {
 				t.time = Math.max(1, t.time / Data.VOLC_ITV) * Data.VOLC_ITV;
+				if (t.randomize) {
+					t.maxtime = Math.max(t.time / Data.VOLC_ITV, t.maxtime / Data.VOLC_ITV) * Data.VOLC_ITV;
+				} else {
+					t.maxtime = 0;
+				}
 
 				if(t.mult == 0)
 					t.mult = 20;
@@ -590,9 +610,14 @@ public class Editors {
 
 			if (t.prob == 0) {
 				t.lv = 0;
+				t.maxlv = 0;
 				t.multi = 0;
+				t.randomize = false;
 			} else {
 				t.lv = MathUtil.clip(t.lv, 1, 20);
+				t.maxlv = MathUtil.clip(t.maxlv, t.lv, 100);
+				if (!t.randomize)
+					t.maxlv = -1;
 
 				if(t.multi == 0)
 					t.multi = 20;

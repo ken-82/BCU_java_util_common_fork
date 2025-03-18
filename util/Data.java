@@ -599,6 +599,10 @@ public class Data {
 			public int dis_1;
 			@Order(3)
 			public int time;
+			@Order(4)
+			public int maxtime;
+			@Order(5)
+			public boolean randomize;
 		}
 
 		@JsonClass(noTag = NoTag.LOAD)
@@ -607,9 +611,13 @@ public class Data {
 			public int prob;
 			@Order(1)
 			public int lv;
-
 			@Order(2)
+			public int maxlv;
+
+			@Order(3)
 			public boolean inverted;
+			@Order(4)
+			public boolean randomize;
 		}
 
 		@JsonClass(noTag = NoTag.LOAD)
@@ -619,9 +627,13 @@ public class Data {
 			@Order(1)
 			public int lv;
 			@Order(2)
-			public int multi;
+			public int maxlv;
 			@Order(3)
+			public int multi;
+			@Order(4)
 			public boolean inverted;
+			@Order(5)
+			public boolean randomize;
 		}
 
 		@JsonClass(noTag = NoTag.LOAD) //Used for procs that lack the block reformat
@@ -682,7 +694,11 @@ public class Data {
 			@Order(3)
 			public int time;
 			@Order(4)
+			public int maxtime;
+			@Order(5)
 			public int mult;
+			@Order(6)
+			public boolean randomize;
 		}
 
 		@JsonClass(noTag = NoTag.LOAD)
