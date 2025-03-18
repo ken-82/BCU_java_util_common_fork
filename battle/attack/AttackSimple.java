@@ -202,7 +202,7 @@ public class AttackSimple extends AttackAb {
 			float sta = p0 + (dire == 1 ? W_VOLC_PIERCE : W_VOLC_INNER);
 			float end = p0 - (dire == 1 ? W_VOLC_INNER : W_VOLC_PIERCE);
 
-			if (proc.VOLC.randomize) {
+			if (volc.maxtime > volc.time) {
 				volc.time = volc.time + (int)(Math.random() * ((volc.maxtime - volc.time) + 1));
 				volc.time = (int) (Math.floor(volc.time / 20.0) * 20);
 			}
