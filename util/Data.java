@@ -601,8 +601,6 @@ public class Data {
 			public int time;
 			@Order(4)
 			public int maxtime;
-			@Order(5)
-			public boolean randomize;
 		}
 
 		@JsonClass(noTag = NoTag.LOAD)
