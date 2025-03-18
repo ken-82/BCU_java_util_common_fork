@@ -552,7 +552,6 @@ public class Editors {
 				t.dis_0 = t.dis_1 = 0;
 				t.time = 0;
 				t.maxtime = 0;
-				t.randomize = false;
 			} else {
 				t.time = Math.max(1, t.time / Data.VOLC_ITV) * Data.VOLC_ITV;
 				if (t.maxtime > t.time) {
