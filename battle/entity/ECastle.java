@@ -51,7 +51,7 @@ public class ECastle extends AbEntity {
 		}
 		hit = 2;
 
-		if(atk.isLongAtk || atk instanceof AttackVolcano || atk instanceof AttackBlast)
+		if(atk.isLongAtk || atk instanceof AttackVolcano)
 			smoke = effas().A_WHITE_SMOKE.getEAnim(DefEff.DEF);
 		else
 			smoke = effas().A_ATK_SMOKE.getEAnim(DefEff.DEF);

@@ -42,14 +42,14 @@ public class EForm extends Data {
 		EAnimU walkAnim = f.getEAnim(AnimU.UType.WALK);
 		walkAnim.setTime(0);
 
-		return new EUnit(b, du, walkAnim, d, du.getFront(), du.getBack(), level, f.du.getPCoin(), index, isSpirit);
+		return new EUnit(b, du, walkAnim, d, du.getFront(), du.getBack(), level, f.du.getPCoin(), index, isSpirit, f.unit.rarity);
 	}
 
 	public EUnit invokeEntity(StageBasis b, int Lvl, int minLayer, int maxLayer) {
 		float d = f.unit.lv.getMult(Lvl);
 		EAnimU walkAnim = f.getEAnim(AnimU.UType.WALK);
 		walkAnim.setTime(0);
-		return new EUnit(b, du, walkAnim, d, minLayer, maxLayer, level, f.du.getPCoin(), null, false);
+		return new EUnit(b, du, walkAnim, d, minLayer, maxLayer, level, f.du.getPCoin(), null, false, f.unit.rarity);
 	}
 
 	public float getPrice(int sta) {

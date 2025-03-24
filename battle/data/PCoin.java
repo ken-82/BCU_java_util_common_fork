@@ -63,7 +63,6 @@ public class PCoin extends Data {
 
 	public PCoin(String[] strs, MaskUnit du) { // leaving reminder that this is unused at least in PC ver.
 		trait = Trait.convertType(CommonStatic.parseIntN(strs[1]));
-
 		for (int i = 0; i < 8; i++) {
 			if(talentExist(strs, 2 + i * 14)) {
 				info.add(new int[14]);
@@ -219,16 +218,16 @@ public class PCoin extends Data {
 						ans.getTraits().add(t);
 
 			int maxlv = data[1];
-			int[] modifs = new int[4];
+			int[] modifs = new int[5];
 
 			if (maxlv > 1) {
-				for (int j = 0; j < 4; j++) {
+				for (int j = 0; j < 5; j++) {
 					int v0 = data[2 + j * 2];
 					int v1 = data[3 + j * 2];
 					modifs[j] = (v1 - v0) * (talents[i] - 1) / (maxlv - 1) + v0;
 				}
 			} else
-				for (int j = 0; j < 4; j++)
+				for (int j = 0; j < 5; j++)
 					modifs[j] = data[3 + j * 2];
 
 			if (type[0] == PC_P) {
@@ -249,8 +248,13 @@ public class PCoin extends Data {
 						tar.set(1, tar.get(1) + Math.min(modifs[1], modifs[2]));
 						tar.set(2, tar.get(2) + Math.max(modifs[1], modifs[2]));
 						tar.set(3, tar.get(3) + modifs[3]);
+
+						if (type[1] == P_MINIVOLC) {
+							tar.set(4, modifs[4]);
+						}
 					}
 				} else if (type[1] == P_BSTHUNT) {
+					tar.set(0, 1);
 					tar.set(1, modifs[0]);
 					tar.set(2, modifs[1]);
 				} else if (type[1] == P_BLAST) {

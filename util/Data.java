@@ -649,13 +649,8 @@ public class Data {
 
 		@JsonClass(noTag = NoTag.LOAD)
 		public static class BSTHUNT extends ProcItem {
-			@JsonClass(noTag = NoTag.LOAD)
-			public static class TYPE extends IntType {
-				@Order(0)
-				public boolean active;
-			}
 			@Order(0)
-			public TYPE type = new TYPE();
+			public int active;
 			@Order(1)
 			public int prob;
 			@Order(2)
@@ -1384,7 +1379,9 @@ public class Data {
 			{ 0, P_BSTHUNT, 2, -1 }, //64 : behemoth hunter
 			{ 0, P_MINIVOLC, 5, -1 }, //65 : Mini surge
 			{ 1, AB_SKILL, 0, -1 }, //66 : super sage hunter
-			{ 0, P_BLAST, 3, -1 } //67 : blast
+			{ 0, P_BLAST, 3, -1 }, //67 : blast
+			{ 0, P_IMUBLAST, 1, -1 }, // 68: resist to blast ?
+			{ 3, P_IMUBLAST, 0, 68 } // 69: immune to blast
 	};
 
 	// foot icon index used in battle
@@ -1609,7 +1606,7 @@ public class Data {
 	public static final byte EXPLOSION_PIERCE_1 = 75; // explosion pierce width
 	public static final byte EXPLOSION_PIERCE_2 = 100; // explosion pierce width_2
 	public static final short EXPLOSION_PIERCE_3 = 200; // explosion pierce width_3
-	public static final float[] EXPLOSION_MULTI = {1f, 0.7f, 0.4f};
+	public static final float[] EXPLOSION_MULTI = {1f, 0.7f, 0.7f, 0.4f, 0.4f};
 
 	public static final byte[] NYPRE = new byte[] { 18, 1, -1, 27, 37, 18, 10, 1 };
 	public static final float[] NYRAN = new float[] { 400, 82.5f, -1, 500, 500, 400, 100, 82.5f };
