@@ -76,6 +76,9 @@ public class CustomUnit extends CustomEntity implements MaskUnit, Cloneable {
 	public PCoin getPCoin() { return pcoin; }
 
 	@Override
+	public int getRarity() {return pack.unit.rarity;}
+
+	@Override
 	public void importData(MaskEntity de) {
 		super.importData(de);
 

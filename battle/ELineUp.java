@@ -29,6 +29,8 @@ public class ELineUp extends BattleObj {
 						? sb.b.t().getFinResGlobal(sb.globalCdLimit(), sb.isBanned(C_RESP))
 						: sb.b.t().getFinRes(lu.efs[i][j].du.getRespawn(), sb.isBanned(C_RESP));
 				if (lim != null && lim.stageLimit != null) {
+					if (sb.globalCost() > 0)
+						price[i][j] = sb.globalCost() * 100;
 					if (price[i][j] != -1)
 						price[i][j] = price[i][j] * lim.stageLimit.costMultiplier[form.unit.rarity] / 100;
 					maxC[i][j] = maxC[i][j] * lim.stageLimit.cooldownMultiplier[form.unit.rarity] / 100;

@@ -244,4 +244,7 @@ public class DataEnemy extends DefaultData implements MaskEnemy {
 	public float getLimit() {
 		return limit;
 	}
+
+	@Override
+	public int getRarity() { return -1; }
 }
