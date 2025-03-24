@@ -20,6 +20,7 @@ import common.util.lang.MultiLangCont;
 import common.util.lang.MultiLangData;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 
 @JCGeneric(Form.FormJson.class)
 @JsonClass(read = RType.FILL)

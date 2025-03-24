@@ -56,6 +56,11 @@ public class StageBasis extends BattleObj {
 	public final float boss_spawn;
 	public final int[] shakeCoolDown = {0, 0};
 	public int activeGuard = -1;
+	public int[] rarity_max = { 0, 0, 0, 0, 0, 0 };
+	public int left = 0;
+	public int[] rarity_dup_amo = { 0, 0, 0, 0, 0, 0 };
+	public int[] rarity_dup_delay = { 0, 0, 0, 0, 0, 0 };
+	public List<List<Integer>> dup_delay = new ArrayList<>();
 
 	public float siz;
 	public int work_lv, money, maxMoney, cannon, maxCannon, upgradeCost, max_num, pos;
@@ -99,7 +104,7 @@ public class StageBasis extends BattleObj {
 	/**
 	 * Summoner entity that has been spawned in the battle. Used for spirit summon positioning
 	 */
-	public final Entity[][] summoner = new Entity[2][5];
+	public final List<Entity>[][] summoner = new List[2][5];
 
 	public final int[][] spiritEmphasizeCount = new int[2][5];
 	public final int[][] spiritEmphasizeStartTime = new int[2][5];
@@ -190,6 +195,23 @@ public class StageBasis extends BattleObj {
 
 		if (est.s.bossGuard)
 			activeGuard = 0;
+
+		left = (maxspawn() == 0) ? -1 : maxspawn();
+
+        if(est.lim != null && est.lim.stageLimit != null){
+			for (int i = 0;i < 6;i++) {
+				if(est.lim.stageLimit.rarityDeployLimit[i] == -1) est.lim.stageLimit.rarityDeployLimit[i] = 0;
+			}
+			rarity_max = est.lim.stageLimit.rarityDeployLimit;
+			rarity_dup_amo = est.lim.stageLimit.deployDuplicationTimes;
+			rarity_dup_delay = est.lim.stageLimit.deployDuplicationDelay;
+		}
+
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 5; j++) {
+				summoner[i][j] = new ArrayList<>();
+			}
+		}
 	}
 
 	/**
@@ -231,6 +253,17 @@ public class StageBasis extends BattleObj {
 		for (Entity ent : le) {
 			if (ent.dire == d && !ent.dead)
 				ans += ent.data.getWill() + 1;
+		}
+		return ans;
+	}
+
+	public int[] rarityentityCount() {
+		int[] ans = new int[RARITY_TOT];
+		for (Entity ent : le) {
+			if (ent.dire == -1  && !ent.dead){
+				int ra = ent.data.getRarity();
+				ans[ra] += ent.data.getWill() + 1;
+			}
 		}
 		return ans;
 	}
@@ -452,7 +485,7 @@ public class StageBasis extends BattleObj {
 		if (f == null)
 			return false;
 
-		if (manual && f.du.getProc().SPIRIT.exists() && summonerSummoned[i][j] && summoner[i][j].anim.dead < 0 && !spiritSummoned[i][j]) {
+		if (manual && f.du.getProc().SPIRIT.exists() && summonerSummoned[i][j] && checkSummonAlive(i,j) && !spiritSummoned[i][j]) {
 			if (spiritCooldown[i][j] > 0) {
 				CommonStatic.setSE(SE_SPEND_FAIL);
 				return false;
@@ -461,28 +494,30 @@ public class StageBasis extends BattleObj {
 			f = b.lu.spirits[i][j];
 			if (f == null)
 				return false;
-			if (entityCount(-1) >= max_num - f.du.getWill()) {
+
+			if (entityCount(-1) >= max_num - f.du.getWill() || (rarity_max[f.du.getRarity()] != 0 && rarityentityCount()[f.du.getRarity()] >= rarity_max[f.du.getRarity()] - f.du.getWill())) {
 				CommonStatic.setSE(SE_SPEND_FAIL);
 				return false;
 			}
 
 			CommonStatic.setSE(SE_SPIRIT_SUMMON);
-			EUnit su = f.getEntity(this, null, true);
 
 			// summoner.pos and not summoner.lastPosition
 			// actions are processed before the update so it's automatic for the spirit to spawn relative to the summoner last pos
 			// 800 + range and not ebase.pos + range because it doesn't respond to entity enemy base
-			su.added(-1, Math.max(800 + su.data.getRange(), Math.min(summoner[i][j].pos + SPIRIT_SUMMON_RANGE, ubase.pos)));
-
-			le.add(su);
-			le.sort(Comparator.comparingInt(e -> e.layer));
+			for(int entN = 0;entN < summoner[i][j].size();entN++) {
+				EUnit su = f.getEntity(this, null, true);
+				su.added(-1, Math.max(800 + su.data.getRange(), Math.min(summoner[i][j].get(entN).pos + SPIRIT_SUMMON_RANGE, ubase.pos)));
+				le.add(su);
+				le.sort(Comparator.comparingInt(e -> e.layer));
+			}
 
 			spiritSummoned[i][j] = true;
 			unitRespawnTime = 1;
 
 			return true;
 		} else if (locks[i][j] || manual) {
-			if (entityCount(-1) >= max_num - f.du.getWill()) {
+			if (left == 0 || entityCount(-1) >= max_num - f.du.getWill() || (rarity_max[f.du.getRarity()] != 0 && rarityentityCount()[f.du.getRarity()] >= rarity_max[f.du.getRarity()] - f.du.getWill())) {
 				if (manual)
 					CommonStatic.setSE(SE_SPEND_FAIL);
 
@@ -516,6 +551,9 @@ public class StageBasis extends BattleObj {
 			}
 
 			CommonStatic.setSE(SE_SPEND_SUC);
+			left--;
+
+			if(rarity_dup_amo[f.du.getRarity()] != 0) dup_delay.add(Arrays.asList(rarity_dup_delay[f.du.getRarity()], rarity_dup_amo[f.du.getRarity()], i, j));
 
 			elu.get(i, j);
 
@@ -526,7 +564,7 @@ public class StageBasis extends BattleObj {
 			if (f.du.getProc().SPIRIT.exists()) {
 				summonerSummoned[i][j] = true;
 				spiritCooldown[i][j] = SPIRIT_SUMMON_DELAY;
-				summoner[i][j] = eu;
+				summoner[i][j].add(eu);
 			}
 
 			le.add(eu);
@@ -662,7 +700,7 @@ public class StageBasis extends BattleObj {
 	// -------------------- DEV_ONLY -------------------- //
 
 	/**
-	 * process actions and add enemies from stage first then update each entity
+	 * process actions and add enemies from stage first then deploy duped units then update each entity
 	 * and receive attacks then excuse attacks and do post update then delete dead
 	 * entities
 	 */
@@ -823,6 +861,38 @@ public class StageBasis extends BattleObj {
 		if (temp_n_inten > 0)
 			n_inten += temp_n_inten;
 
+		// need lots of fixing
+		for(int k = 0;k < dup_delay.size();k++){
+			List<Integer> duplist = dup_delay.get(k);
+			int delay = duplist.get(0);
+			if(delay == 0){
+				int i = duplist.get(2);
+				int j = duplist.get(3);
+				EForm f = b.lu.efs[i][j];
+
+				EUnit eu = f.getEntity(this, new int[] {i, j}, false);
+
+				eu.added(-1, st.len - 700);
+
+				if (f.du.getProc().SPIRIT.exists()) {
+					summonerSummoned[i][j] = true;
+					spiritCooldown[i][j] = SPIRIT_SUMMON_DELAY;
+					summoner[i][j].add(eu);
+				}
+
+				le.add(eu);
+				le.sort(Comparator.comparingInt(e -> e.layer));
+
+				int amount = duplist.get(1);
+				if (amount > 1) {
+					duplist.set(1,amount-1);
+					duplist.set(0,rarity_dup_delay[f.du.getRarity()]);
+				}
+				else dup_delay.remove(k);
+			}
+			else duplist.set(0,delay-1);
+		}
+
 		updateEntities(s_stop == 0);
 
 		while (n_inten >= 1) {
@@ -915,12 +985,17 @@ public class StageBasis extends BattleObj {
 				if (dead && e instanceof EUnit && e.getProc().SPIRIT.exists()) {
 					for (int i = 0; i < 2; i++) {
 						for (int j = 0; j < 5; j++) {
-							if (e == summoner[i][j]) {
-								summoner[i][j] = null;
-								summonerSummoned[i][j] = false;
-								spiritSummoned[i][j] = false;
-
-								break;
+							for(int entN = 0;entN < summoner[i][j].size();entN++) {
+								System.out.println(summoner[i][j].size());
+								System.out.println(checkSummonAlive(i,j));
+								if(!checkSummonAlive(i,j)){
+									summonerSummoned[i][j] = false;
+									spiritSummoned[i][j] = false;
+								}
+								if (e == summoner[i][j].get(entN)) {
+									summoner[i][j].remove(entN);
+									break;
+								}
 							}
 						}
 					}
@@ -1176,5 +1251,28 @@ public class StageBasis extends BattleObj {
 			return 0;
 		else
 			return est.lim.stageLimit.globalCooldown;
+	}
+
+	public int globalCost() {
+		if (est.lim.stageLimit == null)
+			return 0;
+		else
+			return est.lim.stageLimit.globalCost;
+	}
+
+	public int maxspawn() {
+		if (est.lim.stageLimit == null)
+			return 0;
+		else
+			return est.lim.stageLimit.maxUnitSpawn;
+	}
+
+	public boolean checkSummonAlive(int i,int j) {
+		for(int entN = 0;entN < summoner[i][j].size();entN++) {
+			if (summoner[i][j].get(entN).anim.dead < 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

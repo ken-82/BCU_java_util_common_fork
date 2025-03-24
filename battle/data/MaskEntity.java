@@ -118,4 +118,5 @@ public interface MaskEntity extends BattleStatic {
 
 	int touchBase();
 
+	int getRarity();
 }
