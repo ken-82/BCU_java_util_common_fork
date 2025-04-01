@@ -54,6 +54,8 @@ public class Orb extends Data {
 				key++;
 			}
 
+			aux.DATA.put(-1, 0);
+
 			String data = new String(VFile.get("./org/data/equipmentlist.json").getData().getBytes(), StandardCharsets.UTF_8);
 
 			JSONObject jdata = new JSONObject(data);
@@ -66,7 +68,14 @@ public class Orb extends Data {
 
 				JSONObject obj = (JSONObject) lists.get(i);
 
-				int trait = obj.getInt("attribute");
+				int trait;
+
+				if (obj.has("attribute")) {
+					trait = obj.getInt("attribute");
+				} else {
+					trait = -1;
+				}
+
 				int type = obj.getInt("content");
 				int grade = obj.getInt("gradeID");
 
