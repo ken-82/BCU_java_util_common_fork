@@ -1442,6 +1442,11 @@ public abstract class Entity extends AbEntity {
 	 */
 	private boolean killCounted = false;
 
+	/**
+	 * cooldown timer for regeneration ability
+	 */
+	private int regentimer;
+
 	protected Entity(StageBasis b, MaskEntity de, EAnimU ea, float atkMagnif, float hpMagnif) {
 		super((int) (de.getHp() * hpMagnif));
 		basis = b;
@@ -1453,6 +1458,7 @@ public abstract class Entity extends AbEntity {
 		presetSealedProcs();
 		maxCurrentShield = currentShield = (int) (de.getProc().DEMONSHIELD.hp * hpMagnif);
 		shieldMagnification = hpMagnif;
+		regentimer = getProc().HPREGEN.interval;
 	}
 
 	protected Entity(StageBasis b, MaskEntity de, EAnimU ea, float lvMagnif, float tAtk, float tHP, PCoin pc, Level lv) {
@@ -1477,6 +1483,7 @@ public abstract class Entity extends AbEntity {
 		presetSealedProcs();
 		maxCurrentShield = currentShield = (int) (de.getProc().DEMONSHIELD.hp * lvMagnif);
 		shieldMagnification = lvMagnif;
+		regentimer = getProc().HPREGEN.interval;
 	}
 
 	private void presetStatus(float mag) {
@@ -1487,6 +1494,7 @@ public abstract class Entity extends AbEntity {
 		status[P_REVIVE][0] = getProc().REVIVE.count;
 		status[P_DMGCUT][0] = getProc().DMGCUT.type.magnif ? (int) (mag * getProc().DMGCUT.dmg) : getProc().DMGCUT.dmg;
 		status[P_DMGCAP][0] = getProc().DMGCAP.type.magnif ? (int) (mag * getProc().DMGCAP.dmg) : getProc().DMGCAP.dmg;
+		status[P_HPREGEN][2] = getProc().HPREGEN.scaleWithBuff ? (int) (mag * getProc().HPREGEN.amount) : getProc().HPREGEN.amount;
 	}
 
 	private void presetSealedProcs() {
@@ -1511,6 +1519,10 @@ public abstract class Entity extends AbEntity {
 
 		int dmg = getDamage(atk, atk.atk);
 		boolean proc = true;
+
+		if (getProc().HPREGEN.resetWhenDamaged && getProc().HPREGEN.prob > 0) {
+			regentimer = getProc().HPREGEN.interval; // Reset if enabled
+		}
 
 		if (anim.corpse != null && anim.corpse.type == ZombieEff.REVIVE && status[P_REVIVE][1] >= REVIVE_SHOW_TIME)
 			return;
@@ -2303,10 +2315,22 @@ public abstract class Entity extends AbEntity {
 	}
 
 	private boolean walking = true;
+	private boolean regenDisabled = false;
+
+	private void regenerate() {
+		int amount = status[P_HPREGEN][2];
+		health += amount;
+		if (getProc().HPREGEN.removeProcs)
+			cancelAllProc();
+		if (health < 1) {
+			regenDisabled = true;
+			preKill();
+		}
+	}
 
 	/**
 	 * update the entity. order of update:
-	 *  1st iteration (movement) :   TBA, procs time tick -> move (KB, burrow, standard) -> revive
+	 *  1st iteration (movement) :   TBA -> regen ability -> procs time tick -> move (KB, burrow, standard) -> revive
 	 *  2nd iteration (reactions):   validate walking OR go idle, start burrow, start attack -> update attack
 	 */
 	@Override
@@ -2314,6 +2338,24 @@ public abstract class Entity extends AbEntity {
 		// decrement TBA
 		if (waitTime > 0)
 			waitTime--;
+
+
+		if (getProc().HPREGEN.prob > 0 && !regenDisabled) {
+			if (regentimer > 0) {
+				if (((getProc().HPREGEN.idleTrigger && !walking && !dead) || !getProc().HPREGEN.idleTrigger) && ((getProc().HPREGEN.freezeEff && status[P_STOP][0] == 0) || !getProc().HPREGEN.freezeEff)) {
+					regentimer--;
+				}
+				if (regentimer < 1) {
+					if (getProc().HPREGEN.onlyOnce) {
+						regenDisabled = true;
+					}
+					regentimer = getProc().HPREGEN.interval;
+					if (Math.random() < (getProc().HPREGEN.prob / 100f)) {
+						regenerate();
+					}
+				}
+			}
+		}
 
 		updateProc();
 		barrier.update();

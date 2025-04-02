@@ -343,6 +343,22 @@ public class Editors {
 				t.mult = 0;
 		}));
 
+		map().put("HPREGEN", new EditControl<>(Proc.HPREGEN.class, (t) -> {
+			t.prob = MathUtil.clip(t.prob, 0, 100);
+			if (t.prob > 0) {
+				t.interval = Math.max(t.interval,1);
+			} else {
+				t.interval = 1;
+				t.amount = 0;
+				t.freezeEff = true;
+				t.idleTrigger = false;
+				t.removeProcs = false;
+				t.onlyOnce = false;
+				t.scaleWithBuff = false;
+				t.resetWhenDamaged = false;
+			}
+		}));
+
 		map().put("LETHAL", prob);
 
 		map().put("BURROW", new EditControl<>(Proc.BURROW.class, (t) -> {

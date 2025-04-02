@@ -492,6 +492,28 @@ public class Data {
 		}
 
 		@JsonClass(noTag = NoTag.LOAD)
+		public static class HPREGEN extends ProcItem {
+			@Order(0)
+			public int prob;
+			@Order(1)
+			public int interval;
+			@Order(2)
+			public int amount;
+			@Order(3)
+			public boolean scaleWithBuff;
+			@Order(4)
+			public boolean onlyOnce;
+			@Order(5)
+			public boolean resetWhenDamaged;
+			@Order(6)
+			public boolean freezeEff;
+			@Order(7)
+			public boolean removeProcs;
+			@Order(8)
+			public boolean idleTrigger;
+		}
+
+		@JsonClass(noTag = NoTag.LOAD)
 		public static class SUMMON extends ProcItem {
 
 			@JsonClass(noTag = NoTag.LOAD)
@@ -840,6 +862,8 @@ public class Data {
 		public final MULT METALKILL = new MULT();
 		@Order(58)
 		public final SPEEDUP SPEEDUP = new SPEEDUP();
+		@Order(59)
+		public final HPREGEN HPREGEN = new HPREGEN();
 
 		@Override
 		public Proc clone() {
@@ -1211,7 +1235,8 @@ public class Data {
 	public static final int P_SPIRIT = 56;
 	public static final int P_METALKILL = 57;
 	public static final int P_SPEEDUP = 58;
-	public static final byte PROC_TOT = 59;
+	public static final int P_HPREGEN = 59;
+	public static final byte PROC_TOT = 60; // add 1
 	public static final byte PROC_WIDTH = 6;
 
 	public static final boolean[] procSharable = {
@@ -1273,7 +1298,8 @@ public class Data {
 			false, //mini surge
 			true, //spirit summon
 			false, //metal killer
-			true //adrenaline
+			true, //adrenaline
+			true //hp regen
 	};
 
 	/**
