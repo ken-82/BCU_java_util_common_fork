@@ -511,6 +511,8 @@ public class Data {
 			public boolean removeProcs;
 			@Order(8)
 			public boolean idleTrigger;
+			@Order(9)
+			public boolean noHB;
 		}
 
 		@JsonClass(noTag = NoTag.LOAD)

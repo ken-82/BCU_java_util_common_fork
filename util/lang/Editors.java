@@ -356,6 +356,7 @@ public class Editors {
 				t.onlyOnce = false;
 				t.scaleWithBuff = false;
 				t.resetWhenDamaged = false;
+				t.noHB = false;
 			}
 		}));
 

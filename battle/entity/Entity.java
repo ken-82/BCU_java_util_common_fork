@@ -2126,6 +2126,8 @@ public abstract class Entity extends AbEntity {
 	 */
 	@Override
 	public void postUpdate() {
+		regenUpdate();
+
 		int hb = data.getHb();
 		long ext = health * hb % maxH;
 		if (ext == 0)
@@ -2319,27 +2321,21 @@ public abstract class Entity extends AbEntity {
 
 	private void regenerate() {
 		int amount = status[P_HPREGEN][2];
-		health += amount;
+		if (amount < 0 && !getProc().HPREGEN.noHB) { // I hope I did this right
+			damage -= amount;
+		} else {
+			health += amount;
+		}
 		if (getProc().HPREGEN.removeProcs)
 			cancelAllProc();
 		if (health < 1) {
 			regenDisabled = true;
-			preKill();
+			if (getProc().HPREGEN.noHB)
+				preKill();
 		}
 	}
 
-	/**
-	 * update the entity. order of update:
-	 *  1st iteration (movement) :   TBA -> regen ability -> procs time tick -> move (KB, burrow, standard) -> revive
-	 *  2nd iteration (reactions):   validate walking OR go idle, start burrow, start attack -> update attack
-	 */
-	@Override
-	public void update() {
-		// decrement TBA
-		if (waitTime > 0)
-			waitTime--;
-
-
+	private void regenUpdate() {
 		if (getProc().HPREGEN.prob > 0 && !regenDisabled) {
 			if (regentimer > 0) {
 				if (((getProc().HPREGEN.idleTrigger && !walking && !dead) || !getProc().HPREGEN.idleTrigger) && ((getProc().HPREGEN.freezeEff && status[P_STOP][0] == 0) || !getProc().HPREGEN.freezeEff)) {
@@ -2356,6 +2352,21 @@ public abstract class Entity extends AbEntity {
 				}
 			}
 		}
+	}
+
+	/**
+	 * update the entity. order of update:
+	 *  1st iteration (movement) :   TBA  -> procs time tick -> move (KB, burrow, standard) -> revive
+	 *  2nd iteration (reactions):   validate walking OR go idle, start burrow, start attack -> update attack
+	 */
+	@Override
+	public void update() {
+		// decrement TBA
+		if (waitTime > 0)
+			waitTime--;
+
+
+
 
 		updateProc();
 		barrier.update();
