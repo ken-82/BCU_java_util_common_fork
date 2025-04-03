@@ -132,13 +132,21 @@ public class PCoin extends Data {
 			switch (data[0]) {
 				case 0:
 					break;
-				case 56: case 65:
+				case 56:
 					data[2] = MathUtil.clip(data[2], 0, 100 - proc.getArr(type).get(0));
 					data[3] = MathUtil.clip(data[3], data[2], 100 - proc.getArr(type).get(0));
 					data[8] = Math.max(1, data[8] / Data.VOLC_ITV) * Data.VOLC_ITV;
 					data[9] = Math.max(Math.max(1, data[9] / Data.VOLC_ITV) * Data.VOLC_ITV, data[8]);
 					break;
-				case 10:
+				case 65:
+					data[2] = MathUtil.clip(data[2], 0, 100 - proc.getArr(type).get(0));
+					data[3] = MathUtil.clip(data[3], data[2], 100 - proc.getArr(type).get(0));
+					data[8] = Math.max(1, data[8] / Data.VOLC_ITV) * Data.VOLC_ITV;
+					data[9] = Math.max(Math.max(1, data[9] / Data.VOLC_ITV) * Data.VOLC_ITV, data[8]);
+					data[10] = Math.max(data[10], 0);
+					data[11] = Math.max(data[11], data[10]);
+					break;
+				case 10: case 67:
 					data[2] = MathUtil.clip(data[2], 0, 100 - proc.getArr(type).get(0));
 					data[3] = MathUtil.clip(data[3], data[2], 100 - proc.getArr(type).get(0));
 					data[4] = Math.max(data[4], 0);
@@ -239,28 +247,36 @@ public class PCoin extends Data {
 						tar.set(1, modifs[2] / 4);
 						tar.set(2, (modifs[2] + modifs[3]) / 4);
 						tar.set(3, modifs[1] * 20);
-
-						if (type[1] == P_MINIVOLC) {
-							tar.set(4, 20);
-						}
 					} else {
 						tar.set(0, tar.get(0) + modifs[0]);
 						tar.set(1, tar.get(1) + Math.min(modifs[1], modifs[2]));
 						tar.set(2, tar.get(2) + Math.max(modifs[1], modifs[2]));
 						tar.set(3, tar.get(3) + modifs[3]);
-
-						if (type[1] == P_MINIVOLC) {
-							tar.set(4, modifs[4]);
-						}
+					}
+					if (type[1] == P_MINIVOLC) {
+						tar.set(5, 20);
 					}
 				} else if (type[1] == P_BSTHUNT) {
 					tar.set(0, 1);
 					tar.set(1, modifs[0]);
 					tar.set(2, modifs[1]);
 				} else if (type[1] == P_BLAST) {
-					tar.set(0, modifs[0]);
-					tar.set(1, modifs[1] / 4);
-					tar.set(2, (modifs[1] + modifs[2]) / 4);
+					if (du instanceof DataUnit) {
+						tar.set(0, modifs[0]);
+						tar.set(1, modifs[1] / 4);
+						tar.set(2, (modifs[1] + modifs[2]) / 4);
+					} else {
+						tar.set(0, modifs[0]);
+						tar.set(1, tar.get(1) + Math.min(modifs[1], modifs[2]));
+						tar.set(2, tar.get(2) + Math.max(modifs[1], modifs[2]));
+					}
+				} else if (type[1] == P_WAVE || type[1] == P_MINIWAVE) {
+					tar.set(0, tar.get(0) + modifs[0]);
+					tar.set(1, tar.get(1) + modifs[1]);
+
+					if (type[1] == P_MINIWAVE) {
+						tar.set(3, 20);
+					}
 				} else {
 					for (int j = 0; j < 4; j++) {
 						if (modifs[j] > 0) {

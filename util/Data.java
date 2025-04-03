@@ -591,6 +591,8 @@ public class Data {
 			public int dis_1;
 			@Order(3)
 			public int time;
+			@Order(4)
+			public int maxtime;
 		}
 
 		@JsonClass(noTag = NoTag.LOAD)
@@ -600,6 +602,8 @@ public class Data {
 			@Order(1)
 			public int lv;
 			@Order(2)
+			public int maxlv;
+			@Order(3)
 			public boolean inverted;
 		}
 
@@ -610,8 +614,10 @@ public class Data {
 			@Order(1)
 			public int lv;
 			@Order(2)
-			public int multi;
+			public int maxlv;
 			@Order(3)
+			public int multi;
+			@Order(4)
 			public boolean inverted;
 		}
 
@@ -668,6 +674,8 @@ public class Data {
 			@Order(3)
 			public int time;
 			@Order(4)
+			public int maxtime;
+			@Order(5)
 			public int mult;
 		}
 
@@ -1377,7 +1385,7 @@ public class Data {
 			{ 0, P_MINIWAVE, 3, -1 }, //62 : mini-wave
 			{ 1, AB_BAKILL, 0, -1 }, //63 : baron killer
 			{ 0, P_BSTHUNT, 2, -1 }, //64 : behemoth hunter
-			{ 0, P_MINIVOLC, 5, -1 }, //65 : Mini surge
+			{ 0, P_MINIVOLC, 4, -1 }, //65 : Mini surge
 			{ 1, AB_SKILL, 0, -1 }, //66 : super sage hunter
 			{ 0, P_BLAST, 3, -1 }, //67 : blast
 			{ 0, P_IMUBLAST, 1, -1 }, // 68: resist to blast ?
