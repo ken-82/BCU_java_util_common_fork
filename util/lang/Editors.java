@@ -608,7 +608,7 @@ public class Editors {
 				t.maxlv = 0;
 				t.multi = 0;
 			} else {
-				t.lv = MathUtil.clip(t.lv, 1, 20);
+				t.lv = MathUtil.clip(t.lv, 1, 100);
 				t.maxlv = MathUtil.clip(t.maxlv, t.lv, 100);
 
 				if(t.multi == 0)
