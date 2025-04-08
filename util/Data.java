@@ -623,6 +623,8 @@ public class Data {
 			public int dis_1;
 			@Order(3)
 			public int time;
+			@Order(4)
+			public int maxtime;
 		}
 
 		@JsonClass(noTag = NoTag.LOAD)
@@ -631,8 +633,10 @@ public class Data {
 			public int prob;
 			@Order(1)
 			public int lv;
-
 			@Order(2)
+			public int maxlv;
+
+			@Order(3)
 			public boolean inverted;
 		}
 
@@ -643,8 +647,10 @@ public class Data {
 			@Order(1)
 			public int lv;
 			@Order(2)
-			public int multi;
+			public int maxlv;
 			@Order(3)
+			public int multi;
+			@Order(4)
 			public boolean inverted;
 		}
 
@@ -706,6 +712,8 @@ public class Data {
 			@Order(3)
 			public int time;
 			@Order(4)
+			public int maxtime;
+			@Order(5)
 			public int mult;
 		}
 
@@ -1406,6 +1414,7 @@ public class Data {
 			{ 0, P_BSTHUNT, 2, -1 }, //64 : beheoth hunter
 			{ 0, P_MINIVOLC, 4, -1 }, //65 : Mini surge
 			{ 1, AB_SKILL, 0, -1 }, //66 : super sage hunter
+			{ 0, P_SPEEDUP, 2, -1 }, //67 : ADRENALINE
 	};
 
 	// foot icon index used in battle
