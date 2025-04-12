@@ -22,6 +22,8 @@ public class StageLimit extends Data implements BattleStatic {
     public int[] deployDuplicationDelay = { 0, 0, 0, 0, 0, 0 }; // unit is frame
 
     public boolean coolStart = false;
+    
+    public int cannonMultiplier = 100; // percentage
 
     @JsonField(generic = Integer.class)
     public HashSet<Integer> bannedCatCombo = new HashSet<>();

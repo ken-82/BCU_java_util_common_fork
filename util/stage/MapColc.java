@@ -602,6 +602,33 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 										}
 									}
 								}
+
+								break;
+							case 9:
+								if (!parameter.isEmpty()) {
+									if (parameter.size() > 1) {
+										System.out.printf(
+												"W/MapColc::read - Unexpected parameter size for map %d : Size = %d\n",
+												mapID,
+												parameter.size()
+										);
+									}
+
+									int cannonMultiplier = parameter.get(0).getAsInt();
+
+									for (Stage stage : map.list) {
+										if (stage.lim == null)
+											stage.lim = new Limit();
+
+										if (stage.lim.stageLimit == null) {
+											stage.lim.stageLimit = new StageLimit();
+										}
+
+										stage.lim.stageLimit.cannonMultiplier = cannonMultiplier;
+									}
+								}
+
+								break;
 						}
 					}
 				}
