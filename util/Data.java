@@ -484,6 +484,14 @@ public class Data {
 		}
 
 		@JsonClass(noTag = NoTag.LOAD)
+		public static class SPEEDUP extends ProcItem {
+			@Order(0)
+			public int health;
+			@Order(1)
+			public int mult;
+		}
+
+		@JsonClass(noTag = NoTag.LOAD)
 		public static class SUMMON extends ProcItem {
 
 			@JsonClass(noTag = NoTag.LOAD)
@@ -839,9 +847,11 @@ public class Data {
 		public final SPIRIT SPIRIT = new SPIRIT();
 		@Order(57)
 		public final MULT METALKILL = new MULT();
-		@Order(58)
-		public final BLAST BLAST = new BLAST();
+        @Order(58)
+        public final SPEEDUP SPEEDUP = new SPEEDUP();
 		@Order(59)
+		public final BLAST BLAST = new BLAST();
+		@Order(60)
 		public final IMU IMUBLAST = new IMU();
 
 		@Override
@@ -1213,9 +1223,10 @@ public class Data {
 	public static final int P_MINIVOLC = 55;
 	public static final int P_SPIRIT = 56;
 	public static final int P_METALKILL = 57;
-	public static final int P_BLAST = 58;
-	public static final int P_IMUBLAST = 59;
-	public static final byte PROC_TOT = 60;
+    public static final int P_SPEEDUP = 58;
+	public static final int P_BLAST = 59;
+	public static final int P_IMUBLAST = 60;
+	public static final byte PROC_TOT = 61;
 	public static final byte PROC_WIDTH = 6;
 
 	public static final boolean[] procSharable = {
@@ -1277,6 +1288,7 @@ public class Data {
 			false, //mini surge
 			true,  //spirit summon
 			false, //metal killer
+            true, //adrenaline
 			false, //blast
 			true   //imu.blast
 	};
