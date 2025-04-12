@@ -1952,10 +1952,9 @@ public abstract class Entity extends AbEntity {
 				EffAnim<WarpEff> e = effas().A_W;
 
 				int len = e.len(WarpEff.ENTER) + e.len(WarpEff.EXIT);
-				int val = atk.getProc().WARP.time;
-				int rst = getProc().IMUWARP.mult;
-
-				val = val * (100 - rst) / 100;
+				int val = (int) (warp.time * time);
+				float rst = getResistValue(atk, "IMUWARP", getProc().IMUWARP.mult);
+				val = (int) (val * rst);
 
 				status[P_WARP][0] = val + len;
 			} else

@@ -674,8 +674,8 @@ public class Editors {
 		map().put("ATKBASE", new EditControl<>(Proc.MULT.class, (t) -> {}));
 
 		map().put("BSTHUNT", new EditControl<>(Proc.BSTHUNT.class, (t) -> {
-			setComponentVisibility("BSTHUNT", t.type.active, 1);
-			if (t.type.active) {
+			setComponentVisibility("BSTHUNT", t.active == 1, 1);
+			if (t.active == 1) {
 				t.prob = MathUtil.clip(t.prob, 0, 100);
 				if (t.prob == 0)
 					t.time = 0;

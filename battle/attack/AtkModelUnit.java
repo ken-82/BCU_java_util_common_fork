@@ -90,7 +90,7 @@ public class AtkModelUnit extends AtkModelEntity {
 					mult *= (100.0 - resist) / 100;
 
 					int minlayer = proc.min_layer, maxlayer = proc.max_layer;
-					if (proc.min_layer == proc.max_layer && proc.min_layer == -1)
+					if (proc.min_layer == -1 || proc.max_layer == -1)
 						minlayer = maxlayer = e.layer;
 					EEnemy ee = ene.getEntity(b, acs, mult, mula, minlayer, maxlayer, 0);
 

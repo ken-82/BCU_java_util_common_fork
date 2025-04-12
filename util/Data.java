@@ -658,13 +658,8 @@ public class Data {
 
 		@JsonClass(noTag = NoTag.LOAD)
 		public static class BSTHUNT extends ProcItem {
-			@JsonClass(noTag = NoTag.LOAD)
-			public static class TYPE extends IntType {
-				@Order(0)
-				public boolean active;
-			}
 			@Order(0)
-			public TYPE type = new TYPE();
+			public int active;
 			@Order(1)
 			public int prob;
 			@Order(2)
