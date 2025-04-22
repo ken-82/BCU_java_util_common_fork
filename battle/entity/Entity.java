@@ -590,8 +590,12 @@ public abstract class Entity extends AbEntity {
 				return;
 			}
 
-			if (e.getProc().DEATHSURGE.perform(e.basis.r)) {
-				deathSurge = true;
+			if(e instanceof EUnit && ((EUnit) e).getOrbCashBack() >= 0 && ((EUnit) e).canOrb){
+				e.basis.money = Math.min((int) (e.basis.money + (((EUnit) e).price * (ORB_MONEY_BACK_MULT[((EUnit) e).getOrbCashBack()]/100f))),e.basis.maxMoney);
+			}
+
+			if (e.getProc().DEATHSURGE.perform(e.basis.r) || (e instanceof EUnit && (((EUnit)e).getOrbDs() >= 0 && ((EUnit)e).canOrb))) {
+				deathSurge = e.getProc().DEATHSURGE.perform(e.basis.r);
 
 				e.weaks.list.clear();
 				status[P_WEAK] = new int[PROC_WIDTH];
@@ -644,6 +648,19 @@ public abstract class Entity extends AbEntity {
 			if (dead >= 0) {
 				if (deathSurge && soul.len() - dead == 21) // 21 is guessed delay compared to BC
 					e.aam.getDeathSurge();
+
+				if(e instanceof EUnit &&((EUnit)e).canOrb && ((EUnit)e).getOrbDs() >= 0 && soul.len() - dead == 21){
+					Proc p = Proc.blank();
+					int uatk = e.aam.getAttack(0, p);
+					uatk = (int) (uatk * ORB_DEATH_SURGE_MULT[((EUnit)e).getOrbDs()]/100f);
+					AttackSimple as = new AttackSimple(e, e.aam, uatk, e.traits, e.aam.getAbi(), p, 0, 0, e.data.getAtkModel(0), 0, false);
+					int addp = ORB_DEATH_SURGE_SPAWN_MIN + (int) (e.basis.r.nextFloat() * (ORB_DEATH_SURGE_SPAWN_MAX - ORB_DEATH_SURGE_SPAWN_MIN));
+					float p0 = e.pos + e.dire * addp;
+					float sta = p0 + (e.dire == 1 ? W_VOLC_PIERCE : W_VOLC_INNER);
+					float end = p0 - (e.dire == 1 ? W_VOLC_INNER : W_VOLC_PIERCE);
+					ContVolcano temp = new ContVolcano(new AttackVolcano(e, as, sta, end, Data.WT_MIVC), p0, e.layer, ORB_DEATH_SURGE_TIME, ORB_DEATH_SURGE_SPAWN_MIN, ORB_DEATH_SURGE_SPAWN_MAX, 0);
+					temp.v.isminiDs = true;
+				}
 
 				if (e.data.getResurrection() != null) {
 					AtkDataModel adm = e.data.getResurrection();
@@ -1349,7 +1366,7 @@ public abstract class Entity extends AbEntity {
 	/**
 	 * attack model
 	 */
-	protected final AtkModelEntity aam;
+	public final AtkModelEntity aam;
 
 	/**
 	 * temp field: damage accumulation
@@ -1547,12 +1564,10 @@ public abstract class Entity extends AbEntity {
 
 		// if immune to wave and the attack is wave, jump out
 		if (atk.waveType != 5 && ((atk.waveType & WT_WAVE) > 0 || (atk.waveType & WT_MINI) > 0) && atk.canon != 16) {
-			if (getProc().IMUWAVE.mult > 0)
-				anim.getEff(P_WAVE);
-			if (getProc().IMUWAVE.mult == 100)
-				return;
-			else
-				dmg = dmg * (100 - getProc().IMUWAVE.mult) / 100;
+			float rst = getResistValue(atk, "IMUWAVE", getProc().IMUWAVE.mult);
+			if (rst < 1) anim.getEff(P_WAVE);
+			if (rst == 0) return;
+			dmg = (int) (dmg * rst);
 		}
 
 		if ((atk.waveType & WT_MOVE) > 0) {

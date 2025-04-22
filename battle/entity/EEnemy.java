@@ -59,7 +59,7 @@ public class EEnemy extends Entity {
 			ans = (int) ((float) ans * atk.getProc().MINIWAVE.multi / 100.0);
 		}
 
-		if (atk instanceof AttackVolcano && atk.waveType == WT_MIVC) {
+		if (atk instanceof AttackVolcano && atk.waveType == WT_MIVC && !((AttackVolcano) atk).isminiDs) {
 			ans = (int) ((float) ans * atk.getProc().MINIVOLC.mult / 100.0);
 		}
 
@@ -99,6 +99,9 @@ public class EEnemy extends Entity {
 
 		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_BARON)) && (atk.abi & AB_BAKILL) > 0)
 			ans = (int) (ans * 1.6);
+
+		if (atk.attacker instanceof EUnit && traits.contains(UserProfile.getBCData().traits.get(TRAIT_BARON)) && (((EUnit)atk.attacker).canOrb && ((EUnit)atk.attacker).getOrbBaronKiller() >= 0))
+			ans = (int) (ans * ORB_BARON_DAMAGE[((EUnit)atk.attacker).getOrbBaronKiller()]/100f);
 
 		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_BEAST)) && atk.getProc().BSTHUNT.active == 1)
 			ans = (int) (ans * 2.5);

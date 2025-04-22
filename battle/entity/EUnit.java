@@ -54,6 +54,8 @@ public class EUnit extends Entity {
 	}
 
 	public final int lvl;
+	public int price;
+	public boolean canOrb;
 	public final int[] index;
 
 	protected final Level level;
@@ -150,7 +152,15 @@ public class EUnit extends Entity {
 
 	@Override
 	public float getResistValue(AttackAb atk, String procName, int procResist) {
-		float ans = 1f - procResist / 100f;
+		float orbDiff = 0;
+		if (procName.equals("IMUWAVE")) {
+			orbDiff = getOrbWave();
+		}
+		else if (procName.equals("IMUKB")) {
+			orbDiff = getOrbKB();
+		}
+
+		float ans = 1f - Math.min(procResist+orbDiff,100) / 100f;
 
 		boolean canBeApplied = false;
 
@@ -175,7 +185,7 @@ public class EUnit extends Entity {
 			ans = (int) ((float) ans * atk.getProc().MINIWAVE.multi / 100.0);
 		}
 
-		if (atk instanceof AttackVolcano && atk.waveType == WT_MIVC) {
+		if (atk instanceof AttackVolcano && atk.waveType == WT_MIVC && !((AttackVolcano) atk).isminiDs) {
 			ans = (int) ((float) ans * atk.getProc().MINIVOLC.mult / 100.0);
 		}
 
@@ -391,6 +401,139 @@ public class EUnit extends Entity {
 		float com = 1 + t.b.getInc(C_GOOD) * 0.01f;
 		return ini * com;
 	}
+
+	private float getOrbWave() {
+		float ini = 0;
+
+		Orb orbs = ((MaskUnit)data).getOrb();
+
+		if(orbs != null && level.getOrbs() != null) {
+			int[][] levelOrbs = level.getOrbs();
+
+			for(int i = 0; i < levelOrbs.length; i++) {
+				if (levelOrbs[i].length < ORB_TOT)
+					continue;
+
+				if (levelOrbs[i][ORB_TYPE] == ORB_WAVE_RESIST) {
+					ini = ORB_WAVE_RESIST_MULT[levelOrbs[i][ORB_GRADE]];
+					break;
+				}
+			}
+		}
+
+		return ini;
+	}
+
+	private float getOrbKB() {
+		float ini = 0;
+
+		Orb orbs = ((MaskUnit)data).getOrb();
+
+		if(orbs != null && level.getOrbs() != null) {
+			int[][] levelOrbs = level.getOrbs();
+
+			for(int i = 0; i < levelOrbs.length; i++) {
+				if (levelOrbs[i].length < ORB_TOT)
+					continue;
+
+				if (levelOrbs[i][ORB_TYPE] == ORB_KB_RESIST) {
+					ini = ORB_KB_RESIST_MULT[levelOrbs[i][ORB_GRADE]];
+					break;
+				}
+			}
+		}
+
+		return ini;
+	}
+
+	protected int getOrbBaronKiller() {
+		int ini = -1;
+
+		Orb orbs = ((MaskUnit)data).getOrb();
+
+		if(orbs != null && level.getOrbs() != null) {
+			int[][] levelOrbs = level.getOrbs();
+
+			for(int i = 0; i < levelOrbs.length; i++) {
+				if (levelOrbs[i].length < ORB_TOT)
+					continue;
+
+				if (levelOrbs[i][ORB_TYPE] == ORB_BARON_KILLER) {
+					ini = levelOrbs[i][ORB_GRADE];
+					break;
+				}
+			}
+		}
+
+		return ini;
+	}
+
+	public int getOrbSol() {
+		int ini = -1;
+
+		Orb orbs = ((MaskUnit)data).getOrb();
+
+		if(orbs != null && level.getOrbs() != null) {
+			int[][] levelOrbs = level.getOrbs();
+
+			for(int i = 0; i < levelOrbs.length; i++) {
+				if (levelOrbs[i].length < ORB_TOT)
+					continue;
+
+				if (levelOrbs[i][ORB_TYPE] == ORB_LEGEND_STORY) {
+					ini = levelOrbs[i][ORB_GRADE];
+					break;
+				}
+			}
+		}
+
+		return ini;
+	}
+
+	public int getOrbDs() {
+		int ini = -1;
+
+		Orb orbs = ((MaskUnit)data).getOrb();
+
+		if(orbs != null && level.getOrbs() != null) {
+			int[][] levelOrbs = level.getOrbs();
+
+			for(int i = 0; i < levelOrbs.length; i++) {
+				if (levelOrbs[i].length < ORB_TOT)
+					continue;
+
+				if (levelOrbs[i][ORB_TYPE] == ORB_DEATH_SURGE) {
+					ini = levelOrbs[i][ORB_GRADE];
+					break;
+				}
+			}
+		}
+
+		return ini;
+	}
+
+	public int getOrbCashBack() {
+		int ini = -1;
+
+		Orb orbs = ((MaskUnit)data).getOrb();
+
+		if(orbs != null && level.getOrbs() != null) {
+			int[][] levelOrbs = level.getOrbs();
+
+			for(int i = 0; i < levelOrbs.length; i++) {
+				if (levelOrbs[i].length < ORB_TOT)
+					continue;
+
+				if (levelOrbs[i][ORB_TYPE] == ORB_MONEY_BACK) {
+					ini = levelOrbs[i][ORB_GRADE];
+					break;
+				}
+			}
+		}
+
+		return ini;
+	}
+
 
 	@Override
 	protected void onLastBreathe() {

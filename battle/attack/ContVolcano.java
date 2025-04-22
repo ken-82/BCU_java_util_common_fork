@@ -19,7 +19,7 @@ public class ContVolcano extends ContAb {
 	public final boolean reflected;
 
 	protected final EAnimD<VolcEff> anim;
-	protected final AttackVolcano v;
+	public final AttackVolcano v;
 	private final Proc defProc;
 
 	private final int aliveTime;
@@ -62,7 +62,7 @@ public class ContVolcano extends ContAb {
 		update();
 	}
 
-	protected ContVolcano(AttackVolcano v, float p, int lay, int alive, int startPoint, int endPoint, int ind) {
+	public ContVolcano(AttackVolcano v, float p, int lay, int alive, int startPoint, int endPoint, int ind) {
 		super(v.model.b, p, lay);
 
 		if(v.waveType == WT_VOLC) {

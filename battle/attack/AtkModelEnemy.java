@@ -117,7 +117,7 @@ public class AtkModelEnemy extends AtkModelEntity {
 	}
 
 	@Override
-	protected int getAttack(int ind, Proc proc) {
+	public int getAttack(int ind, Proc proc) {
 		int atk = atks[ind];
 		extraAtk(ind);
 		if (abis[ind] == 1)

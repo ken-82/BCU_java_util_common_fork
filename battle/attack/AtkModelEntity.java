@@ -36,7 +36,7 @@ public abstract class AtkModelEntity extends AtkModelAb {
 
 	protected final MaskEntity data;
 	public final Entity e;
-	protected final int[] atks, abis, act;
+	public final int[] atks, abis, act;
 	protected final BattleObj[] acs;
 	private final Proc[] sealed;
 
@@ -250,7 +250,7 @@ public abstract class AtkModelEntity extends AtkModelAb {
 		}
 	}
 
-	protected abstract int getAttack(int ind, Proc proc);
+	public abstract int getAttack(int ind, Proc proc);
 
 	@Override
 	protected int getLayer() {

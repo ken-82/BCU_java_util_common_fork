@@ -30,6 +30,7 @@ public class StageBasis extends BattleObj {
 	public final ELineUp elu;
 	public final long[][] totalDamageTaken = new long[2][5];
 	public final long[][] totalDamageGiven = new long[2][5];
+	public final boolean[][] canOrb = new boolean[2][5];
 	public final int[] nyc;
 	public final boolean[][] locks = new boolean[2][5];
 	public final AbEntity ebase, ubase;
@@ -535,6 +536,20 @@ public class StageBasis extends BattleObj {
 			money -= elu.price[i][j];
 
 			unitRespawnTime = 1;
+
+			eu.canOrb = canOrb[i][j];
+
+			canOrb[i][j] = !canOrb[i][j];
+
+			eu.price = elu.price[i][j];
+
+			if (st.getID().toString().startsWith("000000") && eu.getOrbSol() >= 0){
+                eu.maxH = (long) (eu.maxH * ((ORB_LEGEND_HEATLH[eu.getOrbSol()] + 100) / 100f));
+				eu.health = eu.maxH;
+				for (int atk = 0; atk < eu.aam.atks.length; atk++) {
+                    eu.aam.atks[atk] = (int) (eu.aam.atks[atk] * ((ORB_LEGEND_ATTACK[eu.getOrbSol()] + 100) / 100f));
+				}
+			}
 
 			return true;
 		}
