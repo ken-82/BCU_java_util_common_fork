@@ -20,7 +20,7 @@ public class Orb extends Data {
 
 	public static final int[] orbTrait = {
 			Data.TRAIT_RED, Data.TRAIT_FLOAT, Data.TRAIT_BLACK, Data.TRAIT_METAL, Data.TRAIT_ANGEL, Data.TRAIT_ALIEN,
-			Data.TRAIT_ZOMBIE, Data.TRAIT_RELIC, Data.TRAIT_WHITE, Data.TRAIT_EVA, Data.TRAIT_WITCH, Data.TRAIT_DEMON
+			Data.TRAIT_ZOMBIE, Data.TRAIT_RELIC, Data.TRAIT_WHITE, Data.TRAIT_EVA, Data.TRAIT_WITCH, Data.TRAIT_DEMON, -1
 	};
 
 	public static void read() {
@@ -38,7 +38,7 @@ public class Orb extends Data {
 
 				int value = 0;
 
-				for (int i = 0; i < strs.length; i++) {
+				for (int i = 0; i <  strs.length; i++) {
 					if(strs.length != orbTrait.length)
 						continue;
 
@@ -53,6 +53,7 @@ public class Orb extends Data {
 
 				key++;
 			}
+			aux.DATA.put(-1, 0);
 
 			String data = new String(VFile.get("./org/data/equipmentlist.json").getData().getBytes(), StandardCharsets.UTF_8);
 
@@ -66,7 +67,13 @@ public class Orb extends Data {
 
 				JSONObject obj = (JSONObject) lists.get(i);
 
-				int trait = obj.getInt("attribute");
+				int trait;
+
+				if (obj.has("attribute")) {
+					trait = obj.getInt("attribute");
+				} else {
+					trait = -1;
+				}
 				int type = obj.getInt("content");
 				int grade = obj.getInt("gradeID");
 

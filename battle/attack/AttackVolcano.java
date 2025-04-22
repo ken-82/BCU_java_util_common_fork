@@ -14,6 +14,9 @@ public class AttackVolcano extends AttackAb {
 
 	private byte volcTime = VOLC_ITV;
 
+	//FIXME used for death surge orb mini surge
+	public boolean isminiDs;
+
 	public AttackVolcano(Entity e, AttackAb a, float sta, float end, int vt) {
 		super(e, a, sta, end, false);
 		isCounter = a.isCounter;

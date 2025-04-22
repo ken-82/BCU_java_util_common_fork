@@ -30,6 +30,7 @@ public class StageBasis extends BattleObj {
 	public final ELineUp elu;
 	public final long[][] totalDamageTaken = new long[2][5];
 	public final long[][] totalDamageGiven = new long[2][5];
+	public final boolean[][] canOrb = new boolean[2][5];
 	public final int[] nyc;
 	public final boolean[][] locks = new boolean[2][5];
 	public final AbEntity ebase, ubase;
@@ -56,11 +57,11 @@ public class StageBasis extends BattleObj {
 	public final float boss_spawn;
 	public final int[] shakeCoolDown = {0, 0};
 	public int activeGuard = -1;
-	public int[] rarity_max = { 0, 0, 0, 0, 0, 0 };
-	public int left = 0;
-	public int[] rarity_dup_amo = { 0, 0, 0, 0, 0, 0 };
-	public int[] rarity_dup_delay = { 0, 0, 0, 0, 0, 0 };
-	public List<List<Integer>> dup_delay = new ArrayList<>();
+	public int[] rarityMax = { 0, 0, 0, 0, 0, 0 };
+	public int unitLeft = 0;
+	public int[] rarityDupAmo = { 0, 0, 0, 0, 0, 0 };
+	public int[] rarityDupDelay = { 0, 0, 0, 0, 0, 0 };
+	public List<List<Integer>> dupDelay = new ArrayList<>();
 
 	public float siz;
 	public int work_lv, money, maxMoney, cannon, maxCannon, upgradeCost, max_num, pos;
@@ -196,15 +197,15 @@ public class StageBasis extends BattleObj {
 		if (est.s.bossGuard)
 			activeGuard = 0;
 
-		left = (maxspawn() == 0) ? -1 : maxspawn();
+		unitLeft = (maxspawn() == 0) ? -1 : maxspawn();
 
         if(est.lim != null && est.lim.stageLimit != null){
 			for (int i = 0;i < 6;i++) {
 				if(est.lim.stageLimit.rarityDeployLimit[i] == -1) est.lim.stageLimit.rarityDeployLimit[i] = 0;
 			}
-			rarity_max = est.lim.stageLimit.rarityDeployLimit;
-			rarity_dup_amo = est.lim.stageLimit.deployDuplicationTimes;
-			rarity_dup_delay = est.lim.stageLimit.deployDuplicationDelay;
+			rarityMax = est.lim.stageLimit.rarityDeployLimit;
+			rarityDupAmo = est.lim.stageLimit.deployDuplicationTimes;
+			rarityDupDelay = est.lim.stageLimit.deployDuplicationDelay;
 		}
 
 		for (int i = 0; i < 2; i++) {
@@ -495,7 +496,7 @@ public class StageBasis extends BattleObj {
 			if (f == null)
 				return false;
 
-			if (entityCount(-1) >= max_num - f.du.getWill() || (rarity_max[f.du.getRarity()] != 0 && rarityentityCount()[f.du.getRarity()] >= rarity_max[f.du.getRarity()] - f.du.getWill())) {
+			if (entityCount(-1) >= max_num - f.du.getWill() || (rarityMax[f.du.getRarity()] != 0 && rarityentityCount()[f.du.getRarity()] >= rarityMax[f.du.getRarity()] - f.du.getWill())) {
 				CommonStatic.setSE(SE_SPEND_FAIL);
 				return false;
 			}
@@ -517,7 +518,7 @@ public class StageBasis extends BattleObj {
 
 			return true;
 		} else if (locks[i][j] || manual) {
-			if (left == 0 || entityCount(-1) >= max_num - f.du.getWill() || (rarity_max[f.du.getRarity()] != 0 && rarityentityCount()[f.du.getRarity()] >= rarity_max[f.du.getRarity()] - f.du.getWill())) {
+			if (unitLeft == 0 || entityCount(-1) >= max_num - f.du.getWill() || (rarityMax[f.du.getRarity()] != 0 && rarityentityCount()[f.du.getRarity()] >= rarityMax[f.du.getRarity()] - f.du.getWill())) {
 				if (manual)
 					CommonStatic.setSE(SE_SPEND_FAIL);
 
@@ -551,9 +552,9 @@ public class StageBasis extends BattleObj {
 			}
 
 			CommonStatic.setSE(SE_SPEND_SUC);
-			left--;
+			unitLeft--;
 
-			if(rarity_dup_amo[f.du.getRarity()] != 0) dup_delay.add(Arrays.asList(rarity_dup_delay[f.du.getRarity()], rarity_dup_amo[f.du.getRarity()], i, j));
+			if(rarityDupAmo[f.du.getRarity()] != 0) dupDelay.add(Arrays.asList(rarityDupDelay[f.du.getRarity()], rarityDupAmo[f.du.getRarity()], i, j));
 
 			elu.get(i, j);
 
@@ -573,6 +574,20 @@ public class StageBasis extends BattleObj {
 			money -= elu.price[i][j];
 
 			unitRespawnTime = 1;
+
+			eu.canOrb = canOrb[i][j];
+
+			canOrb[i][j] = !canOrb[i][j];
+
+			eu.price = elu.price[i][j];
+
+			if (st.getID().toString().startsWith("000000") && eu.getOrbSol() >= 0){
+                eu.maxH = (long) (eu.maxH * ((ORB_LEGEND_HEATLH[eu.getOrbSol()] + 100) / 100f));
+				eu.health = eu.maxH;
+				for (int atk = 0; atk < eu.aam.atks.length; atk++) {
+                    eu.aam.atks[atk] = (int) (eu.aam.atks[atk] * ((ORB_LEGEND_ATTACK[eu.getOrbSol()] + 100) / 100f));
+				}
+			}
 
 			return true;
 		}
@@ -861,9 +876,9 @@ public class StageBasis extends BattleObj {
 		if (temp_n_inten > 0)
 			n_inten += temp_n_inten;
 
-		// need lots of fixing
-		for(int k = 0;k < dup_delay.size();k++){
-			List<Integer> duplist = dup_delay.get(k);
+		//FIXME: there's probably a better way to do this
+		for(int k = 0; k < dupDelay.size(); k++){
+			List<Integer> duplist = dupDelay.get(k);
 			int delay = duplist.get(0);
 			if(delay == 0){
 				int i = duplist.get(2);
@@ -886,9 +901,9 @@ public class StageBasis extends BattleObj {
 				int amount = duplist.get(1);
 				if (amount > 1) {
 					duplist.set(1,amount-1);
-					duplist.set(0,rarity_dup_delay[f.du.getRarity()]);
+					duplist.set(0, rarityDupDelay[f.du.getRarity()]);
 				}
-				else dup_delay.remove(k);
+				else dupDelay.remove(k);
 			}
 			else duplist.set(0,delay-1);
 		}
