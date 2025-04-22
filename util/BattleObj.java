@@ -132,7 +132,7 @@ public strictfp class BattleObj extends ImgCore implements Cloneable {
 		ARRMAP.clear();
 		UNCHECKED.removeAll(OLD);
 		for (Class<?> cls : UNCHECKED)
-			// temp fix for blast creating uncheck error
+			// FIXME temp fix for blast creating uncheck error
 			// CommonStatic.ctx.printErr(ErrType.WARN, "Unchecked Class in Battle: " + cls);
 		OLD.addAll(UNCHECKED);
 		UNCHECKED.clear();
