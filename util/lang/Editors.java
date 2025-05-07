@@ -340,6 +340,12 @@ public class Editors {
 				t.mult = 0;
 		}));
 
+		map().put("SPEEDUP", new EditControl<>(Proc.SPEEDUP.class, (t) -> {
+			t.health = MathUtil.clip(t.health, 0, 99);
+			if (t.health == 0)
+				t.mult = 0;
+		}));
+
 		map().put("LETHAL", prob);
 
 		map().put("BURROW", new EditControl<>(Proc.BURROW.class, (t) -> {

@@ -181,7 +181,7 @@
         "abbr_name": "inc. atk",
         "full_name": "Berserker",
         "tooltip": null,
-        "format": "Attack increased by (mult)% after health drops below (health)%",
+        "format": "Attack [(mult>0){increased}(mult<0){decreased}] by [(mult>0){(mult)}(mult<0){(mult*-1)}]% after health drops below (health)%",
         "class": {
             "health": {
                 "name": "health",
@@ -190,6 +190,22 @@
             "mult": {
                 "name": "increment",
                 "tooltip": "Set negative to weaken"
+            }
+        }
+    },
+    "SPEEDUP": {
+        "abbr_name": "inc. spd",
+        "full_name": "Adrenaline",
+        "tooltip": null,
+        "format": "Speed [(mult>=100){increased}(mult<100){decreased}] to (mult)% after health drops below (health)%",
+        "class": {
+            "health": {
+                "name": "health",
+                "tooltip": null
+            },
+            "mult": {
+                "name": "increment",
+                "tooltip": "Set negative to slow"
             }
         }
     },

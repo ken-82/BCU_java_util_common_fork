@@ -2,14 +2,15 @@ package common.battle.attack;
 
 import common.battle.entity.AbEntity;
 import common.battle.entity.Entity;
-import common.util.Data;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.*;
 
 public class AttackVolcano extends AttackAb {
 	public ContVolcano handler;
+
 	protected boolean attacked = false;
+
 	protected final List<Entity> vcapt = new ArrayList<>();
 
 	private byte volcTime = VOLC_ITV;
