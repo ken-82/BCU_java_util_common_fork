@@ -25,6 +25,9 @@ public class StageLimit extends Data implements BattleStatic {
     
     public int cannonMultiplier = 100; // percentage
 
+    public int unitSpeedLimit = -1; // -1 for deactivated
+    public int enemySpeedLimit = -1; // -1 for deactivated
+
     @JsonField(generic = Integer.class)
     public HashSet<Integer> bannedCatCombo = new HashSet<>();
 
