@@ -594,8 +594,8 @@ public abstract class Entity extends AbEntity {
 				e.basis.money = Math.min((int) (e.basis.money + (((EUnit) e).price * (ORB_MONEY_BACK_MULT[((EUnit) e).getOrbCashBack()]/100f))),e.basis.maxMoney);
 			}
 
-			if (e.getProc().DEATHSURGE.perform(e.basis.r) || (e instanceof EUnit && (((EUnit)e).getOrbDs() >= 0 && ((EUnit)e).canOrb))) {
-				deathSurge = e.getProc().DEATHSURGE.perform(e.basis.r);
+			if ((e.getProc().DEATHSURGE.perform(e.basis.r)) || (e instanceof EUnit && ((EUnit) e).getOrbDs() >= 0 && ((EUnit) e).canOrb)) {
+				deathSurge = true;
 
 				e.weaks.list.clear();
 				status[P_WEAK] = new int[PROC_WIDTH];
@@ -647,20 +647,8 @@ public abstract class Entity extends AbEntity {
 				setAnim(UType.IDLE, true);
 			if (dead >= 0) {
 				if (deathSurge && soul.len() - dead == 21) // 21 is guessed delay compared to BC
-					e.aam.getDeathSurge();
-
-				if(e instanceof EUnit &&((EUnit)e).canOrb && ((EUnit)e).getOrbDs() >= 0 && soul.len() - dead == 21){
-					Proc p = Proc.blank();
-					int uatk = e.aam.getAttack(0, p);
-					uatk = (int) (uatk * ORB_DEATH_SURGE_MULT[((EUnit)e).getOrbDs()]/100f);
-					AttackSimple as = new AttackSimple(e, e.aam, uatk, e.traits, e.aam.getAbi(), p, 0, 0, e.data.getAtkModel(0), 0, false);
-					int addp = ORB_DEATH_SURGE_SPAWN_MIN + (int) (e.basis.r.nextFloat() * (ORB_DEATH_SURGE_SPAWN_MAX - ORB_DEATH_SURGE_SPAWN_MIN));
-					float p0 = e.pos + e.dire * addp;
-					float sta = p0 + (e.dire == 1 ? W_VOLC_PIERCE : W_VOLC_INNER);
-					float end = p0 - (e.dire == 1 ? W_VOLC_INNER : W_VOLC_PIERCE);
-					ContVolcano temp = new ContVolcano(new AttackVolcano(e, as, sta, end, Data.WT_MIVC), p0, e.layer, ORB_DEATH_SURGE_TIME, ORB_DEATH_SURGE_SPAWN_MIN, ORB_DEATH_SURGE_SPAWN_MAX, 0);
-					temp.v.isminiDs = true;
-				}
+					if(e instanceof EUnit && ((EUnit) e).getOrbDs() >= 0 && ((EUnit) e).canOrb) e.aam.getDeathSurgeOrb(((EUnit) e).getOrbDs());
+					else e.aam.getDeathSurge();
 
 				if (e.data.getResurrection() != null) {
 					AtkDataModel adm = e.data.getResurrection();
@@ -2454,6 +2442,7 @@ public abstract class Entity extends AbEntity {
 		} else {
 
 			float mov = data.getSpeed() * 0.5f;
+			if (basis.getspeed(dire) != -1 && mov != 0) mov = basis.getspeed(dire) * 0.5f;
 
 			if (status[P_SPEED][0] > 0) {
 				if (status[P_SPEED][2] == 0) {

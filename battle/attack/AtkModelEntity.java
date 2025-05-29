@@ -173,8 +173,23 @@ public abstract class AtkModelEntity extends AtkModelAb {
 		float p0 = getPos() + getDire() * addp;
 		float sta = p0 + (getDire() == 1 ? W_VOLC_PIERCE : W_VOLC_INNER);
 		float end = p0 - (getDire() == 1 ? W_VOLC_INNER : W_VOLC_PIERCE);
-
+		if (ds.maxtime > ds.time) {
+			ds.time = ds.time + (int)(Math.random() * ((ds.maxtime - ds.time) + 1));
+			ds.time = (int) (Math.floor(ds.time / 20.0) * 20);
+		}
 		new ContVolcano(new AttackVolcano(e, as, sta, end, Data.WT_VOLC), p0, e.layer, ds.time, ds.dis_0, ds.dis_1, 0);
+	}
+
+	public void getDeathSurgeOrb(int lvl) {
+		Proc p = Proc.blank();
+		int atk = (int)(getAttack(0, p)*(ORB_DEATH_SURGE_MULT[lvl]/100f));
+		AttackSimple as = new AttackSimple(e, this, atk, e.traits, getAbi(), p, 0, 0, e.data.getAtkModel(0), 0, false);
+		int addp = ORB_DEATH_SURGE_SPAWN_MIN + (int) (b.r.nextFloat() * (ORB_DEATH_SURGE_SPAWN_MAX - ORB_DEATH_SURGE_SPAWN_MIN));
+		float p0 = getPos() + getDire() * addp;
+		float sta = p0 + (getDire() == 1 ? W_VOLC_PIERCE : W_VOLC_INNER);
+		float end = p0 - (getDire() == 1 ? W_VOLC_INNER : W_VOLC_PIERCE);
+
+		new ContVolcano(new AttackVolcano(e, as, sta, end, WT_MIVC), p0, e.layer, ORB_DEATH_SURGE_TIME, ORB_DEATH_SURGE_SPAWN_MIN, ORB_DEATH_SURGE_SPAWN_MAX, 0);
 	}
 
 	@Override

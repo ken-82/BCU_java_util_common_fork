@@ -2,6 +2,8 @@ package common.battle.attack;
 
 import common.battle.entity.AbEntity;
 import common.battle.entity.Entity;
+import common.util.Data;//this randomly broke for me for no reason
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.*;
@@ -14,9 +16,6 @@ public class AttackVolcano extends AttackAb {
 	protected final List<Entity> vcapt = new ArrayList<>();
 
 	private byte volcTime = VOLC_ITV;
-
-	//FIXME used for death surge orb mini surge
-	public boolean isminiDs;
 
 	public AttackVolcano(Entity e, AttackAb a, float sta, float end, int vt) {
 		super(e, a, sta, end, false);

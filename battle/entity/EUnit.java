@@ -185,7 +185,7 @@ public class EUnit extends Entity {
 			ans = (int) ((float) ans * atk.getProc().MINIWAVE.multi / 100.0);
 		}
 
-		if (atk instanceof AttackVolcano && atk.waveType == WT_MIVC && !((AttackVolcano) atk).isminiDs) {
+		if (atk instanceof AttackVolcano && atk.waveType == WT_MIVC) {
 			ans = (int) ((float) ans * atk.getProc().MINIVOLC.mult / 100.0);
 		}
 
@@ -228,7 +228,7 @@ public class EUnit extends Entity {
 		if (atk.trait.contains(UserProfile.getBCData().traits.get(TRAIT_BARON)) && (canOrb && getOrbBaronKiller() >= 0))
 			ans = (int) (ans * ORB_BARON_DEFENSE[getOrbBaronKiller()]/100f);
 
-		if (atk.trait.contains(UserProfile.getBCData().traits.get(Data.TRAIT_BEAST)) && getProc().BSTHUNT.active == 1)
+		if (atk.trait.contains(UserProfile.getBCData().traits.get(Data.TRAIT_BEAST)) && getProc().BSTHUNT.active)
 			ans = (int) (ans * 0.6);
 
 		if (atk.trait.contains(UserProfile.getBCData().traits.get(Data.TRAIT_SAGE)) && (getAbi() & AB_SKILL) > 0)
