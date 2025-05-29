@@ -175,6 +175,22 @@
             }
         }
     },
+    "SPEEDUP": {
+        "abbr_name": "inc. spd",
+        "full_name": "Adrenaline",
+        "tooltip": null,
+        "format": "Speed [(mult>=100){increased}(mult<100){decreased}] to (mult)% after health drops below (health)%",
+        "class": {
+            "health": {
+                "name": "health",
+                "tooltip": null
+            },
+            "mult": {
+                "name": "increment",
+                "tooltip": "Set negative to slow"
+            }
+        }
+    },
     "LETHAL": {
         "abbr_name": "sobrevivir",
         "full_name": "Supervivencia",
@@ -1233,7 +1249,7 @@
         "tooltip": null,
         "format": "Cazador de Bestias (_left)Inflige 2.5x de daño[(prob>0){, }(prob==0){ y }]sólo recibe 0.6x de daño[(prob>0){, y una probabilidad del (prob)% de evadir sus ataques por (_dispTime(time))}](_right)",
         "class": {
-            "type.active": {
+            "active": {
                 "name": "Mayor fuerza contra Bestias",
                 "tooltip": null
             },

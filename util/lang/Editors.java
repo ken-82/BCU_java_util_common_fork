@@ -683,8 +683,14 @@ public class Editors {
 			if (t.prob == 0) {
 				t.dis_0 = t.dis_1 = 0;
 				t.time = 0;
+				t.maxtime = 0;
 			} else {
 				t.time = Math.max(1, t.time / Data.VOLC_ITV) * Data.VOLC_ITV;
+				if (t.maxtime > t.time) {
+					t.maxtime = Math.max(t.time / Data.VOLC_ITV, t.maxtime / Data.VOLC_ITV) * Data.VOLC_ITV;
+				} else {
+					t.maxtime = t.time;
+				}
 			}
 		}));
 
@@ -692,8 +698,8 @@ public class Editors {
 		map().put("ATKBASE", new EditControl<>(Proc.MULT.class, (t) -> {}));
 
 		map().put("BSTHUNT", new EditControl<>(Proc.BSTHUNT.class, (t) -> {
-			setComponentVisibility("BSTHUNT", t.active == 1, 1);
-			if (t.active == 1) {
+			setComponentVisibility("BSTHUNT", t.active, 1);
+			if (t.active) {
 				t.prob = MathUtil.clip(t.prob, 0, 100);
 				if (t.prob == 0)
 					t.time = 0;

@@ -91,7 +91,7 @@
             },
             "maxlv": {
                 "name": "max level",
-                "tooltip": ""
+                "tooltip": null
             },
             "inverted": {
                 "name": "Inverted Wave",
@@ -874,7 +874,7 @@
             },
             "maxtime": {
                 "name": "max duration",
-                "tooltip": ""
+                "tooltip": null
             }
         }
     },
@@ -1023,7 +1023,7 @@
             },
             "maxlv": {
                 "name": "max level",
-                "tooltip": ""
+                "tooltip": null
             },
             "multi" : {
                 "name" : "multi",
@@ -1223,6 +1223,10 @@
             "time": {
                 "name": "duration",
                 "tooltip": null
+            },
+            "maxtime": {
+                "name": "max duration",
+                "tooltip": null
             }
         }
     },
@@ -1280,7 +1284,7 @@
         "tooltip": null,
         "format": "Behemoth Slayer (_left)Deals 2.5x damage[(prob>0){, }(prob==0){ and }]only takes 0.6x damage[(prob>0){, and (prob)% chance to dodge their attacks for (_dispTime(time))}](_right)",
         "class": {
-            "type.active": {
+            "active": {
                 "name": "Stronger Vs. Behemoth",
                 "tooltip": null
             },
@@ -1318,7 +1322,7 @@
             },
             "maxtime": {
                 "name": "max duration",
-                "tooltip": ""
+                "tooltip": null
             },
             "mult" : {
                 "name": "multiplier",

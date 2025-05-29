@@ -173,6 +173,22 @@
       }
     }
   },
+  "SPEEDUP": {
+    "abbr_name": "inc. spd",
+    "full_name": "Adrenaline",
+    "tooltip": null,
+    "format": "Speed [(mult>=100){increased}(mult<100){decreased}] to (mult)% after health drops below (health)%",
+    "class": {
+      "health": {
+        "name": "health",
+        "tooltip": null
+      },
+      "mult": {
+        "name": "increment",
+        "tooltip": "Set negative to slow"
+      }
+    }
+  },
   "LETHAL": {
     "abbr_name": "生き残る",
     "full_name": "一度だけ生き残る",
@@ -1193,7 +1209,7 @@
     "tooltip": null,
     "format": "超獣特効(_left)与ダメx2.5 被ダメx0.6[(prob>0){&(prob)%の確率で(_dispTime(time))の間攻撃を無効にする}](_right)",
     "class": {
-      "type.active": {
+      "active": {
         "name": "対 超獣敵めっぽう強い",
         "tooltip": null
       },
