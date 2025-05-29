@@ -241,6 +241,7 @@ public class AttackSimple extends AttackAb {
 			float pos = model.getPos() + dire * addp;
 			float sta = pos + EXPLOSION_PIERCE_1;
 			float end = pos - EXPLOSION_PIERCE_1;
+			if(dire == -1) pos += 275;//FIXME in 14.4 blast anim got messed up hard
 			ContBlast cblast = new ContBlast(new AttackBlast(attacker, this, sta, end, Data.WT_BLST), pos, layer);
 			if (attacker != null)
 				attacker.summoned.add(cblast);

@@ -30,7 +30,7 @@ public class AttackBlast extends AttackAb {
         List<AbEntity> le;
         List<AbEntity> le2;
         if (blastTime < EXPLOSION_POST) {
-            le = model.b.inRange(touch, -dire, sta, end, excludeRightEdge);
+            le = model.b.inRange(touch, -dire, sta, end, true);
             for (AbEntity e : le)
                 if (e instanceof Entity && !captured.get(0).contains((Entity) e)) {
                     capt_blast.get(0).add(e);
@@ -41,12 +41,12 @@ public class AttackBlast extends AttackAb {
             float end_out = end;
             float sta_in = sta;
             float end_in = sta + EXPLOSION_PIERCE_2;
-            le = model.b.inRange(touch, -dire, sta_out, end_out, excludeRightEdge);
+            le = model.b.inRange(touch, -dire, sta_out, end_out, true);
             for (AbEntity e : le)
                 if (e instanceof Entity && !captured.get(1).contains((Entity) e)) {
                     capt_blast.get(1).add(e);
                 }
-            le2 = model.b.inRange(touch, -dire, sta_in, end_in, excludeRightEdge);
+            le2 = model.b.inRange(touch, -dire, sta_in, end_in, true);
             for (AbEntity e : le2)
                 if (e instanceof Entity && !captured.get(2).contains((Entity) e)) {
                     capt_blast.get(2).add(e);
@@ -58,12 +58,12 @@ public class AttackBlast extends AttackAb {
             float end_out = end - EXPLOSION_PIERCE_2;
             float sta_in = sta + EXPLOSION_PIERCE_2;
             float end_in = sta + EXPLOSION_PIERCE_3;
-            le = model.b.inRange(touch, -dire, sta_out, end_out, excludeRightEdge);
+            le = model.b.inRange(touch, -dire, sta_out, end_out, true);
             for (AbEntity e : le)
                 if (e instanceof Entity && !captured.get(3).contains((Entity) e)) {
                     capt_blast.get(3).add(e);
                 }
-            le2 = (model.b.inRange(touch, -dire, sta_in, end_in, excludeRightEdge));
+            le2 = (model.b.inRange(touch, -dire, sta_in, end_in, true));
             for (AbEntity e : le2)
                 if (e instanceof Entity && !captured.get(4).contains((Entity) e)) {
                     capt_blast.get(4).add(e);
