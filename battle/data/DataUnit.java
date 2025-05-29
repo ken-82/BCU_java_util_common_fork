@@ -189,7 +189,7 @@ public class DataUnit extends DefaultData implements MaskUnit, Cloneable {
 			}
 
 			if (ints[105] == 1) {
-				proc.BSTHUNT.active = 1;
+				proc.BSTHUNT.active = true;
 				proc.BSTHUNT.prob = ints[106];
 				proc.BSTHUNT.time = ints[107];
 			}
