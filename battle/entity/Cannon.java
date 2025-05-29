@@ -24,17 +24,19 @@ import java.util.Comparator;
 public class Cannon extends AtkModelAb {
 
     public final int id, base, deco;
+    public StageBasis sb;
     private EAnimD<?> anim, atka, exta;
     private int preTime = 0;
     private EUnit wall = null;
     public float pos;
     private int duration = 0;
 
-    public Cannon(StageBasis sb, int type, int deco, int base) {
-        super(sb);
+    public Cannon(StageBasis bas, int type, int deco, int base) {
+        super(bas);
         id = type;
         this.base = base;
         this.deco = deco;
+        sb = bas;
     }
 
     /**
@@ -200,7 +202,7 @@ public class Cannon extends AtkModelAb {
             proc.SNIPER.prob = 1;
             float wid = NYRAN[0];
             float p = (float) (b.ubase.pos - 332.5 + wid / 2);
-            int atk = b.b.t().getCanonAtk(b.isBanned(Data.C_C_ATK));
+            int atk = (int)((b.b.t().getCanonAtk(b.isBanned(Data.C_C_ATK)))*(sb.cannonMult/100f));
             AttackCanon eatk = new AttackCanon(this, atk, traits, 0, proc, 0, 0, 1);
             new ContWaveCanon(new AttackWave(eatk.attacker, eatk, p, wid, WT_CANN | WT_WAVE), p, 0);
         } else if (id == 1) {
