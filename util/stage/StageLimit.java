@@ -26,8 +26,18 @@ public class StageLimit extends Data implements BattleStatic {
     
     public int cannonMultiplier = 100; // percentage
 
+    public int unitHpLimit = -1; // -1 for deactivated
+    public int enemyHpLimit = -1; // -1 for deactivated
     public int unitSpeedLimit = -1; // -1 for deactivated
     public int enemySpeedLimit = -1; // -1 for deactivated
+    public int unitDamageLimit = -1; // -1 for deactivated
+    public int enemyDamageLimit = -1; // -1 for deactivated
+    public int unitTBALimit = -1; // -1 for deactivated
+    public int enemyTBALimit = -1; // -1 for deactivated
+    public int unitKBLimit = -1; // -1 for deactivated
+    public int enemyKBLimit = -1; // -1 for deactivated
+    public int unitRangeLimit = -1; // -1 for deactivated
+    public int enemyRangeLimit = -1; // -1 for deactivated
 
     @JsonField(generic = Integer.class)
     public HashSet<Integer> bannedCatCombo = new HashSet<>();
@@ -51,6 +61,7 @@ public class StageLimit extends Data implements BattleStatic {
         sl.maxUnitSpawn = maxUnitSpawn;
         sl.globalCooldown = globalCooldown;
         sl.globalCost = globalCost;
+        sl.cannonMultiplier = cannonMultiplier;
 
         sl.bannedCatCombo.addAll(bannedCatCombo);
 

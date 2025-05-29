@@ -210,7 +210,9 @@ public abstract class AtkModelEntity extends AtkModelAb {
 		float d0, d1;
 		d0 = d1 = e.pos;
 		if (!data.isLD(ind) && !data.isOmni(ind)) {
-			d0 += data.getRange() * dire;
+			int range = data.getRange();
+			if (e.basis.getglobalRange(dire) != -1) range = e.basis.getglobalRange(dire);
+			d0 += range * dire;
 			d1 -= data.getWidth() * dire;
 		} else {
 			d0 += data.getAtkModel(ind).getShortPoint() * dire;
@@ -238,7 +240,9 @@ public abstract class AtkModelEntity extends AtkModelAb {
 		int dire = e.dire;
 		float d0, d1;
 		d0 = d1 = e.pos;
-		d0 += data.getRange() * dire;
+		int range = data.getRange();
+		if (e.basis.getglobalRange(dire) != -1) range = e.basis.getglobalRange(dire);
+		d0 += range * dire;
 		d1 -= data.getWidth() * dire;
 		return new float[] { d0, d1 };
 	}

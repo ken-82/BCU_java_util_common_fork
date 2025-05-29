@@ -778,6 +778,7 @@ public abstract class Entity extends AbEntity {
 					} else {
 						attacksLeft--;
 						e.waitTime = Math.max(e.data.getTBA(), 0);
+						if (e.basis.getglobalTBA(e.dire) != -1) e.waitTime = e.basis.getglobalTBA(e.dire);
 					}
 				}
 			}
@@ -2126,6 +2127,8 @@ public abstract class Entity extends AbEntity {
 	@Override
 	public void postUpdate() {
 		int hb = data.getHb();
+		if (basis.getglobalKB(dire) != -1) hb = basis.getglobalKB(dire);
+
 		long ext = health * hb % maxH;
 		if (ext == 0)
 			ext = maxH;
@@ -2442,7 +2445,7 @@ public abstract class Entity extends AbEntity {
 		} else {
 
 			float mov = data.getSpeed() * 0.5f;
-			if (basis.getspeed(dire) != -1 && mov != 0) mov = basis.getspeed(dire) * 0.5f;
+			if (basis.getglobalspeed(dire) != -1 && mov != 0) mov = basis.getglobalspeed(dire) * 0.5f;
 
 			if (status[P_SPEED][0] > 0) {
 				if (status[P_SPEED][2] == 0) {
@@ -2489,7 +2492,9 @@ public abstract class Entity extends AbEntity {
 				gra.drawRect(x, y, w, h);
 		}
 		gra.setColor(FakeGraphics.YELLOW);
-		int x = (int) ((pos + data.getRange() * dire) * rat * siz + poa);
+		int range = data.getRange();
+		if (basis.getglobalRange(dire) != -1) range = basis.getglobalRange(dire);
+		int x = (int) ((pos + range * dire) * rat * siz + poa);
 		gra.drawLine(x, py, x, py + h);
 		gra.setColor(FakeGraphics.BLUE);
 		int bx = (int) ((dire == -1 ? pos : pos - data.getWidth()) * rat * siz + poa);

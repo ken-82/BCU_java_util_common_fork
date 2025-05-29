@@ -59,8 +59,21 @@ public class StageBasis extends BattleObj {
 	public int activeGuard = -1;
 	public int[] rarityMax = { 0, 0, 0, 0, 0, 0 };
 	public int unitLeft = 0;
+	public int cannonMult = 100;
 	public int[] rarityDupAmo = { 0, 0, 0, 0, 0, 0 };
 	public int[] rarityDupDelay = { 0, 0, 0, 0, 0, 0 };
+	public int unitHp = -1;
+	public int enemyHp = -1;
+	public int unitSpeed = -1;
+	public int enemySpeed = -1;
+	public int unitDamage = -1;
+	public int enemyDamage = -1;
+	public int unitTBA = -1;
+	public int enemyTBA = -1;
+	public int unitKB = -1;
+	public int enemyKB = -1;
+	public int unitRange = -1;
+	public int enemyRange = -1;
 	public List<List<Integer>> dupDelay = new ArrayList<>();
 
 	public float siz;
@@ -206,6 +219,19 @@ public class StageBasis extends BattleObj {
 			rarityMax = est.lim.stageLimit.rarityDeployLimit;
 			rarityDupAmo = est.lim.stageLimit.deployDuplicationTimes;
 			rarityDupDelay = est.lim.stageLimit.deployDuplicationDelay;
+			cannonMult = est.lim.stageLimit.cannonMultiplier;
+			unitHp = est.lim.stageLimit.unitHpLimit;
+			unitDamage = est.lim.stageLimit.unitDamageLimit;
+			unitSpeed = est.lim.stageLimit.unitSpeedLimit;
+			unitTBA = est.lim.stageLimit.unitTBALimit;
+			unitKB = est.lim.stageLimit.unitKBLimit;
+			unitRange = est.lim.stageLimit.unitRangeLimit;
+			enemyHp = est.lim.stageLimit.enemyHpLimit;
+			enemyDamage = est.lim.stageLimit.enemyDamageLimit;
+			enemySpeed = est.lim.stageLimit.enemySpeedLimit;
+			enemyTBA = est.lim.stageLimit.enemyTBALimit;
+			enemyKB = est.lim.stageLimit.enemyKBLimit;
+			enemyRange = est.lim.stageLimit.enemyRangeLimit;
 		}
 
 		for (int i = 0; i < 2; i++) {
@@ -508,7 +534,9 @@ public class StageBasis extends BattleObj {
 			// 800 + range and not ebase.pos + range because it doesn't respond to entity enemy base
 			for(int entN = 0;entN < summoner[i][j].size();entN++) {
 				EUnit su = f.getEntity(this, null, true);
-				su.added(-1, Math.max(800 + su.data.getRange(), Math.min(summoner[i][j].get(entN).pos + SPIRIT_SUMMON_RANGE, ubase.pos)));
+				int range = su.data.getRange();
+				if (getglobalRange(su.dire) != -1) range = getglobalRange(su.dire);
+				su.added(-1, Math.max(800 + range, Math.min(summoner[i][j].get(entN).pos + SPIRIT_SUMMON_RANGE, ubase.pos)));
 				le.add(su);
 				le.sort(Comparator.comparingInt(e -> e.layer));
 			}
@@ -587,6 +615,16 @@ public class StageBasis extends BattleObj {
 				for (int atk = 0; atk < eu.aam.atks.length; atk++) {
                     eu.aam.atks[atk] = (int) (eu.aam.atks[atk] * ((ORB_LEGEND_ATTACK[eu.getOrbSol()] + 100) / 100f));
 				}
+			}
+
+
+			if (unitHp != -1) {
+				eu.maxH = unitHp;
+				eu.health = eu.maxH;
+			}
+
+			if (unitDamage != -1) {
+				Arrays.fill(eu.aam.atks, unitDamage);
 			}
 
 			return true;
@@ -791,6 +829,15 @@ public class StageBasis extends BattleObj {
 
 				if (e != null) {
 					e.added(1, e.mark >= 1 ? boss_spawn : 700f);
+
+					if (enemyHp != -1) {
+						e.maxH = enemyHp;
+						e.health = e.maxH;
+					}
+
+					if (enemyDamage != -1) {
+						Arrays.fill(e.aam.atks, enemyDamage);
+					}
 
 					le.add(e);
 					le.sort(Comparator.comparingInt(en -> en.layer));
@@ -1280,6 +1327,48 @@ public class StageBasis extends BattleObj {
 			return 0;
 		else
 			return est.lim.stageLimit.maxUnitSpawn;
+	}
+
+	public int getglobalspeed(int dire) {
+		if(dire == -1){
+			return unitSpeed;
+		}
+		else if(dire == 1){
+			return enemySpeed;
+		}
+		else return -1;
+	}
+
+	public int getglobalTBA(int dire) {
+		if(dire == -1){
+			return unitTBA;
+		}
+		else if(dire == 1){
+			return enemyTBA;
+		}
+		else return -1;
+	}
+
+	public int getglobalKB(int dire) {
+		if(dire == -1){
+			if(unitKB == 0) return 1;
+			return unitKB;
+		}
+		else if(dire == 1){
+			if(enemyKB == 0) return 1;
+			return enemyKB;
+		}
+		else return -1;
+	}
+
+	public int getglobalRange(int dire) {
+		if(dire == -1){
+			return unitRange;
+		}
+		else if(dire == 1){
+			return enemyRange;
+		}
+		else return -1;
 	}
 
 	public boolean checkSummonAlive(int i,int j) {

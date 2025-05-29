@@ -271,6 +271,9 @@ public class Data {
 						} else if (f.getType() == Identifier.class) {
 							if (f.get(this) != null)
 								return true;
+						} else if (f.getType() == boolean.class) {
+							if ((boolean) f.get(this))
+								return true;
 						} else {
 							if (((IntType) f.get(this)).toInt() > 0)
 								return true;
@@ -664,7 +667,7 @@ public class Data {
 		@JsonClass(noTag = NoTag.LOAD)
 		public static class BSTHUNT extends ProcItem {
 			@Order(0)
-			public int active;
+			public boolean active;
 			@Order(1)
 			public int prob;
 			@Order(2)
