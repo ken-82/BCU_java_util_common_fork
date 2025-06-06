@@ -253,12 +253,14 @@ public class Form extends Animable<AnimU<?>, AnimU.UType> implements BasedCopabl
 	 */
 	public Level regulateLv(@Nullable Level src, Level target) {
 		if(src != null) {
-			target.setLevel(Math.max(1, Math.min(src.getLv(), unit.max)));
-			target.setPlusLevel(Math.max(0, Math.min(src.getPlusLv(), unit.maxp)));
+			int ULvl = Math.min(src.getLv(), unit.max);
+			int Uplvl = Math.min(src.getPlusLv(), unit.maxp);
+			target.setLevel(Math.max(1, ULvl));
+			target.setPlusLevel(Math.max(0, Uplvl));
 
 			PCoin pc = du.getPCoin();
 
-			if (pc != null) {
+			if (pc != null && Uplvl+ULvl >= 30) {
 				int[] maxTalents = new int[pc.info.size()];
 
 				for (int i = 0; i < pc.info.size(); i++)
@@ -279,12 +281,14 @@ public class Form extends Animable<AnimU<?>, AnimU.UType> implements BasedCopabl
 				target.setTalents(t);
 			}
 		} else {
-			target.setLevel(Math.max(1, Math.min(unit.max, target.getLv())));
-			target.setPlusLevel(Math.max(0, Math.min(unit.maxp, target.getPlusLv())));
+			int ULvl = Math.min(target.getLv(), unit.max);
+			int Uplvl = Math.min(target.getPlusLv(), unit.maxp);
+			target.setLevel(Math.max(1, ULvl));
+			target.setPlusLevel(Math.max(0, Uplvl));
 
 			PCoin pc = du.getPCoin();
 
-			if (pc != null) {
+			if (pc != null && Uplvl+ULvl >= 30) {
 				int[] maxTalents = new int[pc.info.size()];
 				int[] t = new int[pc.info.size()];
 
