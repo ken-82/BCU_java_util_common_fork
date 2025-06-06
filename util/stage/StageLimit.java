@@ -26,6 +26,7 @@ public class StageLimit extends Data implements BattleStatic {
     
     public int cannonMultiplier = 100; // percentage
 
+    //FIXME change it to a list that stores stats
     public int unitHpLimit = -1; // -1 for deactivated
     public int enemyHpLimit = -1; // -1 for deactivated
     public int unitSpeedLimit = -1; // -1 for deactivated

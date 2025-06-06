@@ -228,7 +228,7 @@ public class EUnit extends Entity {
 		if (atk.trait.contains(UserProfile.getBCData().traits.get(TRAIT_BARON)) && (canOrb && getOrbBaronKiller() >= 0))
 			ans = (int) (ans * ORB_BARON_DEFENSE[getOrbBaronKiller()]/100f);
 
-		if (atk.trait.contains(UserProfile.getBCData().traits.get(Data.TRAIT_BEAST)) && getProc().BSTHUNT.active)
+		if (atk.trait.contains(UserProfile.getBCData().traits.get(Data.TRAIT_BEAST)) && getProc().BSTHUNT.active == 1)
 			ans = (int) (ans * 0.6);
 
 		if (atk.trait.contains(UserProfile.getBCData().traits.get(Data.TRAIT_SAGE)) && (getAbi() & AB_SKILL) > 0)

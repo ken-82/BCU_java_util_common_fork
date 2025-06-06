@@ -667,7 +667,7 @@ public class Data {
 		@JsonClass(noTag = NoTag.LOAD)
 		public static class BSTHUNT extends ProcItem {
 			@Order(0)
-			public boolean active;
+			public int active;
 			@Order(1)
 			public int prob;
 			@Order(2)
