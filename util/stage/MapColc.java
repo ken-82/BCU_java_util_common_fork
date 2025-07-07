@@ -421,17 +421,29 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 								if (!parameter.isEmpty()) {
 									int[] deployLimit = new int[parameter.size()];
 
+									boolean deployLimitWarn = false;
+
 									for (int i = 0; i < parameter.size(); i++) {
 										deployLimit[i] = parameter.get(i).getAsInt();
 
-										if (deployLimit[i] <= 0) {
+										if (deployLimit[i] == 0) {
+											deployLimit[i] = -1;
+										}
+
+										if (deployLimit[i] < 0) {
+											deployLimitWarn = true;
+
 											System.out.printf(
-													"W/MapColc::read - Unexpected deploy limit value for map %d : Index = %d, Value = %d",
+													"W/MapColc::read - Unexpected deploy limit value for map %d : Index = %d, Value = %d\n",
 													mapID,
 													i,
 													deployLimit[i]
 											);
 										}
+									}
+
+									if (deployLimitWarn) {
+										System.out.println("W/MapCold::read - Unexpected deploy limit value array found : Array = " + Arrays.toString(deployLimit));
 									}
 
 									for (Stage stage : map.list) {
