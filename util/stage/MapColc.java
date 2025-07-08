@@ -426,10 +426,6 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 									for (int i = 0; i < parameter.size(); i++) {
 										deployLimit[i] = parameter.get(i).getAsInt();
 
-										if (deployLimit[i] == 0) {
-											deployLimit[i] = -1;
-										}
-
 										if (deployLimit[i] < 0) {
 											deployLimitWarn = true;
 
@@ -439,6 +435,10 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 													i,
 													deployLimit[i]
 											);
+										}
+
+										if (deployLimit[i] == 0) {
+											deployLimit[i] = -1;
 										}
 									}
 
