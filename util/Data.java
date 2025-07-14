@@ -1281,12 +1281,11 @@ public class Data {
 			false, //base destroyer
 			true,  //beast hunter
 			false, //mini surge
-			true, //spirit summon
+			true,  //spirit summon
 			false, //metal killer
-			false, //speed?
-			false, //blast?
-			false, //imu blast?
-			// TODO: figure this one out soon
+            true, //adrenaline
+			false, //blast
+			true   //imu.blast
 	};
 
 	/**
@@ -1610,9 +1609,14 @@ public class Data {
 	public static final byte VOLC_POST = 10; // volcano post-atk
 	public static final byte VOLC_SE = 30; // volcano se loop duration
 
-	public static final byte EXPLOSION_PRE = 11;
 	public static final short EXPLOSION_SE = 167;
 	public static final byte EXPLOSION_SHIFT = 100;
+	public static final byte EXPLOSION_PRE = 11;
+	public static final byte EXPLOSION_ITV = 10;
+	public static final byte EXPLOSION_DURATION = 15;
+
+	public static final short[] EXPLOSION_RANGE = new short[] { 150, 100, 100 };
+	public static final byte[] EXPLOSION_MULTIPLIER = new byte[] { 100, 70, 40 };
 
 	public static final byte[] NYPRE = new byte[] { 18, 1, -1, 27, 37, 18, 10, 1 };
 	public static final float[] NYRAN = new float[] { 400, 82.5f, -1, 500, 500, 400, 100, 82.5f };
@@ -1626,6 +1630,12 @@ public class Data {
 	public static final int ORB_STRONG = 2;
 	public static final int ORB_MASSIVE = 3;
 	public static final int ORB_RESISTANT = 4;
+	public static final int ORB_DEATH_SURGE = 5;
+	public static final int ORB_WAVE_RESIST = 6;
+	public static final int ORB_MONEY_BACK = 7;
+	public static final int ORB_KB_RESIST = 8;
+	public static final int ORB_LEGEND_STORY = 9;
+	public static final int ORB_BARON_KILLER = 10;
 	public static final int ORB_TYPE = 0, ORB_TRAIT = 1, ORB_GRADE = 2, ORB_TOT = 3;
 
 	public static final int[] ORB_ATK_MULTI = { 100, 200, 300, 400, 500 }; // Atk orb multiplication
@@ -1634,8 +1644,19 @@ public class Data {
 	public static final float[] ORB_STR_ATK_MULTI = {0.06f, 0.12f, 0.18f, 0.24f, 0.3f};
 	public static final float[] ORB_MASSIVE_MULTI = {0.1f, 0.2f, 0.3f, 0.4f, 0.5f};
 	public static final int[] ORB_RESISTANT_MULTI = {5, 10, 15, 20, 25};
+	public static final int[] ORB_DEATH_SURGE_MULT = { 3, 6, 10, 14, 20 };
+	public static final int[] ORB_WAVE_RESIST_MULT = { 5, 10, 20, 30, 50 };
+	public static final int[] ORB_MONEY_BACK_MULT = { 5, 10, 20, 30, 50 };
+	public static final int[] ORB_KB_RESIST_MULT = { 5, 10, 20, 30, 50 };
+	public static final int[] ORB_LEGEND_HEATLH = { 5, 10, 20, 30, 50 }; // (1 + alpha)
+	public static final int[] ORB_LEGEND_ATTACK = { 5, 10, 20, 30, 50 }; // (1 + alpha)
+	public static final int[] ORB_BARON_DAMAGE = { 105, 115, 125, 140, 160 }; // 1 x alpha
+	public static final int[] ORB_BARON_DEFENSE = { 95, 90, 85, 80, 70 }; // 1 x alpha
 	public static final int[] GATYA = { 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 160, 161, 164, 167,
 			168, 169, 170, 171, 179, 180, 181, 182, 183, 184};
+
+	public static final int ORB_DEATH_SURGE_SPAWN_MIN = 200;
+	public static final int ORB_DEATH_SURGE_SPAWN_MAX = 500;
 
 	public static final int MUSIC_DELAY = 2344; //Music change delay with milliseconds accuracy
 
