@@ -22,18 +22,18 @@ public class AttackBlast extends AttackAb {
     @Override
     public void capture() {
         capt.clear();
-        if (attacked)
-            attacked = false;
+
         List<AbEntity> le = new ArrayList<>();
         int time = handler.getTime();
-        if ((time - 1) % 10 == 0)
+        if (time == 11 || time == 21 || time == 31)
             bcapt.clear();
+        int lvl = getLevel(time);
 
-        if (time >= 11 && time <= 20) // todo: figure out why this isn't capturing anything
+        if (lvl == 0)
             le.addAll(model.b.inRange(touch, -dire, sta, end, excludeRightEdge));
-        else if (time >= 21 && time <= 30)
+        else if (lvl == 1)
             le.addAll(model.b.inRange(touch, -dire, sta + 100, end - 100, excludeRightEdge, 150));
-        else if (time >= 31)
+        else if (lvl == 2)
             le.addAll(model.b.inRange(touch, -dire, sta + 200, end - 200, excludeRightEdge, 350));
         for (AbEntity e : le)
             if (e instanceof Entity && !bcapt.contains((Entity) e))
@@ -49,6 +49,7 @@ public class AttackBlast extends AttackAb {
                 atk += atk * attacker.status[P_STRONG][0] / 100;
             if (attacker.status[P_WEAK][0] != 0)
                 atk = atk * attacker.status[P_WEAK][1] / 100;
+            atk = (atk * (100 - (30 * getLevel(handler.getTime()))) / 100);
         }
 
         for (AbEntity e : capt) {
@@ -61,5 +62,15 @@ public class AttackBlast extends AttackAb {
                 bcapt.add((Entity) e);
             }
         }
+    }
+
+    private int getLevel(int time) {
+        if (time >= 11 && time <= 20)
+            return 0;
+        if (time >= 21 && time <= 30)
+            return 1;
+        if (time >= 31)
+            return 2;
+        return -1;
     }
 }

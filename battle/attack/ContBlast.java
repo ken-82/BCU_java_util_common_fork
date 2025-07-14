@@ -21,7 +21,7 @@ public class ContBlast extends ContAb {
     }
 
     @Override
-    public void draw(FakeGraphics gra, P p, float psiz) {
+    public void draw(FakeGraphics gra, P p, float psiz) { // todo: fix offset
         FakeTransform at = gra.getTransform();
         anim.draw(gra, p, psiz);
         gra.setTransform(at);
@@ -38,6 +38,8 @@ public class ContBlast extends ContAb {
     @Override
     public void update() {
         t++;
+        if (atk.attacked)
+            atk.attacked = false;
         System.out.println("battle frame " + sb.time + "f, blast frame " + t + "f");
 
         if (t == EXPLOSION_PRE)

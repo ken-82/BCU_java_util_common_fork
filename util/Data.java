@@ -1282,7 +1282,11 @@ public class Data {
 			true,  //beast hunter
 			false, //mini surge
 			true, //spirit summon
-			false //metal killer
+			false, //metal killer
+			false, //speed?
+			false, //blast?
+			false, //imu blast?
+			// TODO: figure this one out soon
 	};
 
 	/**
