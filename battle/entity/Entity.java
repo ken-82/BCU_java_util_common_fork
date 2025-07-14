@@ -334,6 +334,14 @@ public abstract class Entity extends AbEntity {
 				}
 
 				effs[id] = eff.getEAnim(index);
+			} else if (t == P_SPEEDUP) {
+				int id = dire == -1 ? A_SPEED : A_E_SPEED;
+				EffAnim<SpeedEff> eff = dire == -1 ? effas().A_SPEED : effas().A_E_SPEED;
+				SpeedEff index;
+
+				index = status[P_SPEEDUP][0] >= 100 ? SpeedEff.UP : SpeedEff.DOWN;
+
+				effs[id] = eff.getEAnim(index);
 			} else if (t == HEAL) {
 				EffAnim<DefEff> eff = dire == -1 ? effas().A_HEAL : effas().A_E_HEAL;
 
@@ -466,6 +474,10 @@ public abstract class Entity extends AbEntity {
 				status[P_WAVE][0]--;
 			if (status[P_STRONG][0] == 0) {
 				byte id = dire == -1 ? A_UP : A_E_UP;
+				effs[id] = null;
+			}
+			if (status[P_SPEEDUP][0] == 0) {
+				byte id = dire == -1 ? A_SPEED : A_E_SPEED;
 				effs[id] = null;
 			}
 			if (status[P_BREAK][0] == 0) {
@@ -1940,10 +1952,9 @@ public abstract class Entity extends AbEntity {
 				EffAnim<WarpEff> e = effas().A_W;
 
 				int len = e.len(WarpEff.ENTER) + e.len(WarpEff.EXIT);
-				int val = atk.getProc().WARP.time;
-				int rst = getProc().IMUWARP.mult;
-
-				val = val * (100 - rst) / 100;
+				int val = (int) (warp.time * time);
+				float rst = getResistValue(atk, "IMUWARP", getProc().IMUWARP.mult);
+				val = (int) (val * rst);
 
 				status[P_WARP][0] = val + len;
 			} else
@@ -2126,6 +2137,12 @@ public abstract class Entity extends AbEntity {
 		if ((touchable() & TCH_CORPSE) == 0 && status[P_STRONG][0] == 0 && strong > 0 && health * 100 <= maxH * strong) {
 			status[P_STRONG][0] = getProc().STRONG.mult;
 			anim.getEff(P_STRONG);
+		}
+		// adrenaline
+		int threshold = getProc().SPEEDUP.health;
+		if ((touchable() & TCH_CORPSE) == 0 && threshold > 0 && health * 100 <= maxH * threshold) {
+			status[P_SPEEDUP][0] = getProc().SPEEDUP.mult;
+			anim.getEff(P_SPEEDUP);
 		}
 		// lethal strike
 		if (getProc().LETHAL.prob > 0 && health <= 0) {
@@ -2422,6 +2439,11 @@ public abstract class Entity extends AbEntity {
 				} else if (status[P_SPEED][2] == 2) {
 					mov = status[P_SPEED][1] * 0.5f;
 				}
+			}
+
+			if (status[P_SPEEDUP][0] > 0) {
+				mov *= status[P_SPEEDUP][0] / 100f;
+				mov = (float) Math.round(mov * 4f) / 4f;
 			}
 
 			pos += (mov + extmov) * dire;

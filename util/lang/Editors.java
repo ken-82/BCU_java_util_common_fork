@@ -306,7 +306,7 @@ public class Editors {
 
 		map().put("WAVE", new EditControl<>(Proc.WAVE.class, (t) -> {
 			t.prob = MathUtil.clip(t.prob, 0, 100);
-			t.lv = MathUtil.clip(t.lv, 1, 20);
+			t.lv = MathUtil.clip(t.lv, 1, 100);
 			if (t.prob == 0)
 				t.lv = 0;
 		}));
@@ -332,6 +332,12 @@ public class Editors {
 		map().put("CURSE", pt);
 
 		map().put("STRONG", new EditControl<>(Proc.STRONG.class, (t) -> {
+			t.health = MathUtil.clip(t.health, 0, 99);
+			if (t.health == 0)
+				t.mult = 0;
+		}));
+
+		map().put("SPEEDUP", new EditControl<>(Proc.SPEEDUP.class, (t) -> {
 			t.health = MathUtil.clip(t.health, 0, 99);
 			if (t.health == 0)
 				t.mult = 0;
@@ -586,7 +592,7 @@ public class Editors {
 				t.lv = 0;
 				t.multi = 0;
 			} else {
-				t.lv = MathUtil.clip(t.lv, 1, 20);
+				t.lv = MathUtil.clip(t.lv, 1, 100);
 
 				if(t.multi == 0)
 					t.multi = 20;
@@ -668,8 +674,8 @@ public class Editors {
 		map().put("ATKBASE", new EditControl<>(Proc.MULT.class, (t) -> {}));
 
 		map().put("BSTHUNT", new EditControl<>(Proc.BSTHUNT.class, (t) -> {
-			setComponentVisibility("BSTHUNT", t.type.active, 1);
-			if (t.type.active) {
+			setComponentVisibility("BSTHUNT", t.active == 1, 1);
+			if (t.active == 1) {
 				t.prob = MathUtil.clip(t.prob, 0, 100);
 				if (t.prob == 0)
 					t.time = 0;
