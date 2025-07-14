@@ -128,7 +128,7 @@ public class PCoin extends Data {
 			switch (data[0]) {
 				case 0:
 					break;
-				case 56: case 65:
+				case 56: case 65: // normalize surge chance
 					data[2] = MathUtil.clip(data[2], 0, 100 - proc.getArr(type).get(0));
 					data[3] = MathUtil.clip(data[3], data[2], 100 - proc.getArr(type).get(0));
 					data[8] = Math.max(1, data[8] / Data.VOLC_ITV) * Data.VOLC_ITV;
@@ -253,6 +253,10 @@ public class PCoin extends Data {
 					tar.set(0, 1);
 					tar.set(1, modifs[0]);
 					tar.set(2, modifs[1]);
+				} else if (type[1] == P_BLAST) {
+					tar.set(0, tar.get(0) + modifs[0]);
+					tar.set(1, tar.get(1) + modifs[1] / 4);
+					tar.set(2, (modifs[1] + modifs[2]) / 4);
 				} else {
 					for (int j = 0; j < 4; j++) {
 						if (modifs[j] > 0) {
