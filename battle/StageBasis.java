@@ -1214,4 +1214,18 @@ public class StageBasis extends BattleObj {
 		else
 			return est.lim.stageLimit.globalCooldown;
 	}
+
+	public int globalCost() {
+		if (est.lim.stageLimit == null)
+			return 0;
+		else
+			return est.lim.stageLimit.globalCost;
+	}
+
+	public int cannonMultiplier() {
+		if (est.lim.stageLimit == null)
+			return 100;
+		else
+			return est.lim.stageLimit.cannonMultiplier;
+	}
 }
