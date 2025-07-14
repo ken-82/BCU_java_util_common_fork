@@ -253,9 +253,6 @@ public class DataUnit extends DefaultData implements MaskUnit, Cloneable {
 	}
 
 	@Override
-	public int getRarity() {return form.unit.rarity;}
-
-	@Override
 	public int getLimit() {
 		return limit;
 	}

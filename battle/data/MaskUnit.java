@@ -21,4 +21,5 @@ public interface MaskUnit extends MaskEntity {
 	MaskUnit clone();
 
 	int getLimit();
+
 }
