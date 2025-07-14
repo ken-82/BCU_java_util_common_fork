@@ -21,8 +21,9 @@ public class ContBlast extends ContAb {
     }
 
     @Override
-    public void draw(FakeGraphics gra, P p, float psiz) { // todo: fix offset
+    public void draw(FakeGraphics gra, P p, float psiz) {
         FakeTransform at = gra.getTransform();
+        p.x += 100 * psiz;
         anim.draw(gra, p, psiz);
         gra.setTransform(at);
 //        if (CommonStatic.getConfig().ref)
