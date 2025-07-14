@@ -58,7 +58,8 @@ public class StageBasis extends BattleObj {
 	public int activeGuard = -1;
 
 	public float siz;
-	public int work_lv, money, maxMoney, cannon, maxCannon, upgradeCost, max_num, pos;
+	public int work_lv, money, maxMoney, cannon, maxCannon, upgradeCost, maxNum, pos;
+	public int[] maxRarityNum;
 	public int frontLineup = 0;
 	public boolean lineupChanging = false;
 	public boolean shock = false;
@@ -135,8 +136,15 @@ public class StageBasis extends BattleObj {
 			if (st.getCont().id.id < 3)
 				sttime = st.getCont().id.id;
 		}
-		int max = est.lim != null ? est.lim.num : 50;
-		max_num = max <= 0 ? 50 : max;
+		int max;
+		if (est.lim != null) {
+			max = est.lim.num;
+			if (est.lim.stageLimit != null)
+				maxRarityNum = est.lim.stageLimit.rarityDeployLimit;
+		} else {
+			max = 50;
+		}
+		maxNum = max <= 0 ? 50 : max;
 		maxCannon = bas.t().CanonTime(sttime, isBanned(C_C_SPE));
 
 		int bank = maxBankLimit();
@@ -266,7 +274,7 @@ public class StageBasis extends BattleObj {
 	/**
 	 * list of entities in the range d0 ~ d1 that can be touched by entity with given direction and touch mode
 	 * entity is picked if d0 <= pos <= d1 when excludeRightEdge is false
-	 *                  if d0 <= pos <  d1 when excludeRightEdge is true (currently only used by bblast, TODO: waves should use it)
+	 *                  if d0 <= pos <  d1 when excludeRightEdge is true (used by breakerblast and blast ability), TODO: waves should use it)
 	 */
 	public List<AbEntity> inRange(int touch, int dire, float d0, float d1, boolean excludeRightEdge) {
 
@@ -278,15 +286,12 @@ public class StageBasis extends BattleObj {
 		float left = Math.min(d0, d1);
 		float right = Math.max(d0, d1);
 
-		if (excludeRightEdge) {
-			for (int i = 0; i < le.size(); i++)
-				if (le.get(i).dire == dire && (le.get(i).touchable() & touch) != 0 && le.get(i).pos >= left && le.get(i).pos < right)
-					ans.add(le.get(i));
-		} else {
-			for (int i = 0; i < le.size(); i++)
-				if (le.get(i).dire == dire && (le.get(i).touchable() & touch) != 0 && le.get(i).pos >= left && le.get(i).pos <= right)
-					ans.add(le.get(i));
-		}
+		if (excludeRightEdge)
+			right -= 1;
+
+		for (int i = 0; i < le.size(); i++)
+			if (le.get(i).dire == dire && (le.get(i).touchable() & touch) != 0 && le.get(i).pos >= left && le.get(i).pos <= right)
+				ans.add(le.get(i));
 
 		AbEntity b = dire == 1 ? ebase : ubase;
 
@@ -294,6 +299,40 @@ public class StageBasis extends BattleObj {
 			ans.add(b);
 
 		return ans;
+	}
+
+	public List<AbEntity> inRange(int touch, int dire, float d0, float d1, boolean excludeRightEdge, float blindSpot) {
+		List<AbEntity> ans = new ArrayList<>();
+
+		if (dire == 0)
+			return ans;
+
+		float farLeft = Math.min(d0, d1); // would be furthest left (1st point) -175
+		float farRight = Math.max(d0, d1); // would be furthest right (4th point) 175
+
+		float innerRight = (farLeft + farRight) / 2 - (blindSpot / 2); // would be second to furthest right (3rd point)
+		float innerLeft = -innerRight; // would be second to furthest left (2nd point)
+
+		System.out.println(farLeft + ", " + innerLeft + ", " + innerRight + ", " + farRight);
+
+		if (excludeRightEdge) {
+			innerRight -= 1;
+			farRight -= 1;
+		}
+
+		for (int i = 0; i < le.size(); i++)
+			if (le.get(i).dire == dire && (le.get(i).touchable() & touch) != 0
+					&& (le.get(i).pos >= farLeft && le.get(i).pos <= innerLeft || le.get(i).pos >= innerRight && le.get(i).pos <= farRight))
+				ans.add(le.get(i));
+
+		AbEntity b = dire == 1 ? ebase : ubase;
+
+		if ((b.touchable() & touch) != 0
+				&& (b.pos >= farLeft && b.pos <= innerLeft || b.pos >= innerRight && b.pos <= farRight))
+			ans.add(b);
+
+		return ans;
+
 	}
 
 	public void registerBattleDimension(float midH, float battleHeight) {
@@ -339,7 +378,7 @@ public class StageBasis extends BattleObj {
 			return false;
 
 		if (cannon == maxCannon) {
-			if(canon.id == BASE_WALL && entityCount(-1) >= max_num) {
+			if(canon.id == BASE_WALL && entityCount(-1) >= maxNum) {
 				CommonStatic.setSE(SE_SPEND_FAIL);
 				return false;
 			}
@@ -461,7 +500,7 @@ public class StageBasis extends BattleObj {
 			f = b.lu.spirits[i][j];
 			if (f == null)
 				return false;
-			if (entityCount(-1) >= max_num - f.du.getWill()) {
+			if (entityCount(-1) >= maxNum - f.du.getWill()) {
 				CommonStatic.setSE(SE_SPEND_FAIL);
 				return false;
 			}
@@ -482,7 +521,7 @@ public class StageBasis extends BattleObj {
 
 			return true;
 		} else if (locks[i][j] || manual) {
-			if (entityCount(-1) >= max_num - f.du.getWill()) {
+			if (entityCount(-1) >= maxNum - f.du.getWill()) {
 				if (manual)
 					CommonStatic.setSE(SE_SPEND_FAIL);
 

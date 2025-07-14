@@ -8,11 +8,14 @@ import common.util.anim.EAnimD;
 import common.util.pack.EffAnim;
 
 public class ContBlast extends ContAb {
+    protected final AttackBlast atk;
     protected final EAnimD<EffAnim.BlastEff> anim;
     private int t = 0;
 
     protected ContBlast(AttackBlast atkBlast, float p, int lay) {
-        super(atkBlast.model.b, p, lay);
+        super(atkBlast.model.b, p, 9);
+        atk = atkBlast;
+        atk.handler = this;
         anim = (atkBlast.dire == 1 ? effas().A_E_BLAST : effas().A_BLAST).getEAnim(EffAnim.BlastEff.START);
         anim.setTime(1);
     }
@@ -33,14 +36,20 @@ public class ContBlast extends ContAb {
     }
 
     @Override
-    public void update() { // FIXME: update on same frame as attack
+    public void update() {
         t++;
         System.out.println("battle frame " + sb.time + "f, blast frame " + t + "f");
 
         if (t == EXPLOSION_PRE)
             anim.changeAnim(EffAnim.BlastEff.EXPLODE, true);
-        if (t > 1 && (t - 1) % 10 == 0)
-            CommonStatic.setSE(EXPLOSION_SE + (t / 11 - 1));
+        if (t == 10)
+            CommonStatic.setSE(EXPLOSION_SE);
+        else if (t == 20)
+            CommonStatic.setSE(EXPLOSION_SE + 1);
+        else if (t == 30)
+            CommonStatic.setSE(EXPLOSION_SE + 2);
+        if (t >= 11)
+            sb.getAttack(atk);
         if (anim.done())
             activate = false;
         updateAnimation();
@@ -54,5 +63,9 @@ public class ContBlast extends ContAb {
     @Override
     public boolean IMUTime() {
         return false;
+    }
+
+    public int getTime() {
+        return t;
     }
 }

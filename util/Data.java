@@ -1218,7 +1218,10 @@ public class Data {
 	public static final int P_MINIVOLC = 55;
 	public static final int P_SPIRIT = 56;
 	public static final int P_METALKILL = 57;
-	public static final byte PROC_TOT = 58;
+	public static final int P_SPEEDUP = 58;
+	public static final int P_BLAST = 59;
+	public static final int P_IMUBLAST = 60;
+	public static final byte PROC_TOT = 61;
 	public static final byte PROC_WIDTH = 6;
 
 	public static final boolean[] procSharable = {
@@ -1385,6 +1388,7 @@ public class Data {
 			{ 0, P_BSTHUNT, 2, -1 }, //64 : beheoth hunter
 			{ 0, P_MINIVOLC, 4, -1 }, //65 : Mini surge
 			{ 1, AB_SKILL, 0, -1 }, //66 : super sage hunter
+			{ 0, P_BLAST, 3, -1 }, //67: baja blast
 	};
 
 	// foot icon index used in battle
