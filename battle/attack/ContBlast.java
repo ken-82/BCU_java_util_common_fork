@@ -13,7 +13,7 @@ public class ContBlast extends ContAb {
     private int t = 0;
 
     protected ContBlast(AttackBlast atkBlast, float p, int lay) {
-        super(atkBlast.model.b, p, 9);
+        super(atkBlast.model.b, p, 8);
         atk = atkBlast;
         atk.handler = this;
         anim = (atkBlast.dire == 1 ? effas().A_E_BLAST : effas().A_BLAST).getEAnim(EffAnim.BlastEff.START);
@@ -51,9 +51,9 @@ public class ContBlast extends ContAb {
             CommonStatic.setSE(EXPLOSION_SE + 1);
         else if (t == 30)
             CommonStatic.setSE(EXPLOSION_SE + 2);
-        if (t >= 11)
+        if (t >= 10)
             sb.getAttack(atk);
-        if (anim.done())
+        if (t == 44)
             activate = false;
         updateAnimation();
     }

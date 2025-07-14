@@ -25,7 +25,7 @@ public class AttackBlast extends AttackAb {
 
         List<AbEntity> le = new ArrayList<>();
         int time = handler.getTime();
-        if (time == 11 || time == 21 || time == 31)
+        if (time == 10 || time == 20 || time == 30)
             bcapt.clear();
         int lvl = getLevel(time);
 
@@ -65,11 +65,11 @@ public class AttackBlast extends AttackAb {
     }
 
     private int getLevel(int time) { // TODO: fix blast timings
-        if (time >= 11 && time <= 20)
+        if (time >= 10 && time <= 19)
             return 0;
-        if (time >= 21 && time <= 30)
+        if (time >= 20 && time <= 29)
             return 1;
-        if (time >= 31)
+        if (time >= 30)
             return 2;
         return -1;
     }
