@@ -31,10 +31,8 @@ public class AttackBlast extends AttackAb {
 
         if (lvl == 0)
             le.addAll(model.b.inRange(touch, -dire, sta, end, excludeRightEdge));
-        else if (lvl == 1)
-            le.addAll(model.b.inRange(touch, -dire, sta + 100, end - 100, excludeRightEdge, 150));
-        else if (lvl == 2)
-            le.addAll(model.b.inRange(touch, -dire, sta + 200, end - 200, excludeRightEdge, 350));
+        else // todo: figure out if sta is always rightmost and end is always leftmost
+            le.addAll(model.b.inRange(touch, -dire, sta + EXPLOSION_SHIFT * lvl, end - EXPLOSION_SHIFT * lvl, excludeRightEdge, 150 + (EXPLOSION_SHIFT * (lvl - 1) * 2)));
         for (AbEntity e : le)
             if (e instanceof Entity && !bcapt.contains((Entity) e))
                 capt.add(e);
@@ -64,7 +62,7 @@ public class AttackBlast extends AttackAb {
         }
     }
 
-    private int getLevel(int time) { // TODO: fix blast timings
+    public int getLevel(int time) { // TODO: fix blast timings
         if (time >= 10 && time <= 19)
             return 0;
         if (time >= 20 && time <= 29)

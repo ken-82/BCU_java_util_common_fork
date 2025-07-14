@@ -23,17 +23,46 @@ public class ContBlast extends ContAb {
     @Override
     public void draw(FakeGraphics gra, P p, float psiz) {
         FakeTransform at = gra.getTransform();
-        p.x += 100 * psiz;
-        anim.draw(gra, p, psiz);
+        P s = new P(p.x + 80 * psiz, p.y);
+        anim.draw(gra, s, psiz * 0.8f);
+        P.delete(s);
         gra.setTransform(at);
-//        if (CommonStatic.getConfig().ref)
-//            drawAxis(gra, p, psiz * 1.25f);
+        if (CommonStatic.getConfig().ref)
+            drawAxis(gra, p, psiz);
+
     }
 
     public void drawAxis(FakeGraphics gra, P p, float siz) {
+        siz *= 1.25f;
         float rat = CommonStatic.BattleConst.ratio;
         int h = (int) (640 * rat * siz);
+        float d0 = Math.min(atk.sta, atk.end); // leftmost point
+        int y = (int) p.y;
         gra.setColor(FakeGraphics.MAGENTA);
+
+        int blastLevel = atk.getLevel(t);
+
+        if (blastLevel == 0) {
+            float rawWidth = Math.abs(atk.sta - atk.end); // raw length
+            int x = (int) ((d0 - pos) * rat * siz + p.x);
+            int w = (int) (rawWidth * rat * siz);
+            if (atk.attacked)
+                gra.fillRect(x, y, w, h);
+            else
+                gra.drawRect(x, y, w, h);
+        } else {
+            int x1 = (int) ((d0 - EXPLOSION_SHIFT * blastLevel - pos) * rat * siz + p.x);
+            int x2 = (int) ((Math.max(atk.sta, atk.end) - pos + EXPLOSION_SHIFT * (blastLevel - 1)) * rat * siz + p.x);
+            int w = (int) (EXPLOSION_SHIFT * rat * siz);
+            if (atk.attacked) {
+                gra.fillRect(x1, y, w, h);
+                gra.fillRect(x2, y, w, h);
+            }
+            else {
+                gra.drawRect(x1, y, w, h);
+                gra.drawRect(x2, y, w, h);
+            }
+        }
     }
 
     @Override
