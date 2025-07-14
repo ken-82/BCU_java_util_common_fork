@@ -313,8 +313,6 @@ public class StageBasis extends BattleObj {
 		float innerLeft = (farLeft + farRight) / 2 - (blindSpot / 2); // would be second to furthest left (3rd point)
 		float innerRight = (farLeft + farRight) / 2 + (blindSpot / 2); // would be second to furthest right (2nd point)
 
-		System.out.println(farLeft + ", " + innerLeft + ", " + innerRight + ", " + farRight);
-
 		if (excludeRightEdge) {
 			innerRight -= 1;
 			farRight -= 1;

@@ -64,7 +64,7 @@ public class AttackBlast extends AttackAb {
         }
     }
 
-    private int getLevel(int time) {
+    private int getLevel(int time) { // TODO: fix blast timings
         if (time >= 11 && time <= 20)
             return 0;
         if (time >= 21 && time <= 30)
