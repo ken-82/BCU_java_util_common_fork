@@ -669,11 +669,11 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 										}
 
 										if (unitActivate > 0) {
-											stage.lim.stageLimit.unitSpeedLimit = parameter.get(1).getAsInt();
+											stage.lim.stageLimit.unitSpeedOverride = parameter.get(1).getAsInt();
 										}
 
 										if (enemyActivate > 0) {
-											stage.lim.stageLimit.enemySpeedLimit = parameter.get(3).getAsInt();
+											stage.lim.stageLimit.enemySpeedOverride = parameter.get(3).getAsInt();
 										}
 									}
 								}
@@ -1357,6 +1357,18 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 						if (st.lim.stageLimit == null)
 							continue;
 						st.lim.stageLimit.coolStart = st.lim.stageLimit.globalCooldown > 0 || st.lim.stageLimit.maxMoney > 0;
+					}
+				}
+			}
+			if (UserProfile.isOlderPack(pack, "0.7.12.1")) {
+				for (StageMap sm : maps) {
+					for (Stage st : sm.list) {
+						if (st.lim.stageLimit == null)
+							continue;
+						if (st.lim.stageLimit.maxUnitSpawn == 0)
+							st.lim.stageLimit.maxUnitSpawn = -1;
+						if (st.lim.stageLimit.globalCost == 0)
+							st.lim.stageLimit.globalCost = -1;
 					}
 				}
 			}

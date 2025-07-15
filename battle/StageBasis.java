@@ -1139,7 +1139,7 @@ public class StageBasis extends BattleObj {
 		if (est.lim.stageLimit == null)
 			return -1;
 		else
-			return dire == -1 ? est.lim.stageLimit.unitSpeedLimit : est.lim.stageLimit.enemySpeedLimit;
+			return dire == -1 ? est.lim.stageLimit.unitSpeedOverride : est.lim.stageLimit.enemySpeedOverride;
 	}
 
 	public int getDupeCount(int rar) {
