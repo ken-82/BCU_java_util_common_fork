@@ -1634,9 +1634,16 @@ public class Data {
 	public static final int ORB_WAVE_RESIST = 6;
 	public static final int ORB_MONEY_BACK = 7;
 	public static final int ORB_KB_RESIST = 8;
-	public static final int ORB_LEGEND_STORY = 9;
+	public static final int ORB_SOL_BUFF = 9;
 	public static final int ORB_BARON_KILLER = 10;
-	public static final int ORB_ABILITY_TOT = 6;
+	public static final int ORB_CANNON_RECHARGE = 11;
+	public static final int ORB_TOXIC_RESIST = 12;
+	public static final int ORB_DODGE_ATK = 13;
+	public static final int ORB_SLOW_RESIST = 14;
+	public static final int ORB_CURSE_RESIST = 15;
+	public static final int ORB_UL_BUFF = 16;
+
+	public static final int ORB_ABILITY_TOT = 12;
 	public static final int ORB_TYPE = 0, ORB_TRAIT = 1, ORB_GRADE = 2, ORB_TOT = 3;
 
 	public static final int[] ORB_ATK_MULTI = { 100, 200, 300, 400, 500 }; // Atk orb multiplication
@@ -1645,6 +1652,7 @@ public class Data {
 	public static final float[] ORB_STR_ATK_MULTI = {0.06f, 0.12f, 0.18f, 0.24f, 0.3f};
 	public static final float[] ORB_MASSIVE_MULTI = {0.1f, 0.2f, 0.3f, 0.4f, 0.5f};
 	public static final int[] ORB_RESISTANT_MULTI = {5, 10, 15, 20, 25};
+
 	public static final int[] ORB_DEATH_SURGE_MULT = { 3, 6, 10, 14, 20 };
 	public static final int[] ORB_WAVE_RESIST_MULT = { 5, 10, 20, 30, 50 };
 	public static final int[] ORB_MONEY_BACK_MULT = { 5, 10, 20, 30, 50 };

@@ -121,12 +121,12 @@ public class Orb extends Data {
 			VImg type = new VImg(pre + "effect.png");
 			aux.TYPES[0] = ImgCut.newIns(pre + "effect.imgcut").cut(type.getImg());
 			VImg typeS = new VImg(pre + "effect_s.png");
-			aux.TYPES[1] = ImgCut.newIns(pre + "effect_s.png").cut(typeS.getImg());
+			aux.TYPES[1] = ImgCut.newIns(pre + "effect_s.imgcut").cut(typeS.getImg());
 
 			VImg trait = new VImg(pre + "attribute.png");
 			aux.TRAITS[0] = ImgCut.newIns(pre + "attribute.imgcut").cut(trait.getImg());
 			VImg traitS = new VImg(pre + "attribute_s.png");
-			aux.TRAITS[0] = ImgCut.newIns(pre + "attribute_s.imgcut").cut(traitS.getImg());
+			aux.TRAITS[1] = ImgCut.newIns(pre + "attribute_s.imgcut").cut(traitS.getImg());
 
 			VImg grade = new VImg(pre + "grade.png");
 			aux.GRADES[0] = ImgCut.newIns(pre + "grade.imgcut").cut(grade.getImg());

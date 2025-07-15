@@ -98,7 +98,6 @@ public class EUnit extends Entity {
 		super.update();
 
 		traits = status[P_CURSE][0] == 0 && status[P_SEAL][0] == 0 ? data.getTraits() : new ArrayList<>();
-
 		if (isSpirit && atkm.atkTime == 0)
 			kill(KillMode.SPIRIT);
 	}
