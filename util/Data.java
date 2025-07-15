@@ -1636,6 +1636,7 @@ public class Data {
 	public static final int ORB_KB_RESIST = 8;
 	public static final int ORB_LEGEND_STORY = 9;
 	public static final int ORB_BARON_KILLER = 10;
+	public static final int ORB_ABILITY_TOT = 6;
 	public static final int ORB_TYPE = 0, ORB_TRAIT = 1, ORB_GRADE = 2, ORB_TOT = 3;
 
 	public static final int[] ORB_ATK_MULTI = { 100, 200, 300, 400, 500 }; // Atk orb multiplication

@@ -36,27 +36,19 @@ public class Orb extends Data {
 					continue;
 
 				String[] strs = line.trim().split(",");
-
 				int value = 0;
-
 				for (int i = 0; i < strs.length; i++) {
 					if (i >= orbTrait.length) {
 						CommonStatic.ctx.printErr(Context.ErrType.WARN, "unknown orb trait line(s): index " + i);
 						break;
 					}
-					int t = CommonStatic.parseIntN(strs[i]);
-
-					if (t == 1) {
+					if (CommonStatic.parseIntN(strs[i]) == 1)
 						value |= 1 << orbTrait[i];
-					}
 				}
 
 				aux.DATA.put(key, value);
-
 				key++;
 			}
-
-			aux.DATA.put(-1, 0);
 
 			String data = new String(VFile.get("./org/data/equipmentlist.json").getData().getBytes(), StandardCharsets.UTF_8);
 
@@ -72,7 +64,7 @@ public class Orb extends Data {
 
 				int orbID = obj.getInt("content"); // main orb type
 				int grade = obj.getInt("gradeID"); // grade type D to S
-				int trait = obj.has("attribute") ? obj.getInt("attribute") : -1; // trait target
+				int trait = obj.has("attribute") ? obj.getInt("attribute") : 12; // trait target
 
 				Map<Integer, List<Integer>> orbData;
 
@@ -201,7 +193,7 @@ public class Orb extends Data {
 		return slots;
 	}
 
-	public int getSlots(int form, int totalLvl) {
+	public int getSlots(int form, int totalLvl) { // todo: send qualifying orbs in an array, like [true, false]
 		int t = 0;
 		for (int i = 0; i < slots; i++) {
 			if (limit[i] == 0 && form >= 2 || limit[i] == 1 && totalLvl >= 60)
