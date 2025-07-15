@@ -21,6 +21,7 @@ import common.util.unit.EneRand;
 import common.util.unit.Form;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("ForLoopReplaceableByForEach")
 public class StageBasis extends BattleObj {
@@ -99,10 +100,6 @@ public class StageBasis extends BattleObj {
 	 * Flag for whether spirit has been summoned or not
 	 */
 	public final boolean[][] spiritSummoned = new boolean[2][5];
-	/**
-	 * Summoner entity that has been spawned in the battle. Used for spirit summon positioning
-	 */
-	public final Entity[][] summoner = new Entity[2][5];
 
 	public final int[][] spiritEmphasizeCount = new int[2][5];
 	public final int[][] spiritEmphasizeStartTime = new int[2][5];
@@ -235,6 +232,15 @@ public class StageBasis extends BattleObj {
 
 	public void changeBG(Identifier<Background> id) {
 		theme = id;
+	}
+
+	public List<Entity> findEntitiesOf(int i, int j) {
+		List<Entity> ans = new ArrayList<>();
+		for (Entity ent : le) {
+			if (ent.dire == -1 && b.lu.efs[i][j] != null && ent.data == b.lu.efs[i][j].du)
+				ans.add(ent);
+		}
+		return ans;
 	}
 
 	public int entityCount(int d) {
@@ -503,7 +509,8 @@ public class StageBasis extends BattleObj {
 		if (f == null)
 			return false;
 
-		if (manual && f.du.getProc().SPIRIT.exists() && summonerSummoned[i][j] && summoner[i][j].anim.dead < 0 && !spiritSummoned[i][j]) {
+		List<Entity> summoners = findEntitiesOf(i, j).stream().filter(e -> e.anim.dead < 0).collect(Collectors.toList());
+		if (manual && f.du.getProc().SPIRIT.exists() && summonerSummoned[i][j] && !summoners.isEmpty() && !spiritSummoned[i][j]) {
 			if (spiritCooldown[i][j] > 0) {
 				CommonStatic.setSE(SE_SPEND_FAIL);
 				return false;
@@ -512,20 +519,20 @@ public class StageBasis extends BattleObj {
 			f = b.lu.spirits[i][j];
 			if (f == null)
 				return false;
-			if (entityCount(-1) >= maxNum - f.du.getWill()) {
+
+			if (entityCount(-1) >= maxNum - f.du.getWill() * summoners.size()) {
 				CommonStatic.setSE(SE_SPEND_FAIL);
 				return false;
 			}
 
 			CommonStatic.setSE(SE_SPIRIT_SUMMON);
-			EUnit su = f.getEntity(this, null, true);
 
-			// summoner.pos and not summoner.lastPosition
-			// actions are processed before the update so it's automatic for the spirit to spawn relative to the summoner last pos
-			// 800 + range and not ebase.pos + range because it doesn't respond to entity enemy base
-			su.added(-1, Math.max(800 + su.data.getRange(), Math.min(summoner[i][j].pos + SPIRIT_SUMMON_RANGE, ubase.pos)));
+			for (Entity summoner : summoners) {
+				EUnit su = f.getEntity(this, null, true);
+				su.added(-1, Math.max(800 + su.data.getRange(), Math.min(summoner.pos + SPIRIT_SUMMON_RANGE, ubase.pos)));
+				le.add(su);
+			}
 
-			le.add(su);
 			le.sort(Comparator.comparingInt(e -> e.layer));
 
 			spiritSummoned[i][j] = true;
@@ -568,7 +575,7 @@ public class StageBasis extends BattleObj {
 
 				return false;
 			}
-			if (f.du.getProc().SPIRIT.exists() && summonerSummoned[i][j] && summoner[i][j] != null) {
+			if (f.du.getProc().SPIRIT.exists() && summonerSummoned[i][j] && !findEntitiesOf(i, j).isEmpty()) {
 				if (manual)
 					CommonStatic.setSE(SE_SPEND_FAIL);
 
@@ -583,7 +590,6 @@ public class StageBasis extends BattleObj {
 			if (f.du.getProc().SPIRIT.exists()) {
 				summonerSummoned[i][j] = true;
 				spiritCooldown[i][j] = SPIRIT_SUMMON_DELAY;
-				summoner[i][j] = eu;
 			}
 			if (getDupeCount(rar) > 0) {
 				deployDupe[i][j][0] += getDupeCount(rar);
@@ -858,8 +864,7 @@ public class StageBasis extends BattleObj {
 				if (dead && e instanceof EUnit && e.getProc().SPIRIT.exists()) {
 					for (int i = 0; i < 2; i++) {
 						for (int j = 0; j < 5; j++) {
-							if (e == summoner[i][j]) {
-								summoner[i][j] = null;
+							if (findEntitiesOf(i, j).isEmpty()) {
 								summonerSummoned[i][j] = false;
 								spiritSummoned[i][j] = false;
 
