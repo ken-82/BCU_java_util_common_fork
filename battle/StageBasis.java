@@ -106,6 +106,7 @@ public class StageBasis extends BattleObj {
 
 	public final int[][] spiritEmphasizeCount = new int[2][5];
 	public final int[][] spiritEmphasizeStartTime = new int[2][5];
+	public final int[][][] deployDupe = new int[2][5][2]; // [count, delay]
 
 	public StageBasis(BattleField bf, EStage stage, BasisLU bas, int[] ints, long seed, boolean buttonDelayOn) {
 		b = bas;
@@ -532,13 +533,14 @@ public class StageBasis extends BattleObj {
 
 			return true;
 		} else if (locks[i][j] || manual) {
+			int rar = b.lu.fs[i][j].unit.rarity;
 			if (entityCount(-1) >= maxNum - f.du.getWill()) {
 				if (manual)
 					CommonStatic.setSE(SE_SPEND_FAIL);
 
 				return false;
 			}
-			if (maxRarityNum[b.lu.fs[i][j].unit.rarity] > -1 && entityCountRar(b.lu.fs[i][j].unit.rarity) >= maxRarityNum[b.lu.fs[i][j].unit.rarity] - b.lu.fs[i][j].du.getWill()) {
+			if (maxRarityNum[rar] > -1 && entityCountRar(rar) >= maxRarityNum[rar] - b.lu.fs[i][j].du.getWill()) {
 				if (manual)
 					CommonStatic.setSE(SE_SPEND_FAIL);
 
@@ -583,6 +585,11 @@ public class StageBasis extends BattleObj {
 				spiritCooldown[i][j] = SPIRIT_SUMMON_DELAY;
 				summoner[i][j] = eu;
 			}
+			if (getDupeCount(rar) > 0) {
+				deployDupe[i][j][0] += getDupeCount(rar);
+				if (deployDupe[i][j][1] == 0)
+					deployDupe[i][j][1] = getDupeDelay(rar);
+			}
 
 			le.add(eu);
 			le.sort(Comparator.comparingInt(e -> e.layer));
@@ -605,118 +612,6 @@ public class StageBasis extends BattleObj {
 			er.updateCopy((StageBasis) hardCopy(this), hardCopy(er.map.get(this)));
 	}
 
-	// -------------------- DEV_ONLY -------------------- //
-	private final int[][] transcription = {
-			{ 215,0},
-			{ 613,11},
-			{1029,2},
-			{ 947,0},
-			{1214,1},
-			{1251,9},
-			{ 537,2},
-			{ 623,1},
-			{ 848,4},
-			{ 670,2},
-			{1425,6},
-			{ 884,2},
-			{1318,9},
-			{ 720,3},
-			{ 201,1},
-			{ 238,0},
-			{ 428,1},
-			{ 407,2},
-			{ 796,4},
-			{ 264,1},
-			{ 798,5},
-			{ 724,3},
-			{ 397,2},
-			{1181,10},
-			{2221,11},
-			{1494,2},
-			{1317,1},
-			{1391,4},
-			{1234,9},
-			{ 898,1},
-			{ 850,2},
-			{ 863,3},
-			{ 825,6},
-			{ 540,0},
-			{ 899,4},
-			{ 328,0},
-			{ 553,1},
-			{ 498,2},
-			{1260,0},
-			{1259,8},
-			{ 494,1},
-			{2929,5},
-			{2512,9},
-			{1556,4},
-			{1463,3},
-			{ 931,6},
-			{ 401,0},
-			{ 489,1},
-			{ 746,2},
-			{ 685,0},
-			{ 725,1},
-			{1799,5},
-			{1280,6},
-			{ 778,4},
-			{1322,7},
-			{ 779,5},
-			{ 104,10},
-			{ 802,4},
-			{ 536,2},
-			{ 570,1},
-			{ 630,0},
-			{ 833,3},
-			{ 449,1},
-			{ 755,2},
-			{ 869,4},
-			{ 976,5},
-			{ 647,2},
-			{1176,3},
-			{1084,4},
-			{1095,0},
-			{1209,9},
-			{ 349,1},
-			{ 704,2},
-			{ 520,0},
-			{ 764,5},
-			{ 719,2},
-			{1946,4},
-			{1389,3},
-			{1046,6},
-			{ 741,2},
-			{2606,1},
-			{2652,7},
-			{1757,9},
-			{ 992,5},
-			{ 772,4},
-			{ 798,6},
-			{ 679,10},
-			{1727,8},
-			{ 894,3},
-			{ 986,5},
-			{1067,6},
-			{ 754,5},
-			{ 452,1},
-			{ 383,2},
-			{ 816,5},
-			{1224,6},
-			{1040,5},
-			{1491,5},
-			{2304,5},
-			{3499,2},
-			{3295,1},
-			{3450,0},
-			{3863,1},
-			{3998,2},
-			{3807,9},
-			{3429,1}
-	};
-	private int tranIdx = 0;
-	// -------------------- DEV_ONLY -------------------- //
-
 	/**
 	 * process actions and add enemies from stage first then update each entity
 	 * and receive attacks then excuse attacks and do post update then delete dead
@@ -730,25 +625,25 @@ public class StageBasis extends BattleObj {
 			bgEffectInitialized = true;
 		}
 
-		// -------------------- DEV_ONLY -------------------- //
-		if(false) {
-			if (time == 1)
-				tranIdx = 0;
-			if (tranIdx < transcription.length) {
-				if (money / 100 == transcription[tranIdx][0]) {
-					if(transcription[tranIdx][1] < 10) {
-						act_spawn(transcription[tranIdx][1] / 5, transcription[tranIdx][1] % 5, true);
-					} else {
-						if(transcription[tranIdx][1] == 10)
-							act_can();
-						else
-							act_mon();
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 5; j++) {
+				if (deployDupe[i][j][0] > 0)
+					while (deployDupe[i][j][0] > 0 && deployDupe[i][j][1] == 0) {
+						deployDupe[i][j][0]--;
+						EForm f = b.lu.efs[i][j];
+						EUnit eu = b.lu.efs[i][j].getEntity(this, new int[] {i, j}, false);
+						eu.added(-1, st.len - 700);
+						le.add(eu);
+						deployDupe[i][j][1] = getDupeDelay(f.du.getPack().unit.rarity);
 					}
-					tranIdx++;
-				}
+				if (deployDupe[i][j][1] > 0)
+					deployDupe[i][j][1]--;
 			}
 		}
-		// -------------------- DEV_ONLY -------------------- //
+
+		le.sort(Comparator.comparingInt(e -> e.layer));
+
+		// i would prefer "dev only" code to be on its own separate branch so it's not clogging main branch, im too lazy to do that, sorry  -- red
 
 		if (buttonDelay > 0 && --buttonDelay == 0) {
 			act_spawn(selectedUnit[0], selectedUnit[1], true);
@@ -773,17 +668,9 @@ public class StageBasis extends BattleObj {
 			}
 		}
 
-		if (s_stop == 0 || (ebase.getAbi() & AB_TIMEI) != 0) {
-			// ebase.update();
-			// ebase.update2();
-		}
-
 		if (s_stop == 0) {
 			if(bgEffect != null)
 				bgEffect.update(st.len, battleHeight, midH);
-
-			// ubase.update();
-			// ubase.update2();
 
 			if (activeGuard == 0 && est.hasBoss(true, false))
 				activeGuard = 1;
@@ -1253,5 +1140,13 @@ public class StageBasis extends BattleObj {
 			return -1;
 		else
 			return dire == -1 ? est.lim.stageLimit.unitSpeedLimit : est.lim.stageLimit.enemySpeedLimit;
+	}
+
+	public int getDupeCount(int rar) {
+		return est.lim.stageLimit == null ? 0 : est.lim.stageLimit.deployDuplicationTimes[rar];
+	}
+
+	public int getDupeDelay(int rar) {
+		return est.lim.stageLimit == null ? 0 : est.lim.stageLimit.deployDuplicationDelay[rar];
 	}
 }
