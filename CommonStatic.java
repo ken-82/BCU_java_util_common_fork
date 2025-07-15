@@ -78,6 +78,7 @@ public class CommonStatic {
 		public int[][] filter;
 
 		public final VImg[] rarity = new VImg[6];
+		public final VImg[] maxcat = new VImg[12];
 
 		// Form cuts
 		public ImgCut unicut, udicut;

@@ -311,9 +311,10 @@ public class Res extends ImgCore {
 
 		for(int i = 0; i < aux.timer.length; i++)
 			aux.timer[i] = new VImg(parts[i + 83]);
-
 		for (int i = 0; i < aux.rarity.length; i++)
 			aux.rarity[i] = new VImg(parts[i + 135]);
+		for (int i = 0; i < aux.maxcat.length; i++)
+			aux.maxcat[i] = new VImg(parts[i + 141]);
 
 		ImgCut moneyCut = ImgCut.newIns("./org/page/moneySign.imgcut");
 		VImg moneyImg = new VImg("./org/page/moneySign.png");
