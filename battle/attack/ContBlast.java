@@ -23,7 +23,7 @@ public class ContBlast extends ContAb {
     @Override
     public void draw(FakeGraphics gra, P p, float psiz) {
         FakeTransform at = gra.getTransform();
-        P s = new P(p.x + (80 * -atk.dire) * psiz, p.y); // todo: correct offset for enemies
+        P s = new P(atk.dire == -1 ? p.x + (100 * psiz) : p.x - (30 * psiz), p.y); // todo: correct offset for enemies
         anim.draw(gra, s, psiz);
         P.delete(s);
         gra.setTransform(at);

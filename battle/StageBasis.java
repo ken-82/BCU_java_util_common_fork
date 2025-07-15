@@ -3,6 +3,7 @@ package common.battle;
 import common.CommonStatic;
 import common.battle.attack.AttackAb;
 import common.battle.attack.ContAb;
+import common.battle.data.MaskUnit;
 import common.battle.entity.*;
 import common.pack.Identifier;
 import common.util.BattleObj;
@@ -238,6 +239,15 @@ public class StageBasis extends BattleObj {
 			ans += ((EEnemy)ebase).data.getWill() + 1;
 		for (Entity ent : le) {
 			if (ent.dire == d && !ent.dead)
+				ans += ent.data.getWill() + 1;
+		}
+		return ans;
+	}
+
+	public int entityCountRar(int r) {
+		int ans = 0;
+		for (Entity ent : le) {
+			if (ent.dire == -1 && !ent.dead && ((MaskUnit) ent.data).getPack().unit.rarity == r)
 				ans += ent.data.getWill() + 1;
 		}
 		return ans;
@@ -525,26 +535,28 @@ public class StageBasis extends BattleObj {
 
 				return false;
 			}
+			if (maxRarityNum[b.lu.fs[i][j].unit.rarity] > -1 && entityCountRar(b.lu.fs[i][j].unit.rarity) >= maxRarityNum[b.lu.fs[i][j].unit.rarity] - b.lu.fs[i][j].du.getWill()) {
+				if (manual)
+					CommonStatic.setSE(SE_SPEND_FAIL);
 
+				return false;
+			}
 			if (elu.cool[i][j] > 0) {
-				if(manual) {
+				if (manual) {
 					CommonStatic.setSE(SE_SPEND_FAIL);
 				}
 
 				return false;
 			}
-
 			if (elu.price[i][j] == -1) {
 				return false;
 			}
-
 			if (elu.price[i][j] > money) {
 				if (manual)
 					CommonStatic.setSE(SE_SPEND_FAIL);
 
 				return false;
 			}
-
 			if (f.du.getProc().SPIRIT.exists() && summonerSummoned[i][j] && summoner[i][j] != null) {
 				if (manual)
 					CommonStatic.setSE(SE_SPEND_FAIL);
@@ -553,11 +565,8 @@ public class StageBasis extends BattleObj {
 			}
 
 			CommonStatic.setSE(SE_SPEND_SUC);
-
 			elu.get(i, j);
-
 			EUnit eu = f.getEntity(this, new int[] {i, j}, false);
-
 			eu.added(-1, st.len - 700);
 
 			if (f.du.getProc().SPIRIT.exists()) {

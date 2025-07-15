@@ -62,6 +62,12 @@ public class Res extends ImgCore {
 		return coor.draw(input);
 	}
 
+	public static void getRarity(int r, SymCoord coor) {
+		BCAuxAssets aux = CommonStatic.getBCAssets();
+		FakeImage rarity = aux.rarity[r].getImg();
+		coor.draw(rarity);
+	}
+
 	public static P getMoney(int mon, int max, SymCoord sym) {
 		BCAuxAssets aux = CommonStatic.getBCAssets();
 		int[] val0 = getLab(mon);
@@ -305,6 +311,9 @@ public class Res extends ImgCore {
 
 		for(int i = 0; i < aux.timer.length; i++)
 			aux.timer[i] = new VImg(parts[i + 83]);
+
+		for (int i = 0; i < aux.rarity.length; i++)
+			aux.rarity[i] = new VImg(parts[i + 135]);
 
 		ImgCut moneyCut = ImgCut.newIns("./org/page/moneySign.imgcut");
 		VImg moneyImg = new VImg("./org/page/moneySign.png");
