@@ -862,15 +862,10 @@ public class StageBasis extends BattleObj {
 				boolean dead = e.anim.dead == 0 && e.summoned.isEmpty();
 
 				if (dead && e instanceof EUnit && e.getProc().SPIRIT.exists()) {
-					for (int i = 0; i < 2; i++) {
-						for (int j = 0; j < 5; j++) {
-							if (findEntitiesOf(i, j).isEmpty()) {
-								summonerSummoned[i][j] = false;
-								spiritSummoned[i][j] = false;
-
-								break;
-							}
-						}
+					int[] index = ((EUnit) e).index;
+					if (findEntitiesOf(index[0], index[1]).stream().noneMatch(ent -> ent.anim.dead != 0)) {
+						summonerSummoned[index[0]][index[1]] = false;
+						spiritSummoned[index[0]][index[1]] = false;
 					}
 				}
 
