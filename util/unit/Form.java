@@ -65,7 +65,6 @@ public class Form extends Animable<AnimU<?>, AnimU.UType> implements BasedCopabl
 	public final Identifier<Unit> uid;
 	@JsonField
 	public int fid;
-	public Orb orbs = null;
 
 	@JsonField(io = JsonField.IOType.R)
 	public String name = "";
@@ -82,7 +81,6 @@ public class Form extends Animable<AnimU<?>, AnimU.UType> implements BasedCopabl
 		du = null;
 		unit = u;
 		uid = unit.id;
-		orbs = new Orb(-1);
 	}
 
 	public Form(Unit u, int f, String str, AnimU<?> ac, CustomUnit cu) {
@@ -93,7 +91,6 @@ public class Form extends Animable<AnimU<?>, AnimU.UType> implements BasedCopabl
 		anim = ac;
 		du = cu;
 		cu.pack = this;
-		orbs = new Orb(-1);
 	}
 
 	//Used for BC units

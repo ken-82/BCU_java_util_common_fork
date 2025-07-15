@@ -41,7 +41,7 @@ public class Orb extends Data {
 
 				for (int i = 0; i < strs.length; i++) {
 					if (i >= orbTrait.length) {
-						CommonStatic.ctx.printErr(Context.ErrType.WARN, "unknown orb trait(s) " + i);
+						CommonStatic.ctx.printErr(Context.ErrType.WARN, "unknown orb trait line(s): index " + i);
 						break;
 					}
 					int t = CommonStatic.parseIntN(strs[i]);
@@ -105,30 +105,23 @@ public class Orb extends Data {
 				}
 
 				String[] strs = line.trim().split(",");
-
-				if (strs.length != 2 && strs.length != 4) {
+				if (strs.length != 2 && strs.length != 2 + CommonStatic.parseIntN(strs[1]))
 					continue;
-				}
 
 				int id = CommonStatic.parseIntN(strs[0]);
 				int slots = CommonStatic.parseIntN(strs[1]);
-
 				Unit u = Identifier.parseInt(id, Unit.class).get();
-
-				if (u == null || u.forms.length != 3) {
+				if (u == null || u.forms.length < 3)
 					continue;
-				}
 
 				Form f = u.forms[2];
-
-				if (f == null) {
+				if (f == null)
 					continue;
-				}
 
 				if(strs.length == 2) {
-					f.orbs = new Orb(slots);
+					f.unit.orbs = new Orb(slots);
 				} else {
-					f.orbs = new Orb(slots, new int[] { CommonStatic.parseIntN(strs[2]), CommonStatic.parseIntN(strs[3]) });
+					f.unit.orbs = new Orb(slots, new int[] { CommonStatic.parseIntN(strs[2]), CommonStatic.parseIntN(strs[3]) });
 				}
 			}
 
@@ -206,6 +199,14 @@ public class Orb extends Data {
 
 	public int getSlots() {
 		return slots;
+	}
+
+	public int getSlots(int form, int totalLvl) {
+		int t = 0;
+		for (int i = 0; i < slots; i++)
+			if (limit[i] == 0 && form >= 2 || limit[i] == 1 && totalLvl >= 60)
+				t++;
+		return t;
 	}
 
 	public int[] getLimits() {

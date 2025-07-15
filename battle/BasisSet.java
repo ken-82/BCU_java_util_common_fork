@@ -98,7 +98,7 @@ public class BasisSet extends Basis implements Copable<BasisSet> {
 								}
 							}
 
-							if(filteredOrb.size() == 0) {
+							if (filteredOrb.isEmpty()) {
 								l.setOrbs(null);
 							} else {
 								int[][] newOrb = new int[filteredOrb.size()][];

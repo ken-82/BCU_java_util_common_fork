@@ -49,7 +49,7 @@ public class CustomUnit extends CustomEntity implements MaskUnit, Cloneable {
 
 	@Override
 	public Orb getOrb() {
-		return pack.orbs;
+		return pack.unit.orbs;
 	}
 
 	@Override
