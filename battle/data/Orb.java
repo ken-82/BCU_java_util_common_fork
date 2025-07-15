@@ -203,9 +203,14 @@ public class Orb extends Data {
 
 	public int getSlots(int form, int totalLvl) {
 		int t = 0;
-		for (int i = 0; i < slots; i++)
+		for (int i = 0; i < slots; i++) {
 			if (limit[i] == 0 && form >= 2 || limit[i] == 1 && totalLvl >= 60)
 				t++;
+			else if (limit[i] != 0 && limit[i] != 1) {
+				System.out.println("missing orb limit handling for: " + limit[i]);
+				t++;
+			}
+		}
 		return t;
 	}
 
