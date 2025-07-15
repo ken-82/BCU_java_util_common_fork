@@ -119,16 +119,17 @@ public class Orb extends Data {
 
 			String pre = "./org/page/orb/equipment_";
 			VImg type = new VImg(pre + "effect.png");
-			ImgCut it = ImgCut.newIns(pre + "effect.imgcut");
-			aux.TYPES = it.cut(type.getImg());
+			aux.TYPES[0] = ImgCut.newIns(pre + "effect.imgcut").cut(type.getImg());
+			VImg typeS = new VImg(pre + "effect_s.png");
+			aux.TYPES[1] = ImgCut.newIns(pre + "effect_s.png").cut(typeS.getImg());
 
 			VImg trait = new VImg(pre + "attribute.png");
-			ImgCut itr = ImgCut.newIns(pre + "attribute.imgcut");
-			aux.TRAITS = itr.cut(trait.getImg());
+			aux.TRAITS[0] = ImgCut.newIns(pre + "attribute.imgcut").cut(trait.getImg());
+			VImg traitS = new VImg(pre + "attribute_s.png");
+			aux.TRAITS[0] = ImgCut.newIns(pre + "attribute_s.imgcut").cut(traitS.getImg());
 
 			VImg grade = new VImg(pre + "grade.png");
-			ImgCut ig = ImgCut.newIns(pre + "grade.imgcut");
-			aux.GRADES = ig.cut(grade.getImg());
+			aux.GRADES[0] = ImgCut.newIns(pre + "grade.imgcut").cut(grade.getImg());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
