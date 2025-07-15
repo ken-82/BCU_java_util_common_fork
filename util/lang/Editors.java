@@ -621,6 +621,8 @@ public class Editors {
 
 		map().put("IMUSEAL", imu);
 
+		map().put("IMUBLAST", imu);
+
 		map().put("IMUMOVING", wavei);
 
 		map().put("IMUCANNON", new EditControl<>(Proc.CANNI.class, (t) -> {
@@ -692,6 +694,10 @@ public class Editors {
 
 		map().put("METALKILL", new EditControl<>(Proc.MULT.class, (t) -> {
 			t.mult = Math.max(0, Math.min(100, t.mult));
+		}));
+
+		map().put("BLAST", new EditControl<>(Proc.BLAST.class, (t) -> {
+			t.prob = Math.max(0, Math.min(100, t.prob));
 		}));
 	}
 
