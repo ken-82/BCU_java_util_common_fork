@@ -47,27 +47,56 @@ public class StageLimit extends Data implements BattleStatic {
         }
 
         sl.maxMoney = maxMoney;
-        sl.maxUnitSpawn = maxUnitSpawn;
         sl.globalCooldown = globalCooldown;
         sl.globalCost = globalCost;
-
-        sl.bannedCatCombo.addAll(bannedCatCombo);
+        sl.maxUnitSpawn = maxUnitSpawn;
 
         sl.cooldownMultiplier = cooldownMultiplier.clone();
         sl.costMultiplier = costMultiplier.clone();
         sl.rarityDeployLimit = rarityDeployLimit.clone();
 
+        sl.deployDuplicationTimes = deployDuplicationTimes.clone();
+        sl.deployDuplicationDelay = deployDuplicationDelay.clone();
+
+        sl.bannedCatCombo.addAll(bannedCatCombo);
+        sl.coolStart = coolStart;
+        sl.cannonMultiplier = cannonMultiplier;
+
+        sl.unitSpeedOverride = unitSpeedOverride;
+        sl.enemySpeedOverride = enemySpeedOverride;
+
+
         return sl;
     }
 
-    public StageLimit combine(StageLimit second) {
-        StageLimit combined = new StageLimit();
-        combined.maxMoney = second.maxMoney == 0 ? maxMoney : second.maxMoney;
-        combined.globalCooldown = second.globalCooldown == 0 ? globalCooldown : second.globalCooldown;
-        combined.globalCost = second.globalCost != -1 ? globalCost : second.globalCost;
-        combined.maxUnitSpawn = second.maxUnitSpawn == 0 ? maxUnitSpawn : second.maxUnitSpawn;
-        combined.bannedCatCombo.addAll(bannedCatCombo);
-        combined.bannedCatCombo.addAll(second.bannedCatCombo);
-        return combined;
+    public StageLimit combine(StageLimit sec) {
+        StageLimit c = clone();
+        if (sec.maxMoney != 0)
+            c.maxMoney = sec.maxMoney;
+        if (sec.globalCooldown != 0)
+            c.globalCooldown = sec.globalCooldown;
+        if (sec.globalCost != -1)
+            c.globalCost = sec.globalCost;
+        if (sec.maxUnitSpawn != -1)
+            c.maxUnitSpawn = sec.maxUnitSpawn;
+
+        c.cooldownMultiplier = sec.cooldownMultiplier.clone();
+        c.costMultiplier = sec.costMultiplier.clone();
+        for (int i = 0; i < sec.rarityDeployLimit.length; i++)
+            if (sec.rarityDeployLimit[i] != -1)
+                c.rarityDeployLimit[i] = sec.rarityDeployLimit[i];
+
+        c.deployDuplicationTimes = sec.deployDuplicationTimes.clone();
+        c.deployDuplicationDelay = sec.deployDuplicationDelay.clone();
+
+        c.coolStart = sec.coolStart;
+        c.cannonMultiplier = sec.cannonMultiplier;
+
+        if (sec.unitSpeedOverride != -1)
+            c.unitSpeedOverride = sec.unitSpeedOverride;
+        if (sec.enemySpeedOverride != -1)
+            c.enemySpeedOverride = sec.enemySpeedOverride;
+
+        return c;
     }
 }
