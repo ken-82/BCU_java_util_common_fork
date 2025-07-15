@@ -12,7 +12,7 @@ public class StageLimit extends Data implements BattleStatic {
     public int maxMoney = 0;
     public int globalCooldown = 0;
     public int globalCost = -1; // todo: see if i need to update core for global cost change (0 to -1)
-    public int maxUnitSpawn = 0;
+    public int maxUnitSpawn = -1;
 
     public int[] cooldownMultiplier = { 100, 100, 100, 100, 100, 100 };
     public int[] costMultiplier = { 100, 100, 100, 100, 100, 100 };

@@ -57,6 +57,7 @@ public class StageBasis extends BattleObj {
 	public final float boss_spawn;
 	public final int[] shakeCoolDown = {0, 0};
 	public int activeGuard = -1;
+	public int maxCatSpawns = -1;
 
 	public float siz;
 	public int work_lv, money, maxMoney, cannon, maxCannon, upgradeCost, maxNum, pos;
@@ -140,8 +141,10 @@ public class StageBasis extends BattleObj {
 		int max;
 		if (est.lim != null) {
 			max = est.lim.num;
-			if (est.lim.stageLimit != null)
+			if (est.lim.stageLimit != null) {
+				maxCatSpawns = est.lim.stageLimit.maxUnitSpawn;
 				maxRarityNum = est.lim.stageLimit.rarityDeployLimit;
+			}
 		} else {
 			max = 50;
 		}
@@ -541,6 +544,12 @@ public class StageBasis extends BattleObj {
 
 				return false;
 			}
+			if (maxCatSpawns == 0) {
+				if (manual)
+					CommonStatic.setSE(SE_SPEND_FAIL);
+
+				return false;
+			}
 			if (elu.cool[i][j] > 0) {
 				if (manual) {
 					CommonStatic.setSE(SE_SPEND_FAIL);
@@ -579,8 +588,9 @@ public class StageBasis extends BattleObj {
 			le.sort(Comparator.comparingInt(e -> e.layer));
 
 			money -= elu.price[i][j];
-
 			unitRespawnTime = 1;
+			if (maxCatSpawns > 0)
+				maxCatSpawns--;
 
 			return true;
 		}
