@@ -245,7 +245,7 @@ public class EUnit extends Entity {
 
 	@Override
 	protected void updateMove(float extmov) {
-		extmov = (float) (data.getSpeed() * basis.b.getInc(C_SPE) / 50) / 4f;
+		extmov = (float) ((data.getSpeed() > 0 && basis.getGlobalSpeed(-1) > -1 ? basis.getGlobalSpeed(-1) : data.getSpeed()) * basis.b.getInc(C_SPE) / 50) / 4f;
 		super.updateMove(extmov);
 	}
 

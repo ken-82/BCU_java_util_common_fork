@@ -1237,4 +1237,11 @@ public class StageBasis extends BattleObj {
 		else
 			return est.lim.stageLimit.cannonMultiplier;
 	}
+
+	public int getGlobalSpeed(int dire) {
+		if (est.lim.stageLimit == null)
+			return -1;
+		else
+			return dire == -1 ? est.lim.stageLimit.unitSpeedLimit : est.lim.stageLimit.enemySpeedLimit;
+	}
 }
