@@ -35,6 +35,7 @@ public class StageLimit extends Data implements BattleStatic {
 
     }
 
+    @Override
     public StageLimit clone() {
         StageLimit sl;
 
