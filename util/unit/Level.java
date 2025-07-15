@@ -45,8 +45,8 @@ public class Level implements BattleStatic, LevelInterface {
 		if(coin != null) {
 			int[] talents = new int[coin.max.length];
 
-			if(arr.length > 2) {
-				System.arraycopy(arr, 2, talents, 0, arr.length - 2);
+			for (int i = 0; i < Math.min(arr.length - 2, talents.length); i++) {
+				talents[i] = arr[i + 2];
 			}
 
 			lv.setTalents(talents);
