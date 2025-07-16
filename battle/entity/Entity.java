@@ -578,7 +578,7 @@ public abstract class Entity extends AbEntity {
 			}
 		}
 
-		private boolean deathSurge = false;
+		private int deathSurge = 0;
 
 		/**
 		 * set kill anim
@@ -590,9 +590,12 @@ public abstract class Entity extends AbEntity {
 				return;
 			}
 
-			if (e.getProc().DEATHSURGE.perform(e.basis.r)) {
-				deathSurge = true;
+			if (e.getProc().DEATHSURGE.perform(e.basis.r))
+				deathSurge |= 1;
+			else if (e.getProc().MINIDEATHSURGE.perform(e.basis.r))
+				deathSurge |= 2;
 
+			if (deathSurge != 0) {
 				e.weaks.list.clear();
 				status[P_WEAK] = new int[PROC_WIDTH];
 
@@ -642,8 +645,8 @@ public abstract class Entity extends AbEntity {
 			if (anim.done() && anim.type == UType.ENTER)
 				setAnim(UType.IDLE, true);
 			if (dead >= 0) {
-				if (deathSurge && soul.len() - dead == 21) // 21 is guessed delay compared to BC
-					e.aam.getDeathSurge();
+				if (deathSurge > 0 && soul.len() - dead == 21) // 21 is guessed delay compared to BC
+					e.aam.getDeathSurge(deathSurge);
 
 				if (e.data.getResurrection() != null) {
 					AtkDataModel adm = e.data.getResurrection();

@@ -352,7 +352,7 @@ public class Treasure extends Data {
 
 					for(int j = 0; j < orbType.size(); j++) {
 						if(eTraits.contains(orbType.get(j))) {
-							ini *= 1 - ORB_STR_DEF_MULTI[orbs[i][ORB_GRADE]] / 100.0;
+							ini *= 1 - ORB_STR_DEF_MULTI[orbs[i][ORB_GRADE]] / 100.0f;
 
 							break;
 						}

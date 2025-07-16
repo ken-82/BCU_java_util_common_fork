@@ -77,22 +77,27 @@ public class EUnit extends Entity {
 		if (orbs == null)
 			return;
 		int dSurge = -1, coloSlay = -1, canonRe = -1, imuAtk = -1, mapBuff = -1;
-		for (int[] orb : level.getOrbs()) {
+		for (int[] orb : orbs) {
 			int id = orb[0];
-			System.out.println(b.est.s.getCont().getCont().getSID());
 			if (id == ORB_SOL_BUFF && b.est.s.getCont().getCont().getSID().equals("000000"))
 				mapBuff = Math.max(mapBuff, orb[2]);
 			else if (id == ORB_UL_BUFF && b.est.s.getCont().getCont().getSID().equals("000013"))
 				mapBuff = Math.max(mapBuff, orb[2]);
 			if (!isOrbBoosted)
 				continue;
+			else
+				orbProc = getProc().clone();
 			if (id == ORB_DEATH_SURGE)
 				dSurge = Math.max(dSurge, orb[2]);
 		}
 		if (dSurge != -1) {
-
+			orbProc.MINIDEATHSURGE.prob = 100;
+			orbProc.MINIDEATHSURGE.dis_0 = ORB_DEATH_SURGE_SPAWN_MIN;
+			orbProc.MINIDEATHSURGE.dis_1 = ORB_DEATH_SURGE_SPAWN_MAX;
+			orbProc.MINIDEATHSURGE.time = 20;
+			orbProc.MINIDEATHSURGE.mult = ORB_DEATH_SURGE_MULT[dSurge];
 		}
-		if (mapBuff != -1) // todo: handle attack
+		if (mapBuff != -1)
 			maxH = health = health * (100 + ORB_LEGEND_HEATLH[legendGrade = mapBuff]) / 100;
 	}
 

@@ -165,17 +165,29 @@ public abstract class AtkModelEntity extends AtkModelAb {
 	/**
 	 * Generate death surge when this entity is killed and the surge procs
 	 */
-	public void getDeathSurge() {
-		Proc p = Proc.blank();
-		int atk = getAttack(0, p);
-		AttackSimple as = new AttackSimple(e, this, atk, e.traits, getAbi(), p, 0, 0, e.data.getAtkModel(0), 0, false);
-		Proc.VOLC ds = e.getProc().DEATHSURGE;
-		int addp = ds.dis_0 + (int) (b.r.nextFloat() * (ds.dis_1 - ds.dis_0));
-		float p0 = getPos() + getDire() * addp;
-		float sta = p0 + (getDire() == 1 ? W_VOLC_PIERCE : W_VOLC_INNER);
-		float end = p0 - (getDire() == 1 ? W_VOLC_INNER : W_VOLC_PIERCE);
-
-		new ContVolcano(new AttackVolcano(e, as, sta, end, Data.WT_VOLC), p0, e.layer, ds.time, ds.dis_0, ds.dis_1, 0);
+	public void getDeathSurge(int d) {
+		if ((d & 1) > 0) {
+			Proc p = Proc.blank();
+			int atk = getAttack(0, p);
+			AttackSimple as = new AttackSimple(e, this, atk, e.traits, getAbi(), p, 0, 0, e.data.getAtkModel(0), 0, false);
+			Proc.VOLC ds = e.getProc().DEATHSURGE;
+			int addp = ds.dis_0 + (int) (b.r.nextFloat() * (ds.dis_1 - ds.dis_0));
+			float p0 = getPos() + getDire() * addp;
+			float sta = p0 + (getDire() == 1 ? W_VOLC_PIERCE : W_VOLC_INNER);
+			float end = p0 - (getDire() == 1 ? W_VOLC_INNER : W_VOLC_PIERCE);
+			new ContVolcano(new AttackVolcano(e, as, sta, end, Data.WT_VOLC), p0, e.layer, ds.time, ds.dis_0, ds.dis_1, 0);
+		}
+		if ((d & 2) > 0) {
+			Proc p = Proc.blank();
+			int atk = getAttack(0, p);
+			AttackSimple as = new AttackSimple(e, this, atk, e.traits, getAbi(), p, 0, 0, e.data.getAtkModel(0), 0, false);
+			Proc.MINIVOLC ds = e.getProc().MINIDEATHSURGE;
+			int addp = ds.dis_0 + (int) (b.r.nextFloat() * (ds.dis_1 - ds.dis_0));
+			float p0 = getPos() + getDire() * addp;
+			float sta = p0 + (getDire() == 1 ? W_VOLC_PIERCE : W_VOLC_INNER);
+			float end = p0 - (getDire() == 1 ? W_VOLC_INNER : W_VOLC_PIERCE);
+			new ContVolcano(new AttackVolcano(e, as, sta, end, Data.WT_MIVC), p0, e.layer, ds.time, ds.dis_0, ds.dis_1, 0);
+		}
 	}
 
 	@Override
