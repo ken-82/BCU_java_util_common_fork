@@ -60,7 +60,7 @@ public class EUnit extends Entity {
 
 	public final boolean isSpirit;
 	public final boolean isOrbBoosted;
-	public int legendGrade = -1;
+	public int legendGrade = -1, coloGrade = -1;
 	public Proc orbProc;
 
 	public EUnit(StageBasis b, MaskUnit de, EAnimU ea, float d0, int layer0, int layer1, Level level, PCoin pc, int[] index, boolean isSpirit) {
@@ -93,13 +93,13 @@ public class EUnit extends Entity {
 		int[][] orbs = level.getOrbs();
 		if (orbs == null)
 			return;
-		int dSurge = -1, coloSlay = -1, canonRe = -1, imuAtk = -1, mapBuff = -1; // todo: figure out a better way to do this, i don't like this but it works
+		int dSurge = -1, canonRe = -1, imuAtk = -1; // todo: figure out a better way to do this, i don't like this but it works
 		for (int[] orb : orbs) {
 			int id = orb[0];
 			if (id < ORB_DEATH_SURGE)
 				continue;
 			if (id == ORB_SOL_BUFF && basis.est.s.getCont().getCont().getSID().equals("000000") || id == ORB_UL_BUFF && basis.est.s.getCont().getCont().getSID().equals("000013")) {
-				mapBuff = Math.max(mapBuff, orb[2]);
+				legendGrade = Math.max(legendGrade, orb[2]);
 				continue;
 			}
 			if (orbProc == null)
@@ -125,6 +125,8 @@ public class EUnit extends Entity {
 				dSurge = Math.max(dSurge, orb[2]);
 			else if (id == ORB_CANNON_RECHARGE)
 				canonRe = Math.max(dSurge, orb[2]);
+			else if (id == ORB_BARON_KILLER)
+				coloGrade = Math.max(coloGrade, orb[2]);
 		}
 		if (dSurge != -1) {
 			orbProc.MINIDEATHSURGE.prob = 100;
@@ -136,8 +138,8 @@ public class EUnit extends Entity {
 		if (canonRe != -1) {
 			orbProc.CANONCHARGE.mult = 50; // FIXME
 		}
-		if (mapBuff != -1)
-			maxH = health = health * (100 + ORB_LEGEND_HEATLH[legendGrade = mapBuff]) / 100;
+		if (legendGrade != -1)
+			maxH = health = health * (100 + ORB_LEGEND_HEATLH[legendGrade]) / 100;
 	}
 
 	@Override
@@ -240,18 +242,14 @@ public class EUnit extends Entity {
 		if (atk instanceof AttackWave && atk.waveType == WT_MINI) {
 			ans = (int) ((float) ans * atk.getProc().MINIWAVE.multi / 100.0);
 		}
-
 		if (atk instanceof AttackVolcano && atk.waveType == WT_MIVC) {
 			ans = (int) ((float) ans * atk.getProc().MINIVOLC.mult / 100.0);
 		}
 
 		if (atk.model instanceof AtkModelEnemy && status[P_CURSE][0] == 0) {
 			ArrayList<Trait> sharedTraits = new ArrayList<>(atk.trait);
-
 			sharedTraits.retainAll(traits);
-
 			boolean isAntiTraited = targetTraited(atk.trait);
-
 			for (Trait t : traits) {
 				if (t.BCTrait || sharedTraits.contains(t))
 					continue;
@@ -261,29 +259,28 @@ public class EUnit extends Entity {
 
 			if ((getAbi() & AB_GOOD) != 0)
 				ans = (int) (ans * basis.b.t().getGOODDEF(atk.trait, sharedTraits, ((MaskUnit)data).getOrb(), level, basis.isBanned(C_GOOD)));
-
 			if ((getAbi() & AB_RESIST) != 0)
 				ans = (int) (ans * basis.b.t().getRESISTDEF(atk.trait, sharedTraits, ((MaskUnit)data).getOrb(), level, basis.isBanned(Data.C_RESIST)));
-
 			if (!sharedTraits.isEmpty() && (getAbi() & AB_RESISTS) != 0)
 				ans = (int) (ans * basis.b.t().getRESISTSDEF(sharedTraits));
 		}
 
 		if (atk.trait.contains(UserProfile.getBCData().traits.get(TRAIT_WITCH)) && (getAbi() & AB_WKILL) > 0)
 			ans = (int) (ans * basis.b.t().getWKDef(basis.isBanned(Data.C_WKILL)));
-
 		if (atk.trait.contains(UserProfile.getBCData().traits.get(TRAIT_EVA)) && (getAbi() & AB_EKILL) > 0)
 			ans = (int) (ans * basis.b.t().getEKDef(basis.isBanned(Data.C_EKILL)));
 
 		if (isBase)
 			ans = (int) (ans * (1 + atk.getProc().ATKBASE.mult / 100.0));
 
-		if (atk.trait.contains(UserProfile.getBCData().traits.get(TRAIT_BARON)) && (getAbi() & AB_BAKILL) > 0)
-			ans = (int) (ans * 0.7);
-
+		if (atk.trait.contains(UserProfile.getBCData().traits.get(TRAIT_BARON))) {
+			if ((getAbi() & AB_BAKILL) > 0)
+				ans = (int) (ans * 0.7);
+			else if (coloGrade != -1)
+				ans = ans * ORB_BARON_DEFENSE[coloGrade] / 100;
+		}
 		if (atk.trait.contains(UserProfile.getBCData().traits.get(Data.TRAIT_BEAST)) && getProc().BSTHUNT.active > 0)
 			ans = (int) (ans * 0.6);
-
 		if (atk.trait.contains(UserProfile.getBCData().traits.get(Data.TRAIT_SAGE)) && (getAbi() & AB_SKILL) > 0)
 			ans = (int) (ans * SUPER_SAGE_HUNTER_HP);
 
@@ -327,8 +324,7 @@ public class EUnit extends Entity {
 		for (int[] line : level.getOrbs()) {
 			if (line.length == 0)
 				continue;
-
-			if (line[ORB_TYPE] != Data.ORB_ATK)
+			if (line[ORB_TYPE] != ORB_ATK)
 				continue;
 
 			List<Trait> orbType = Trait.convertOrb(line[ORB_TRAIT]);

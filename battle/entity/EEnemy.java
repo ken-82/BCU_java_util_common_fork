@@ -97,8 +97,12 @@ public class EEnemy extends Entity {
 		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_EVA)) && (atk.abi & AB_EKILL) > 0)
 			ans = (int) (ans * basis.b.t().getEKAtk(basis.isBanned(Data.C_EKILL)));
 
-		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_BARON)) && (atk.abi & AB_BAKILL) > 0)
-			ans = (int) (ans * 1.6);
+		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_BARON))) {
+			if ((atk.abi & AB_BAKILL) > 0)
+				ans = (int) (ans * 1.6);
+			if (((EUnit) atk.attacker).coloGrade != -1)
+				ans = ans * ORB_BARON_DAMAGE[((EUnit) atk.attacker).coloGrade] / 100;
+		}
 
 		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_BEAST)) && atk.getProc().BSTHUNT.active == 1)
 			ans = (int) (ans * 2.5);
