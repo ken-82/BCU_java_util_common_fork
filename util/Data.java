@@ -1641,6 +1641,7 @@ public class Data {
 	public static final int ORB_MONEY_BACK = 7;
 	public static final int ORB_KB_RESIST = 8;
 	public static final int ORB_SOL_BUFF = 9;
+
 	public static final int ORB_BARON_KILLER = 10;
 	public static final int ORB_CANNON_RECHARGE = 11;
 	public static final int ORB_TOXIC_RESIST = 12;
@@ -1652,6 +1653,26 @@ public class Data {
 	public static final int ORB_ABILITY_TOT = 12; // only count special orbs
 	public static final int ORB_TYPE = 0, ORB_TRAIT = 1, ORB_GRADE = 2, ORB_TOT = 3;
 
+	public static final int[][] ORB_DATA = { // [every other spawn, can stack]
+			{ 0, 1 },
+			{ 0, 1 },
+			{ 0, 1 },
+			{ 0, 1 },
+			{ 0, 1 },
+			{ 1, 0 }, // dsurge
+			{ 0, 1 }, // wave res
+			{ 1, 1 }, // mon back
+			{ 0, 1 }, // kb res
+			{ 0, 0 }, // SoL
+			{ 1, 0 }, // baron kill
+			{ 1, 0 }, // cannon recharge
+            { 1, 1 }, // toxic res
+            { 1, 0 }, // dodge atk
+            { 1, 1 }, // slow res
+            { 1, 1 }, // curse res
+            { 1, 0 }, // UL
+	};
+
 	public static final int[] ORB_ATK_MULTI = { 100, 200, 300, 400, 500 }; // Atk orb multiplication
 	public static final int[] ORB_RES_MULTI = { 4, 8, 12, 16, 20 }; // Resist orb multiplication
 	public static final int[] ORB_STR_DEF_MULTI = {2, 4, 6, 8, 10};
@@ -1660,11 +1681,8 @@ public class Data {
 	public static final int[] ORB_RESISTANT_MULTI = {5, 10, 15, 20, 25};
 
 	public static final int[] ORB_DEATH_SURGE_MULT = { 3, 6, 10, 14, 20 };
-	public static final int[] ORB_WAVE_RESIST_MULT = { 5, 10, 20, 30, 50 };
+	public static final int[] ORB_RESIST_MULT = { 5, 10, 20, 30, 50 };
 	public static final int[] ORB_MONEY_BACK_MULT = { 5, 10, 20, 30, 50 };
-	public static final int[] ORB_KB_RESIST_MULT = { 5, 10, 20, 30, 50 };
-	public static final int[] ORB_SLOW_RESIST_MULT = { 5, 10, 20, 30, 50 };
-	public static final int[] ORB_CURSE_RESIST_MULT = { 5, 10, 20, 30, 50 };
 	public static final int[] ORB_LEGEND_HEATLH = { 5, 10, 20, 30, 50 }; // (1 + alpha)
 	public static final int[] ORB_LEGEND_ATTACK = { 5, 10, 20, 30, 50 }; // (1 + alpha)
 	public static final int[] ORB_BARON_DAMAGE = { 105, 115, 125, 140, 160 }; // 1 x alpha

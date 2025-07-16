@@ -194,19 +194,6 @@ public class Orb extends Data {
 		return slots;
 	}
 
-	public int getSlots(int form, int totalLvl) { // todo: send qualifying orbs in an array, like [true, false]
-		int t = 0;
-		for (int i = 0; i < slots; i++) {
-			if (limit[i] == 0 && form >= 2 || limit[i] == 1 && totalLvl >= 60)
-				t++;
-			else if (limit[i] != 0 && limit[i] != 1) {
-				System.out.println("missing orb limit handling for: " + limit[i]);
-				t++;
-			}
-		}
-		return t;
-	}
-
 	public int[] getLimits() {
 		return limit;
 	}

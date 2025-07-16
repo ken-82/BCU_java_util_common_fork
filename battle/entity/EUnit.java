@@ -73,6 +73,23 @@ public class EUnit extends Entity {
 		this.level = level;
 		this.isSpirit = isSpirit;
 
+		processAbilityOrbs();
+	}
+
+	public EUnit(StageBasis b, MaskUnit de, EAnimU ea, float d0) {
+		super(b, de, ea, d0, b.b.t().getAtkMulti(), b.b.t().getDefMulti(), null, null);
+		layer = de.getFront() + (int) (b.r.nextFloat() * (de.getBack() - de.getFront() + 1));
+		traits = de.getTraits();
+		this.index = null;
+
+		lvl = 1;
+		health = maxH = (int) (health * b.b.t().getCannonMagnification(BASE_WALL, BASE_WALL_MAGNIFICATION) / 100.0);
+		level = null;
+		isSpirit = false;
+		isOrbBoosted = false;
+	}
+
+	private void processAbilityOrbs() {
 		int[][] orbs = level.getOrbs();
 		if (orbs == null)
 			return;
@@ -81,23 +98,23 @@ public class EUnit extends Entity {
 			int id = orb[0];
 			if (id < ORB_DEATH_SURGE)
 				continue;
-			if (id == ORB_SOL_BUFF && b.est.s.getCont().getCont().getSID().equals("000000") || id == ORB_UL_BUFF && b.est.s.getCont().getCont().getSID().equals("000013")) {
+			if (id == ORB_SOL_BUFF && basis.est.s.getCont().getCont().getSID().equals("000000") || id == ORB_UL_BUFF && basis.est.s.getCont().getCont().getSID().equals("000013")) {
 				mapBuff = Math.max(mapBuff, orb[2]);
 				continue;
 			}
 			if (orbProc == null)
 				orbProc = getProc().clone();
 			if (id == ORB_WAVE_RESIST) {
-				orbProc.IMUWAVE.mult = Math.min(100, orbProc.IMUWAVE.mult + ORB_WAVE_RESIST_MULT[orb[2]]);
+				orbProc.IMUWAVE.mult = Math.min(100, orbProc.IMUWAVE.mult + ORB_RESIST_MULT[orb[2]]);
 				continue;
 			} else if (id == ORB_KB_RESIST) {
-				orbProc.IMUKB.mult = Math.min(100, orbProc.IMUKB.mult + ORB_KB_RESIST_MULT[orb[2]]);
+				orbProc.IMUKB.mult = Math.min(100, orbProc.IMUKB.mult + ORB_RESIST_MULT[orb[2]]);
 				continue;
 			} else if (id == ORB_CURSE_RESIST) {
-				orbProc.IMUCURSE.mult = Math.min(100, orbProc.IMUCURSE.mult + ORB_CURSE_RESIST_MULT[orb[2]]);
+				orbProc.IMUCURSE.mult = Math.min(100, orbProc.IMUCURSE.mult + ORB_RESIST_MULT[orb[2]]);
 				continue;
 			} else if (id == ORB_SLOW_RESIST) {
-				orbProc.IMUSLOW.mult = Math.min(100, orbProc.IMUSLOW.mult + ORB_SLOW_RESIST_MULT[orb[2]]);
+				orbProc.IMUSLOW.mult = Math.min(100, orbProc.IMUSLOW.mult + ORB_RESIST_MULT[orb[2]]);
 				continue;
 			}
 			if (!isOrbBoosted)
@@ -114,19 +131,6 @@ public class EUnit extends Entity {
 		}
 		if (mapBuff != -1)
 			maxH = health = health * (100 + ORB_LEGEND_HEATLH[legendGrade = mapBuff]) / 100;
-	}
-
-	public EUnit(StageBasis b, MaskUnit de, EAnimU ea, float d0) {
-		super(b, de, ea, d0, b.b.t().getAtkMulti(), b.b.t().getDefMulti(), null, null);
-		layer = de.getFront() + (int) (b.r.nextFloat() * (de.getBack() - de.getFront() + 1));
-		traits = de.getTraits();
-		this.index = null;
-
-		lvl = 1;
-		health = maxH = (int) (health * b.b.t().getCannonMagnification(BASE_WALL, BASE_WALL_MAGNIFICATION) / 100.0);
-		level = null;
-		isSpirit = false;
-		isOrbBoosted = false;
 	}
 
 	@Override

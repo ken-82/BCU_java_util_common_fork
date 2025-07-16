@@ -66,7 +66,7 @@ public class BasisSet extends Basis implements Copable<BasisSet> {
 		for(BasisSet set : list()) {
 			for(BasisLU lu : set.lb) {
 				for(Identifier<Unit> id : lu.lu.map.keySet()) {
-					if(id.equals(u.id)) {
+					if(id.equals(u.id)) { // todo: check if you can just use lu.lu.map.get(u.id)
 						Level l = lu.lu.map.get(id);
 
 						if(l.getOrbs() != null) {
