@@ -1653,26 +1653,7 @@ public class Data {
 	public static final int ORB_ABILITY_TOT = 12; // only count special orbs
 	public static final int ORB_TYPE = 0, ORB_TRAIT = 1, ORB_GRADE = 2, ORB_TOT = 3;
 
-	public static final int[][] ORB_DATA = { // [every other spawn, can stack]
-			{ 0, 1 },
-			{ 0, 1 },
-			{ 0, 1 },
-			{ 0, 1 },
-			{ 0, 1 },
-			{ 1, 0 }, // dsurge
-			{ 0, 1 }, // wave res
-			{ 1, 1 }, // mon back
-			{ 0, 1 }, // kb res
-			{ 0, 0 }, // SoL
-			{ 1, 0 }, // baron kill
-			{ 1, 0 }, // cannon recharge
-            { 1, 1 }, // toxic res
-            { 1, 0 }, // dodge atk
-            { 1, 1 }, // slow res
-            { 1, 1 }, // curse res
-            { 1, 0 }, // UL
-	};
-
+	// todo: use equipment json file to auto-populate orb data into BCAuxAssets
 	public static final int[] ORB_ATK_MULTI = { 100, 200, 300, 400, 500 }; // Atk orb multiplication
 	public static final int[] ORB_RES_MULTI = { 4, 8, 12, 16, 20 }; // Resist orb multiplication
 	public static final int[] ORB_STR_DEF_MULTI = {2, 4, 6, 8, 10};
@@ -1687,6 +1668,8 @@ public class Data {
 	public static final int[] ORB_LEGEND_ATTACK = { 5, 10, 20, 30, 50 }; // (1 + alpha)
 	public static final int[] ORB_BARON_DAMAGE = { 105, 115, 125, 140, 160 }; // 1 x alpha
 	public static final int[] ORB_BARON_DEFENSE = { 95, 90, 85, 80, 70 }; // 1 x alpha
+	public static final int[] ORB_CANNON_RECHARGE_MULT = { 3, 5, 7, 10, 15 };
+	public static final int[] ORB_IMUATK_MULT = { 1, 3, 5, 7, 10 };
 	public static final int[] GATYA = { 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 160, 161, 164, 167,
 			168, 169, 170, 171, 179, 180, 181, 182, 183, 184};
 
