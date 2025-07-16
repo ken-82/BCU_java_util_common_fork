@@ -286,7 +286,7 @@ public class Res extends ImgCore {
 	private static void readBattle() {
 		BCAuxAssets aux = CommonStatic.getBCAssets();
 		aux.battle[0] = new VImg[4];
-		aux.battle[1] = new VImg[22];
+		aux.battle[1] = new VImg[23];
 		aux.battle[2] = new VImg[9];
 		ImgCut ic001 = ImgCut.newIns("./org/page/img001.imgcut");
 		VImg img001 = new VImg("./org/page/img001.png");
@@ -338,6 +338,7 @@ public class Res extends ImgCore {
 		aux.battle[1][1] = new VImg(parts[7]);
 		for (int i = 0; i < 10; i++)
 			aux.battle[1][2 + i] = new VImg(parts[11 + i]);
+		aux.battle[1][22] = new VImg(parts[54]);
 
 		//jp fire
 		aux.battle[1][12] = new VImg(parts[9]);

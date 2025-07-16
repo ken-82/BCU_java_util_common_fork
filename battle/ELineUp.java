@@ -10,8 +10,10 @@ import java.util.Arrays;
 public class ELineUp extends BattleObj {
 
 	public final int[][] price, cool, maxC, tick;
+	private final StageBasis b;
 
 	protected ELineUp(LineUp lu, StageBasis sb) {
+		b = sb;
 		price = new int[2][5];
 		cool = new int[2][5];
 		maxC = new int[2][5];
@@ -61,8 +63,10 @@ public class ELineUp extends BattleObj {
 				if (cool[i][j] > 0) {
 					cool[i][j]--;
 
-					if (cool[i][j] == 0)
+					if (cool[i][j] == 0) {
 						CommonStatic.setSE(SE_SPEND_REF);
+						b.frameOffCd[i][j] = b.time;
+					}
 				}
 			}
 	}

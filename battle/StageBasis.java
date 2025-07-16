@@ -92,6 +92,7 @@ public class StageBasis extends BattleObj {
 	private boolean bgEffectInitialized = false;
 
 	public final int[][] spiritCooldown = new int[2][5];
+	public int[][] frameOffCd = new int[2][5];
 	/**
 	 * Flag for whether summoner has been summoned or not
 	 */
