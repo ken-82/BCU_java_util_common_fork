@@ -63,4 +63,8 @@ public class EForm extends Data {
 		level.setLevel(Math.min(level.getLv(), CommonStatic.getConfig().levelLimit));
 		level.setPlusLevel(CommonStatic.getConfig().plus ? level.getPlusLv() : 0);
 	}
+
+	public Level getLevel() {
+		return level;
+	}
 }

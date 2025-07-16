@@ -5,14 +5,17 @@ import common.util.BattleObj;
 import common.util.stage.Limit;
 import common.util.unit.Form;
 
+import java.util.Arrays;
+
 public class ELineUp extends BattleObj {
 
-	public final int[][] price, cool, maxC;
+	public final int[][] price, cool, maxC, tick;
 
 	protected ELineUp(LineUp lu, StageBasis sb) {
 		price = new int[2][5];
 		cool = new int[2][5];
 		maxC = new int[2][5];
+		tick = new int[2][5];
 		Limit lim = sb.est.lim;
 		for (int i = 0; i < 2; i++)
 			for (int j = 0; j < 5; j++) {
@@ -33,6 +36,13 @@ public class ELineUp extends BattleObj {
 						price[i][j] = price[i][j] * lim.stageLimit.costMultiplier[form.unit.rarity] / 100;
 					maxC[i][j] = maxC[i][j] * lim.stageLimit.cooldownMultiplier[form.unit.rarity] / 100;
 				}
+				int[][] orbs = lu.efs[i][j].getLevel().getOrbs();
+				if (orbs != null && Arrays.stream(orbs)
+						.anyMatch(o -> o[0] == ORB_DEATH_SURGE || o[0] == ORB_MONEY_BACK
+								|| o[0] == ORB_CANNON_RECHARGE || o[0] == ORB_IMUATK || o[0] == ORB_BARON_KILLER))
+					tick[i][j] = 0;
+				else
+					tick[i][j] = -1;
 			}
 	}
 

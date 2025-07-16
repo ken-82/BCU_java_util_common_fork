@@ -1638,7 +1638,7 @@ public class Data {
 	public static final int ORB_BARON_KILLER = 10;
 	public static final int ORB_CANNON_RECHARGE = 11;
 	public static final int ORB_TOXIC_RESIST = 12;
-	public static final int ORB_DODGE_ATK = 13;
+	public static final int ORB_IMUATK = 13;
 	public static final int ORB_SLOW_RESIST = 14;
 	public static final int ORB_CURSE_RESIST = 15;
 	public static final int ORB_UL_BUFF = 16;

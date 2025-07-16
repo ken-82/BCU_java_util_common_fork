@@ -44,11 +44,9 @@ public class Level implements BattleStatic, LevelInterface {
 
 		if(coin != null) {
 			int[] talents = new int[coin.max.length];
-
-			for (int i = 0; i < Math.min(arr.length - 2, talents.length); i++) {
-				talents[i] = arr[i + 2];
-			}
-
+			int min = Math.min(arr.length - 2, talents.length);
+			if (min >= 0)
+                System.arraycopy(arr, 2, talents, 0, min);
 			lv.setTalents(talents);
 		}
 
@@ -173,11 +171,8 @@ public class Level implements BattleStatic, LevelInterface {
 				valid = false;
 				break;
 			}
-
-			if (data.length == 0) {
+			if (data.length == 0)
 				continue;
-			}
-
 			if (data.length != 3) {
 				valid = false;
 				break;

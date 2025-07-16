@@ -62,7 +62,7 @@ public class StageBasis extends BattleObj {
 
 	public float siz;
 	public int work_lv, money, maxMoney, cannon, maxCannon, upgradeCost, maxNum, pos;
-	public int[] maxRarityNum;
+	public int[] maxRarityNum = { -1, -1, -1, -1, -1, -1 };
 	public int frontLineup = 0;
 	public boolean lineupChanging = false;
 	public boolean shock = false;
@@ -587,6 +587,8 @@ public class StageBasis extends BattleObj {
 			EUnit eu = f.getEntity(this, new int[] {i, j}, false);
 			eu.added(-1, st.len - 700);
 
+			if (elu.tick[i][j] != -1)
+				elu.tick[i][j] = (elu.tick[i][j] + 1) % 2;
 			if (f.du.getProc().SPIRIT.exists()) {
 				summonerSummoned[i][j] = true;
 				spiritCooldown[i][j] = SPIRIT_SUMMON_DELAY;
@@ -1123,7 +1125,7 @@ public class StageBasis extends BattleObj {
 
 	public int globalCost() {
 		if (est.lim.stageLimit == null)
-			return 0;
+			return -1;
 		else
 			return est.lim.stageLimit.globalCost;
 	}

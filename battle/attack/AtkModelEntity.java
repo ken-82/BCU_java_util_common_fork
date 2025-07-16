@@ -40,7 +40,7 @@ public abstract class AtkModelEntity extends AtkModelAb {
 	protected final BattleObj[] acs;
 	private final Proc[] sealed;
 
-	protected AtkModelEntity(Entity ent, float d0, float d1) {
+	protected AtkModelEntity(Entity ent, float d0, float d1) { // enemy
 		super(ent.basis);
 		e = ent;
 		data = e.data;
@@ -64,7 +64,7 @@ public abstract class AtkModelEntity extends AtkModelAb {
 		}
 	}
 
-	protected AtkModelEntity(Entity ent, float d0, float d1, PCoin pc, Level lv) {
+	protected AtkModelEntity(Entity ent, float d0, float d1, PCoin pc, Level lv) { // cat
 		super(ent.basis);
 		e = ent;
 		data = e.data;
@@ -89,8 +89,9 @@ public abstract class AtkModelEntity extends AtkModelAb {
 		sealed = new Proc[data.getAtkCount()];
 		for (int i = 0; i < sealed.length; i++) {
 			sealed[i] = Proc.blank();
-			if(data.getAtkModel(i).getProc() != null)
+			if (data.getAtkModel(i).getProc() != null) {
 				sealed[i].MOVEWAVE.set(data.getAtkModel(i).getProc().MOVEWAVE);
+			}
 		}
 	}
 

@@ -59,18 +59,43 @@ public class EUnit extends Entity {
 	protected final Level level;
 
 	public final boolean isSpirit;
+	public final boolean isOrbBoosted;
+	public int legendGrade = -1;
+	public Proc orbProc;
 
 	public EUnit(StageBasis b, MaskUnit de, EAnimU ea, float d0, int layer0, int layer1, Level level, PCoin pc, int[] index, boolean isSpirit) {
 		super(b, de, ea, d0, b.b.t().getAtkMulti(), b.b.t().getDefMulti(), pc, level);
 		layer = layer0 == layer1 ? layer0 : layer0 + (int) (b.r.nextFloat() * (layer1 - layer0 + 1));
 		traits = de.getTraits();
 		lvl = level.getLv() + level.getPlusLv();
+		isOrbBoosted = b.elu.tick[index[0]][index[1]] == 1;
 		this.index = index;
 		this.level = level;
 		this.isSpirit = isSpirit;
+
+		int[][] orbs = level.getOrbs();
+		if (orbs == null)
+			return;
+		int dSurge = -1, coloSlay = -1, canonRe = -1, imuAtk = -1, mapBuff = -1;
+		for (int[] orb : level.getOrbs()) {
+			int id = orb[0];
+			System.out.println(b.est.s.getCont().getCont().getSID());
+			if (id == ORB_SOL_BUFF && b.est.s.getCont().getCont().getSID().equals("000000"))
+				mapBuff = Math.max(mapBuff, orb[2]);
+			else if (id == ORB_UL_BUFF && b.est.s.getCont().getCont().getSID().equals("000013"))
+				mapBuff = Math.max(mapBuff, orb[2]);
+			if (!isOrbBoosted)
+				continue;
+			if (id == ORB_DEATH_SURGE)
+				dSurge = Math.max(dSurge, orb[2]);
+		}
+		if (dSurge != -1) {
+
+		}
+		if (mapBuff != -1) // todo: handle attack
+			maxH = health = health * (100 + ORB_LEGEND_HEATLH[legendGrade = mapBuff]) / 100;
 	}
 
-	//used for waterblast
 	public EUnit(StageBasis b, MaskUnit de, EAnimU ea, float d0) {
 		super(b, de, ea, d0, b.b.t().getAtkMulti(), b.b.t().getDefMulti(), null, null);
 		layer = de.getFront() + (int) (b.r.nextFloat() * (de.getBack() - de.getFront() + 1));
@@ -81,15 +106,18 @@ public class EUnit extends Entity {
 		health = maxH = (int) (health * b.b.t().getCannonMagnification(BASE_WALL, BASE_WALL_MAGNIFICATION) / 100.0);
 		level = null;
 		isSpirit = false;
+		isOrbBoosted = false;
 	}
 
 	@Override
-	public int getAtk() {
+	public int getAtk() { // visual only
 		int atk = aam.getAtk();
 		if (status[P_STRONG][0] != 0 && !basis.isBanned(C_STRONG))
 			atk += atk * (status[P_STRONG][0] + basis.b.getInc(C_STRONG)) / 100;
 		if (status[P_WEAK][0] > 0)
 			atk = atk * status[P_WEAK][1] / 100;
+		if (legendGrade != -1)
+			atk = atk * (100 + ORB_LEGEND_ATTACK[legendGrade]) / 100;
 		return atk;
 	}
 
@@ -394,5 +422,10 @@ public class EUnit extends Entity {
 	@Override
 	protected void onLastBreathe() {
 		basis.notifyUnitDeath();
+	}
+
+	@Override
+	public Proc getProc() {
+		return orbProc != null ? orbProc : super.getProc();
 	}
 }
