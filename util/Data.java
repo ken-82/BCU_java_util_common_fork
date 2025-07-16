@@ -1320,7 +1320,7 @@ public class Data {
 			true,  //spirit summon
 			false, //metal killer
 			true, //adrenaline
-			true //hp regen
+			true, //hp regen
 			false, //blast
 			true   //imu.blast
 	};
