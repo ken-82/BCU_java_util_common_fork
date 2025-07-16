@@ -307,8 +307,11 @@ public class Editors {
 		map().put("WAVE", new EditControl<>(Proc.WAVE.class, (t) -> {
 			t.prob = MathUtil.clip(t.prob, 0, 100);
 			t.lv = MathUtil.clip(t.lv, 1, 100);
-			if (t.prob == 0)
+			t.maxlv = MathUtil.clip(t.maxlv, t.lv, 100);
+			if (t.prob == 0) {
 				t.lv = 0;
+				t.maxlv = 0;
+			}
 		}));
 
 		map().put("WEAK", new EditControl<>(Proc.WEAK.class, (t) -> {
@@ -341,6 +344,23 @@ public class Editors {
 			t.health = MathUtil.clip(t.health, 0, 99);
 			if (t.health == 0)
 				t.mult = 0;
+		}));
+
+		map().put("HPREGEN", new EditControl<>(Proc.HPREGEN.class, (t) -> {
+			t.prob = MathUtil.clip(t.prob, 0, 100);
+			if (t.prob > 0) {
+				t.interval = Math.max(t.interval,1);
+			} else {
+				t.interval = 1;
+				t.amount = 0;
+				t.freezeEff = true;
+				t.idleTrigger = false;
+				t.removeProcs = false;
+				t.onlyOnce = false;
+				t.scaleWithBuff = false;
+				t.resetWhenDamaged = false;
+				t.noHB = false;
+			}
 		}));
 
 		map().put("LETHAL", prob);
@@ -548,8 +568,14 @@ public class Editors {
 			if (t.prob == 0) {
 				t.dis_0 = t.dis_1 = 0;
 				t.time = 0;
+				t.maxtime = 0;
 			} else {
 				t.time = Math.max(1, t.time / Data.VOLC_ITV) * Data.VOLC_ITV;
+				if (t.maxtime > t.time) {
+					t.maxtime = Math.max(t.time / Data.VOLC_ITV, t.maxtime / Data.VOLC_ITV) * Data.VOLC_ITV;
+				} else {
+					t.maxtime = t.time;
+				}
 			}
 		}));
 
@@ -557,8 +583,14 @@ public class Editors {
 			t.prob = MathUtil.clip(t.prob, 0, 100);
 			if (t.prob == 0) {
 				t.dis_0 = t.dis_1 = t.time = t.mult = 0;
+				t.maxtime = 0;
 			} else {
 				t.time = Math.max(1, t.time / Data.VOLC_ITV) * Data.VOLC_ITV;
+				if (t.maxtime > t.time) {
+					t.maxtime = Math.max(t.time / Data.VOLC_ITV, t.maxtime / Data.VOLC_ITV) * Data.VOLC_ITV;
+				} else {
+					t.maxtime = t.time;
+				}
 
 				if(t.mult == 0)
 					t.mult = 20;
@@ -590,9 +622,11 @@ public class Editors {
 
 			if (t.prob == 0) {
 				t.lv = 0;
+				t.maxlv = 0;
 				t.multi = 0;
 			} else {
 				t.lv = MathUtil.clip(t.lv, 1, 100);
+				t.maxlv = MathUtil.clip(t.maxlv, t.lv, 100);
 
 				if(t.multi == 0)
 					t.multi = 20;
