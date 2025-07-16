@@ -50,7 +50,7 @@ public class AtkModelUnit extends AtkModelEntity {
 				if (conf.same_health && ent.health <= 0)
 					return;
 				int time = proc.time;
-				if (b.entityCount(-1) < b.max_num - u.forms[Math.max(0, proc.form - 1)].du.getWill() || conf.ignore_limit) {
+				if (b.entityCount(-1) < b.maxNum - u.forms[Math.max(0, proc.form - 1)].du.getWill() || conf.ignore_limit) {
 					int lvl = proc.mult + ((EUnit) e).lvl;
 					if (conf.fix_buff)
 						lvl = proc.mult;
@@ -90,7 +90,7 @@ public class AtkModelUnit extends AtkModelEntity {
 					mult *= (100.0 - resist) / 100;
 
 					int minlayer = proc.min_layer, maxlayer = proc.max_layer;
-					if (proc.min_layer == proc.max_layer && proc.min_layer == -1)
+					if (proc.min_layer == -1 || proc.max_layer == -1)
 						minlayer = maxlayer = e.layer;
 					EEnemy ee = ene.getEntity(b, acs, mult, mula, minlayer, maxlayer, 0);
 

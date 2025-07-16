@@ -77,7 +77,7 @@ public class Limit extends Data implements BattleStatic {
 		l.max = max;
 		l.group = group;
 		l.lvr = lvr;
-		l.stageLimit = l.stageLimit != null ? l.stageLimit.clone() : null;
+		l.stageLimit = stageLimit != null ? stageLimit.clone() : null;
 		return l;
 	}
 

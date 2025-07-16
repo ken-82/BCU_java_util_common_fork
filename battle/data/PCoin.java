@@ -28,7 +28,7 @@ public class PCoin extends Data {
 		for (String str : qs) {
 			String[] strs = str.trim().split(",");
 
-			if (strs.length == 114) {
+			if (strs.length >= 2) {
 				int[] data = CommonStatic.parseIntsN(str);
 
 				Unit u = Identifier.parseInt(data[0], Unit.class).get();
@@ -63,7 +63,6 @@ public class PCoin extends Data {
 
 	public PCoin(String[] strs, MaskUnit du) { // leaving reminder that this is unused at least in PC ver.
 		trait = Trait.convertType(CommonStatic.parseIntN(strs[1]));
-
 		for (int i = 0; i < 8; i++) {
 			if(talentExist(strs, 2 + i * 14)) {
 				info.add(new int[14]);
@@ -85,6 +84,10 @@ public class PCoin extends Data {
 		trait = Trait.convertTalentType(strs[1]);
 
 		for (int i = 0; i < 8; i++) {
+			if (2 + i * 14 >= strs.length) {
+				break;
+			}
+
 			if(strs[2 + i * 14] != 0) {
 				int[] data = new int[14];
 				for (int j = 0; j < 14; j++)
@@ -129,7 +132,7 @@ public class PCoin extends Data {
 			switch (data[0]) {
 				case 0:
 					break;
-				case 56: case 65:
+				case 56: case 65: // normalize surge chance
 					data[2] = MathUtil.clip(data[2], 0, 100 - proc.getArr(type).get(0));
 					data[3] = MathUtil.clip(data[3], data[2], 100 - proc.getArr(type).get(0));
 					data[8] = Math.max(1, data[8] / Data.VOLC_ITV) * Data.VOLC_ITV;
@@ -215,16 +218,16 @@ public class PCoin extends Data {
 						ans.getTraits().add(t);
 
 			int maxlv = data[1];
-			int[] modifs = new int[4];
+			int[] modifs = new int[5];
 
 			if (maxlv > 1) {
-				for (int j = 0; j < 4; j++) {
+				for (int j = 0; j < 5; j++) {
 					int v0 = data[2 + j * 2];
 					int v1 = data[3 + j * 2];
 					modifs[j] = (v1 - v0) * (talents[i] - 1) / (maxlv - 1) + v0;
 				}
 			} else
-				for (int j = 0; j < 4; j++)
+				for (int j = 0; j < 5; j++)
 					modifs[j] = data[3 + j * 2];
 
 			if (type[0] == PC_P) {
@@ -245,10 +248,19 @@ public class PCoin extends Data {
 						tar.set(1, tar.get(1) + Math.min(modifs[1], modifs[2]));
 						tar.set(2, tar.get(2) + Math.max(modifs[1], modifs[2]));
 						tar.set(3, tar.get(3) + modifs[3]);
+
+						if (type[1] == P_MINIVOLC) {
+							tar.set(4, modifs[4]);
+						}
 					}
 				} else if (type[1] == P_BSTHUNT) {
+					tar.set(0, 1);
 					tar.set(1, modifs[0]);
 					tar.set(2, modifs[1]);
+				} else if (type[1] == P_BLAST) {
+					tar.set(0, modifs[0]);
+					tar.set(1, modifs[1] / 4);
+					tar.set(2, (modifs[1] + modifs[2]) / 4);
 				} else {
 					for (int j = 0; j < 4; j++) {
 						if (modifs[j] > 0) {
@@ -432,6 +444,10 @@ public class PCoin extends Data {
 
 	private static boolean talentExist(String[] data, int index) {
 		for(int i = index; i < index + 14; i++) {
+			if (i >= data.length) {
+				return false;
+			}
+
 			if(!data[i].trim().equals("0") && !data[i].trim().equals("-1")) {
 				return true;
 			}

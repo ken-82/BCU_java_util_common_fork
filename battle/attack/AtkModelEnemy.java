@@ -91,7 +91,7 @@ public class AtkModelEnemy extends AtkModelEntity {
 
 				int form = Math.max(0, Math.min(proc.form - 1, u.forms.length - 1));
 
-				if (b.entityCount(-1) < b.max_num - u.forms[form].du.getWill() || conf.ignore_limit) {
+				if (b.entityCount(-1) < b.maxNum - u.forms[form].du.getWill() || conf.ignore_limit) {
 					int lvl = proc.mult;
 					lvl = MathUtil.clip(lvl, 1, u.max + u.maxp);
 					lvl = (int) (lvl * (100.0 - resist) / 100);

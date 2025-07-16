@@ -330,7 +330,7 @@ public abstract class Entity extends AbEntity {
 				if (status[P_SPEED][2] <= 1) {
 					index = status[P_SPEED][1] >= 0 ? SpeedEff.UP : SpeedEff.DOWN;
 				} else {
-					index = status[P_SPEED][1] >= e.data.getSpeed() ? SpeedEff.UP : SpeedEff.DOWN;
+					index = status[P_SPEED][1] >= (e.data.getSpeed() > 0 && e.basis.getGlobalSpeed(-1) > -1 ? e.basis.getGlobalSpeed(-1) : e.data.getSpeed()) ? SpeedEff.UP : SpeedEff.DOWN;
 				}
 
 				effs[id] = eff.getEAnim(index);
@@ -1588,6 +1588,15 @@ public abstract class Entity extends AbEntity {
 				dmg = dmg * (100 - getProc().IMUVOLC.mult) / 100;
 		}
 
+		if ((atk.waveType & WT_BLST) > 0) {
+			if (getProc().IMUBLAST.mult > 0)
+				anim.getEff(P_WAVE);
+			if (getProc().IMUBLAST.mult == 100)
+				return;
+			else
+				dmg = dmg * (100 - getProc().IMUBLAST.mult) / 100;
+		}
+
 		tokens.add(atk);
 
 		Proc.PT imuatk = getProc().IMUATK;
@@ -1967,10 +1976,9 @@ public abstract class Entity extends AbEntity {
 				EffAnim<WarpEff> e = effas().A_W;
 
 				int len = e.len(WarpEff.ENTER) + e.len(WarpEff.EXIT);
-				int val = atk.getProc().WARP.time;
-				int rst = getProc().IMUWARP.mult;
-
-				val = val * (100 - rst) / 100;
+				int val = (int) (warp.time * time);
+				float rst = getResistValue(atk, "IMUWARP", getProc().IMUWARP.mult);
+				val = (int) (val * rst);
 
 				status[P_WARP][0] = val + len;
 			} else
@@ -2026,11 +2034,14 @@ public abstract class Entity extends AbEntity {
 
 		if (atk.getProc().SPEED.time > 0) {
 			int res = getProc().IMUSPEED.mult;
+			int speed = data.getSpeed();
+			if (speed > 0 && basis.getGlobalSpeed(dire) > 0)
+				speed = basis.getGlobalSpeed(dire);
 
 			boolean b;
 
 			if (atk.getProc().SPEED.type == 2)
-				b = (data.getSpeed() > atk.getProc().SPEED.speed && res > 0) || (data.getSpeed() < atk.getProc().SPEED.speed && res < 0);
+				b = (speed > atk.getProc().SPEED.speed && res > 0) || (speed < atk.getProc().SPEED.speed && res < 0);
 			else
 				b = res < 0;
 			if (checkAIImmunity(atk.getProc().SPEED.speed, getProc().IMUSPEED.smartImu, b))
@@ -2485,8 +2496,10 @@ public abstract class Entity extends AbEntity {
 			pos += 0.25f * dire;
 
 		} else {
-
-			float mov = data.getSpeed() * 0.5f;
+			int speed = data.getSpeed();
+			if (speed > 0 && basis.getGlobalSpeed(dire) > -1)
+				speed = basis.getGlobalSpeed(dire);
+			float mov = speed * 0.5f;
 
 			if (status[P_SPEED][0] > 0) {
 				if (status[P_SPEED][2] == 0) {

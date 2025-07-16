@@ -655,6 +655,8 @@ public class Editors {
 
 		map().put("IMUSEAL", imu);
 
+		map().put("IMUBLAST", imu);
+
 		map().put("IMUMOVING", wavei);
 
 		map().put("IMUCANNON", new EditControl<>(Proc.CANNI.class, (t) -> {
@@ -708,8 +710,8 @@ public class Editors {
 		map().put("ATKBASE", new EditControl<>(Proc.MULT.class, (t) -> {}));
 
 		map().put("BSTHUNT", new EditControl<>(Proc.BSTHUNT.class, (t) -> {
-			setComponentVisibility("BSTHUNT", t.type.active, 1);
-			if (t.type.active) {
+			setComponentVisibility("BSTHUNT", t.active == 1, 1);
+			if (t.active == 1) {
 				t.prob = MathUtil.clip(t.prob, 0, 100);
 				if (t.prob == 0)
 					t.time = 0;
@@ -726,6 +728,10 @@ public class Editors {
 
 		map().put("METALKILL", new EditControl<>(Proc.MULT.class, (t) -> {
 			t.mult = Math.max(0, Math.min(100, t.mult));
+		}));
+
+		map().put("BLAST", new EditControl<>(Proc.BLAST.class, (t) -> {
+			t.prob = Math.max(0, Math.min(100, t.prob));
 		}));
 	}
 

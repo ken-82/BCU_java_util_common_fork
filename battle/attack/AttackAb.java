@@ -28,7 +28,7 @@ public abstract class AttackAb extends BattleObj {
 
 	protected final Proc proc;
 	protected final List<AbEntity> capt = new ArrayList<>();
-	protected float sta, end;
+	public float sta, end;
 
 	protected AttackAb(Entity attacker, AtkModelAb ent, int ATK, ArrayList<Trait> tr, int eab, Proc pro, float p0, float p1, MaskAtk matk, int layer, boolean isLongAtk, int time) {
 		this.attacker = attacker;

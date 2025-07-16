@@ -233,6 +233,16 @@ public class AttackSimple extends AttackAb {
 				attacker.summoned.add(volcano);
 			}
 		}
+
+		if (!capt.isEmpty() && proc.BLAST.exists()) {
+			int dire = model.getDire();
+			Proc.BLAST blast = proc.BLAST;
+			int addp = blast.dis_0 + (int) (model.b.r.nextFloat() * (blast.dis_1 - blast.dis_0));
+			float pos = model.getPos() + dire * addp;
+			ContBlast cblast = new ContBlast(new AttackBlast(attacker, this, pos + 75, pos - 75, Data.WT_BLST), pos, layer);
+			if (attacker != null)
+				attacker.summoned.add(cblast);
+		}
 	}
 
 }

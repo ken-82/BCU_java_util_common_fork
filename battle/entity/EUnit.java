@@ -215,7 +215,7 @@ public class EUnit extends Entity {
 		if (atk.trait.contains(UserProfile.getBCData().traits.get(TRAIT_BARON)) && (getAbi() & AB_BAKILL) > 0)
 			ans = (int) (ans * 0.7);
 
-		if (atk.trait.contains(UserProfile.getBCData().traits.get(Data.TRAIT_BEAST)) && getProc().BSTHUNT.type.active)
+		if (atk.trait.contains(UserProfile.getBCData().traits.get(Data.TRAIT_BEAST)) && getProc().BSTHUNT.active > 0)
 			ans = (int) (ans * 0.6);
 
 		if (atk.trait.contains(UserProfile.getBCData().traits.get(Data.TRAIT_SAGE)) && (getAbi() & AB_SKILL) > 0)
@@ -245,7 +245,7 @@ public class EUnit extends Entity {
 
 	@Override
 	protected void updateMove(float extmov) {
-		extmov = (float) (data.getSpeed() * basis.b.getInc(C_SPE) / 50) / 4f;
+		extmov = (float) ((data.getSpeed() > 0 && basis.getGlobalSpeed(-1) > -1 ? basis.getGlobalSpeed(-1) : data.getSpeed()) * basis.b.getInc(C_SPE) / 50) / 4f;
 		super.updateMove(extmov);
 	}
 

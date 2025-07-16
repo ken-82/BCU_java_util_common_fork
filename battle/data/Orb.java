@@ -2,6 +2,7 @@ package common.battle.data;
 
 import common.CommonStatic;
 import common.CommonStatic.BCAuxAssets;
+import common.pack.Context;
 import common.pack.Identifier;
 import common.system.VImg;
 import common.system.files.VFile;
@@ -20,7 +21,7 @@ public class Orb extends Data {
 
 	public static final int[] orbTrait = {
 			Data.TRAIT_RED, Data.TRAIT_FLOAT, Data.TRAIT_BLACK, Data.TRAIT_METAL, Data.TRAIT_ANGEL, Data.TRAIT_ALIEN,
-			Data.TRAIT_ZOMBIE, Data.TRAIT_RELIC, Data.TRAIT_WHITE, Data.TRAIT_EVA, Data.TRAIT_WITCH, Data.TRAIT_DEMON
+			Data.TRAIT_ZOMBIE, Data.TRAIT_RELIC, Data.TRAIT_WHITE, Data.TRAIT_EVA, Data.TRAIT_WITCH, Data.TRAIT_DEMON, 12
 	};
 
 	public static void read() {
@@ -39,9 +40,10 @@ public class Orb extends Data {
 				int value = 0;
 
 				for (int i = 0; i < strs.length; i++) {
-					if(strs.length != orbTrait.length)
-						continue;
-
+					if (i >= orbTrait.length) {
+						CommonStatic.ctx.printErr(Context.ErrType.WARN, "unknown orb trait(s) " + i);
+						break;
+					}
 					int t = CommonStatic.parseIntN(strs[i]);
 
 					if (t == 1) {
@@ -53,6 +55,8 @@ public class Orb extends Data {
 
 				key++;
 			}
+
+			aux.DATA.put(-1, 0);
 
 			String data = new String(VFile.get("./org/data/equipmentlist.json").getData().getBytes(), StandardCharsets.UTF_8);
 
@@ -66,21 +70,21 @@ public class Orb extends Data {
 
 				JSONObject obj = (JSONObject) lists.get(i);
 
-				int trait = obj.getInt("attribute");
-				int type = obj.getInt("content");
-				int grade = obj.getInt("gradeID");
+				int orbID = obj.getInt("content"); // main orb type
+				int grade = obj.getInt("gradeID"); // grade type D to S
+				int trait = obj.has("attribute") ? obj.getInt("attribute") : -1; // trait target
 
-				Map<Integer, List<Integer>> orb;
+				Map<Integer, List<Integer>> orbData;
 
-				if(aux.ORB.containsKey(type))
-					orb = aux.ORB.get(type);
+				if(aux.ORB.containsKey(orbID))
+					orbData = aux.ORB.get(orbID);
 				else
-					orb = new TreeMap<>();
+					orbData = new TreeMap<>();
 
 				List<Integer> grades;
 
-				if(orb.containsKey(aux.DATA.get(trait))) {
-					grades = orb.get(aux.DATA.get(trait));
+				if(orbData.containsKey(aux.DATA.get(trait))) {
+					grades = orbData.get(aux.DATA.get(trait));
 				} else {
 					grades = new ArrayList<>();
 				}
@@ -89,9 +93,8 @@ public class Orb extends Data {
 					grades.add(grade);
 				}
 
-				orb.put(aux.DATA.get(trait), grades);
-
-				aux.ORB.put(type, orb);
+				orbData.put(aux.DATA.get(trait), grades);
+				aux.ORB.put(orbID, orbData);
 			}
 
 			Queue<String> units = VFile.readLine("./org/data/equipmentslot.csv");
