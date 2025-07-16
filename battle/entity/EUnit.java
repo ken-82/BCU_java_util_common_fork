@@ -141,6 +141,14 @@ public class EUnit extends Entity {
 	}
 
 	@Override
+	public void kill(KillMode atk) {
+		super.kill(atk);
+
+		if (getProc().MONEYBACK.exists())
+			basis.money += basis.elu.price[index[0]][index[1]] * getProc().MONEYBACK.mult / 100;
+	}
+
+	@Override
 	public int getAtk() { // visual only
 		int atk = aam.getAtk();
 		if (status[P_STRONG][0] != 0 && !basis.isBanned(C_STRONG))
