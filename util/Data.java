@@ -848,6 +848,12 @@ public class Data {
 		public final BLAST BLAST = new BLAST();
 		@Order(60)
 		public final IMU IMUBLAST = new IMU();
+		@Order(61)
+		public final MINIVOLC MINIDEATHSURGE = new MINIVOLC(); // TODO: implement this as a normal ability?
+		@Order(62)
+		public final MULT MONEYBACK = new MULT();
+		@Order(63)
+		public final MULT CANONCHARGE = new MULT();
 
 		@Override
 		public Proc clone() {
