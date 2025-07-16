@@ -93,7 +93,6 @@ public class EUnit extends Entity {
 		int[][] orbs = level.getOrbs();
 		if (orbs == null)
 			return;
-		int deathGrade = -1, canonGrade = -1, imuGrade = -1; // todo: figure out a better way to do this, i don't like this but it works
 		for (int[] orb : orbs) {
 			int id = orb[0];
 			if (id < ORB_DEATH_SURGE)
@@ -116,27 +115,24 @@ public class EUnit extends Entity {
 			} else if (id == ORB_SLOW_RESIST) {
 				orbProc.IMUSLOW.mult = Math.min(100, orbProc.IMUSLOW.mult + ORB_RESIST_MULT[orb[2]]);
 				continue;
-			} else if (id == ORB_MONEY_BACK) {
-				orbProc.MONEYBACK.mult += ORB_MONEY_BACK_MULT[orb[2]];
 			}
 			if (!isOrbBoosted)
 				continue;
-			if (id == ORB_DEATH_SURGE)
-				deathGrade = Math.max(deathGrade, orb[2]);
+			if (id == ORB_DEATH_SURGE) {
+				Proc.MINIVOLC surge = orbProc.MINIDEATHSURGE;
+				if (!surge.exists()) {
+					surge.prob = 100;
+					orbProc.MINIDEATHSURGE.dis_0 = ORB_DEATH_SURGE_SPAWN_MIN;
+					orbProc.MINIDEATHSURGE.dis_1 = ORB_DEATH_SURGE_SPAWN_MAX;
+					orbProc.MINIDEATHSURGE.time = 20;
+				}
+				surge.mult = Math.max(surge.mult, ORB_DEATH_SURGE_MULT[orb[2]]);
+			} else if (id == ORB_MONEY_BACK)
+				orbProc.MONEYBACK.mult += ORB_MONEY_BACK_MULT[orb[2]];
 			else if (id == ORB_CANNON_RECHARGE)
-				canonGrade = Math.max(deathGrade, orb[2]);
+				orbProc.CANONCHARGE.mult = Math.max(orbProc.CANONCHARGE.mult, ORB_CANNON_RECHARGE_MULT[orb[2]]);
 			else if (id == ORB_BARON_KILLER)
 				coloGrade = Math.max(coloGrade, orb[2]);
-		}
-		if (deathGrade != -1) {
-			orbProc.MINIDEATHSURGE.prob = 100;
-			orbProc.MINIDEATHSURGE.dis_0 = ORB_DEATH_SURGE_SPAWN_MIN;
-			orbProc.MINIDEATHSURGE.dis_1 = ORB_DEATH_SURGE_SPAWN_MAX;
-			orbProc.MINIDEATHSURGE.time = 20;
-			orbProc.MINIDEATHSURGE.mult = ORB_DEATH_SURGE_MULT[deathGrade];
-		}
-		if (canonGrade != -1) {
-			orbProc.CANONCHARGE.mult = ORB_CANNON_RECHARGE_MULT[canonGrade];
 		}
 		if (legendGrade != -1)
 			maxH = health = health * (100 + ORB_LEGEND_HEATLH[legendGrade]) / 100;
