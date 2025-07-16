@@ -1663,6 +1663,8 @@ public class Data {
 	public static final int[] ORB_WAVE_RESIST_MULT = { 5, 10, 20, 30, 50 };
 	public static final int[] ORB_MONEY_BACK_MULT = { 5, 10, 20, 30, 50 };
 	public static final int[] ORB_KB_RESIST_MULT = { 5, 10, 20, 30, 50 };
+	public static final int[] ORB_SLOW_RESIST_MULT = { 5, 10, 20, 30, 50 };
+	public static final int[] ORB_CURSE_RESIST_MULT = { 5, 10, 20, 30, 50 };
 	public static final int[] ORB_LEGEND_HEATLH = { 5, 10, 20, 30, 50 }; // (1 + alpha)
 	public static final int[] ORB_LEGEND_ATTACK = { 5, 10, 20, 30, 50 }; // (1 + alpha)
 	public static final int[] ORB_BARON_DAMAGE = { 105, 115, 125, 140, 160 }; // 1 x alpha

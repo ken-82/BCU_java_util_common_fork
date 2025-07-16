@@ -79,14 +79,29 @@ public class EUnit extends Entity {
 		int dSurge = -1, coloSlay = -1, canonRe = -1, imuAtk = -1, mapBuff = -1;
 		for (int[] orb : orbs) {
 			int id = orb[0];
-			if (id == ORB_SOL_BUFF && b.est.s.getCont().getCont().getSID().equals("000000"))
+			if (id < ORB_DEATH_SURGE)
+				continue;
+			if (id == ORB_SOL_BUFF && b.est.s.getCont().getCont().getSID().equals("000000") || id == ORB_UL_BUFF && b.est.s.getCont().getCont().getSID().equals("000013")) {
 				mapBuff = Math.max(mapBuff, orb[2]);
-			else if (id == ORB_UL_BUFF && b.est.s.getCont().getCont().getSID().equals("000013"))
-				mapBuff = Math.max(mapBuff, orb[2]);
+				continue;
+			}
+			if (orbProc == null)
+				orbProc = getProc().clone();
+			if (id == ORB_WAVE_RESIST) {
+				orbProc.IMUWAVE.mult = Math.min(100, orbProc.IMUWAVE.mult + ORB_WAVE_RESIST_MULT[orb[2]]);
+				continue;
+			} else if (id == ORB_KB_RESIST) {
+				orbProc.IMUKB.mult = Math.min(100, orbProc.IMUKB.mult + ORB_KB_RESIST_MULT[orb[2]]);
+				continue;
+			} else if (id == ORB_CURSE_RESIST) {
+				orbProc.IMUCURSE.mult = Math.min(100, orbProc.IMUCURSE.mult + ORB_CURSE_RESIST_MULT[orb[2]]);
+				continue;
+			} else if (id == ORB_SLOW_RESIST) {
+				orbProc.IMUSLOW.mult = Math.min(100, orbProc.IMUSLOW.mult + ORB_SLOW_RESIST_MULT[orb[2]]);
+				continue;
+			}
 			if (!isOrbBoosted)
 				continue;
-			else
-				orbProc = getProc().clone();
 			if (id == ORB_DEATH_SURGE)
 				dSurge = Math.max(dSurge, orb[2]);
 		}
