@@ -5,7 +5,7 @@ import common.battle.Treasure;
 import common.battle.attack.*;
 import common.battle.data.MaskAtk;
 import common.battle.data.MaskUnit;
-import common.battle.data.Orb;
+import common.battle.data.OrbInfo;
 import common.battle.data.PCoin;
 import common.pack.UserProfile;
 import common.util.BattleObj;
@@ -93,7 +93,7 @@ public class EUnit extends Entity {
 		int[][] orbs = level.getOrbs();
 		if (orbs == null)
 			return;
-		int dSurge = -1, coloSlay = -1, canonRe = -1, imuAtk = -1, mapBuff = -1;
+		int dSurge = -1, coloSlay = -1, canonRe = -1, imuAtk = -1, mapBuff = -1; // todo: figure out a better way to do this, i don't like this but it works
 		for (int[] orb : orbs) {
 			int id = orb[0];
 			if (id < ORB_DEATH_SURGE)
@@ -116,11 +116,15 @@ public class EUnit extends Entity {
 			} else if (id == ORB_SLOW_RESIST) {
 				orbProc.IMUSLOW.mult = Math.min(100, orbProc.IMUSLOW.mult + ORB_RESIST_MULT[orb[2]]);
 				continue;
+			} else if (id == ORB_MONEY_BACK) {
+				orbProc.MONEYBACK.mult += ORB_MONEY_BACK_MULT[orb[2]];
 			}
 			if (!isOrbBoosted)
 				continue;
 			if (id == ORB_DEATH_SURGE)
 				dSurge = Math.max(dSurge, orb[2]);
+			else if (id == ORB_CANNON_RECHARGE)
+				canonRe = Math.max(dSurge, orb[2]);
 		}
 		if (dSurge != -1) {
 			orbProc.MINIDEATHSURGE.prob = 100;
@@ -128,6 +132,9 @@ public class EUnit extends Entity {
 			orbProc.MINIDEATHSURGE.dis_1 = ORB_DEATH_SURGE_SPAWN_MAX;
 			orbProc.MINIDEATHSURGE.time = 20;
 			orbProc.MINIDEATHSURGE.mult = ORB_DEATH_SURGE_MULT[dSurge];
+		}
+		if (canonRe != -1) {
+			orbProc.CANONCHARGE.mult = 50; // FIXME
 		}
 		if (mapBuff != -1)
 			maxH = health = health * (100 + ORB_LEGEND_HEATLH[legendGrade = mapBuff]) / 100;
@@ -301,7 +308,7 @@ public class EUnit extends Entity {
 	}
 
 	private int getOrbAtk(ArrayList<Trait> trait, MaskAtk matk) {
-		Orb orb = ((MaskUnit) data).getOrb();
+		OrbInfo orb = ((MaskUnit) data).getOrb();
 
 		if (orb == null || level.getOrbs() == null) {
 			return 0;
@@ -338,7 +345,7 @@ public class EUnit extends Entity {
 	}
 
 	private int getOrbRes(ArrayList<Trait> trait, int atk) {
-		Orb orb = ((MaskUnit) data).getOrb();
+		OrbInfo orb = ((MaskUnit) data).getOrb();
 
 		if (orb == null || level.getOrbs() == null)
 			return atk;
@@ -376,7 +383,7 @@ public class EUnit extends Entity {
 		if (!traits.isEmpty())
 			ini = 3 + 1f / 3 * t.getFruit(traits);
 
-		Orb orbs = ((MaskUnit)data).getOrb();
+		OrbInfo orbs = ((MaskUnit)data).getOrb();
 
 		if(orbs != null && level.getOrbs() != null) {
 			int[][] levelOrbs = level.getOrbs();
@@ -413,7 +420,7 @@ public class EUnit extends Entity {
 		if (!traits.isEmpty())
 			ini = 1.5f * (1 + 0.2f / 3 * t.getFruit(traits));
 
-		Orb orbs = ((MaskUnit)data).getOrb();
+		OrbInfo orbs = ((MaskUnit)data).getOrb();
 
 		if(orbs != null && level.getOrbs() != null) {
 			int[][] levelOrbs = level.getOrbs();

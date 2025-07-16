@@ -237,7 +237,7 @@ public class DataUnit extends DefaultData implements MaskUnit, Cloneable {
 	}
 
 	@Override
-	public Orb getOrb() {
+	public OrbInfo getOrb() {
 		return form.unit.orbs;
 	}
 

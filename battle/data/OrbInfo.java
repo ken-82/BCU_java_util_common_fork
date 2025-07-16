@@ -17,7 +17,7 @@ import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class Orb extends Data {
+public class OrbInfo extends Data {
 
 	public static final int[] orbTrait = {
 			Data.TRAIT_RED, Data.TRAIT_FLOAT, Data.TRAIT_BLACK, Data.TRAIT_METAL, Data.TRAIT_ANGEL, Data.TRAIT_ALIEN,
@@ -111,9 +111,9 @@ public class Orb extends Data {
 					continue;
 
 				if(strs.length == 2) {
-					f.unit.orbs = new Orb(slots);
+					f.unit.orbs = new OrbInfo(slots);
 				} else {
-					f.unit.orbs = new Orb(slots, new int[] { CommonStatic.parseIntN(strs[2]), CommonStatic.parseIntN(strs[3]) });
+					f.unit.orbs = new OrbInfo(slots, new int[] { CommonStatic.parseIntN(strs[2]), CommonStatic.parseIntN(strs[3]) });
 				}
 			}
 
@@ -157,7 +157,7 @@ public class Orb extends Data {
 	private final int slots;
 	private final int[] limit;
 
-	public Orb(int slots) {
+	public OrbInfo(int slots) {
 		this.slots = slots;
 
 		if(slots == -1)
@@ -166,7 +166,7 @@ public class Orb extends Data {
 			this.limit = new int[slots];
 	}
 
-	public Orb(int slots, int[] limit) {
+	public OrbInfo(int slots, int[] limit) {
 		this.slots = slots;
 
 		if(slots != limit.length) {
