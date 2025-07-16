@@ -19,7 +19,7 @@ import java.util.*;
 
 public class OrbInfo extends Data {
 
-	public static final int[] orbTrait = {
+	public static final int[] orbTrait = { // the 12 connects to the "ability orb" sprite (since no targets)
 			Data.TRAIT_RED, Data.TRAIT_FLOAT, Data.TRAIT_BLACK, Data.TRAIT_METAL, Data.TRAIT_ANGEL, Data.TRAIT_ALIEN,
 			Data.TRAIT_ZOMBIE, Data.TRAIT_RELIC, Data.TRAIT_WHITE, Data.TRAIT_EVA, Data.TRAIT_WITCH, Data.TRAIT_DEMON, 12
 	};
