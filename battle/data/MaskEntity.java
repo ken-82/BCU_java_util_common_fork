@@ -93,6 +93,7 @@ public interface MaskEntity extends BattleStatic {
 	 * get waiting time
 	 */
 	int getTBA();
+	int getRealTBA();
 
 	default int getTouch() {
 		return Data.TCH_N;

@@ -492,6 +492,30 @@ public class Data {
 		}
 
 		@JsonClass(noTag = NoTag.LOAD)
+		public static class HPREGEN extends ProcItem {
+			@Order(0)
+			public int prob;
+			@Order(1)
+			public int interval;
+			@Order(2)
+			public int amount;
+			@Order(3)
+			public boolean scaleWithBuff;
+			@Order(4)
+			public boolean onlyOnce;
+			@Order(5)
+			public boolean resetWhenDamaged;
+			@Order(6)
+			public boolean freezeEff;
+			@Order(7)
+			public boolean removeProcs;
+			@Order(8)
+			public boolean idleTrigger;
+			@Order(9)
+			public boolean noHB;
+		}
+
+		@JsonClass(noTag = NoTag.LOAD)
 		public static class SUMMON extends ProcItem {
 
 			@JsonClass(noTag = NoTag.LOAD)
@@ -599,6 +623,8 @@ public class Data {
 			public int dis_1;
 			@Order(3)
 			public int time;
+			@Order(4)
+			public int maxtime;
 		}
 
 		@JsonClass(noTag = NoTag.LOAD)
@@ -608,6 +634,9 @@ public class Data {
 			@Order(1)
 			public int lv;
 			@Order(2)
+			public int maxlv;
+
+			@Order(3)
 			public boolean inverted;
 		}
 
@@ -618,8 +647,10 @@ public class Data {
 			@Order(1)
 			public int lv;
 			@Order(2)
-			public int multi;
+			public int maxlv;
 			@Order(3)
+			public int multi;
+			@Order(4)
 			public boolean inverted;
 		}
 
@@ -676,6 +707,8 @@ public class Data {
 			@Order(3)
 			public int time;
 			@Order(4)
+			public int maxtime;
+			@Order(5)
 			public int mult;
 		}
 
@@ -845,8 +878,10 @@ public class Data {
 		@Order(58)
 		public final SPEEDUP SPEEDUP = new SPEEDUP();
 		@Order(59)
-		public final BLAST BLAST = new BLAST();
+		public final HPREGEN HPREGEN = new HPREGEN();
 		@Order(60)
+		public final BLAST BLAST = new BLAST();
+		@Order(61)
 		public final IMU IMUBLAST = new IMU();
 
 		@Override
@@ -1219,9 +1254,10 @@ public class Data {
 	public static final int P_SPIRIT = 56;
 	public static final int P_METALKILL = 57;
 	public static final int P_SPEEDUP = 58;
-	public static final int P_BLAST = 59;
-	public static final int P_IMUBLAST = 60;
-	public static final byte PROC_TOT = 61;
+	public static final int P_HPREGEN = 59;
+	public static final int P_BLAST = 60;
+	public static final int P_IMUBLAST = 61;
+	public static final byte PROC_TOT = 62;
 	public static final byte PROC_WIDTH = 6;
 
 	public static final boolean[] procSharable = {
@@ -1283,7 +1319,8 @@ public class Data {
 			false, //mini surge
 			true,  //spirit summon
 			false, //metal killer
-            true, //adrenaline
+			true, //adrenaline
+			true, //hp regen
 			false, //blast
 			true   //imu.blast
 	};
