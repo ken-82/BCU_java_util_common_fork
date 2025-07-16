@@ -148,8 +148,8 @@ public class EUnit extends Entity {
 
 		if (getProc().MONEYBACK.exists())
 			basis.money += basis.elu.price[index[0]][index[1]] * getProc().MONEYBACK.mult / 100;
-		if (getProc().CANONCHARGE.exists())
-			basis.cannon = basis.cannon + basis.maxCannon * getProc().CANONCHARGE.mult / 100;
+		if (getProc().CANONCHARGE.exists() && basis.cannon != basis.maxCannon)
+			basis.cannon = Math.min(basis.maxCannon - 1, basis.cannon + basis.maxCannon * getProc().CANONCHARGE.mult / 100);
 	}
 
 	@Override
