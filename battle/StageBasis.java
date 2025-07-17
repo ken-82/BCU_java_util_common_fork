@@ -529,7 +529,7 @@ public class StageBasis extends BattleObj {
 			CommonStatic.setSE(SE_SPIRIT_SUMMON);
 
 			for (Entity summoner : summoners) {
-				EUnit su = f.getEntity(this, null, true);
+				EUnit su = f.getEntity(this, null, true, false);
 				su.added(-1, Math.max(800 + su.data.getRange(), Math.min(summoner.pos + SPIRIT_SUMMON_RANGE, ubase.pos)));
 				le.add(su);
 			}
@@ -585,7 +585,7 @@ public class StageBasis extends BattleObj {
 
 			CommonStatic.setSE(SE_SPEND_SUC);
 			elu.get(i, j);
-			EUnit eu = f.getEntity(this, new int[] {i, j}, false);
+			EUnit eu = f.getEntity(this, new int[] {i, j}, false, elu.tick[i][j] == 1);
 			eu.added(-1, st.len - 700);
 
 			if (elu.tick[i][j] != -1)
@@ -640,7 +640,7 @@ public class StageBasis extends BattleObj {
 					while (deployDupe[i][j][0] > 0 && deployDupe[i][j][1] == 0) {
 						deployDupe[i][j][0]--;
 						EForm f = b.lu.efs[i][j];
-						EUnit eu = b.lu.efs[i][j].getEntity(this, new int[] {i, j}, false);
+						EUnit eu = b.lu.efs[i][j].getEntity(this, new int[] {i, j}, false, false);
 						eu.added(-1, st.len - 700);
 						le.add(eu);
 						deployDupe[i][j][1] = getDupeDelay(f.du.getPack().unit.rarity);

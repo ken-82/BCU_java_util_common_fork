@@ -63,12 +63,13 @@ public class EUnit extends Entity {
 	public int legendGrade = -1, coloGrade = -1;
 	public Proc orbProc;
 
-	public EUnit(StageBasis b, MaskUnit de, EAnimU ea, float d0, int layer0, int layer1, Level level, PCoin pc, int[] index, boolean isSpirit) {
+	public EUnit(StageBasis b, MaskUnit de, EAnimU ea, float d0, int layer0, int layer1, Level level, PCoin pc,
+				 int[] index, boolean isSpirit, boolean isEveryOther) {
 		super(b, de, ea, d0, b.b.t().getAtkMulti(), b.b.t().getDefMulti(), pc, level);
 		layer = layer0 == layer1 ? layer0 : layer0 + (int) (b.r.nextFloat() * (layer1 - layer0 + 1));
 		traits = de.getTraits();
 		lvl = level.getLv() + level.getPlusLv();
-		isOrbBoosted = b.elu.tick[index[0]][index[1]] == 1; // todo: change this
+		this.isOrbBoosted = isEveryOther;
 		this.index = index;
 		this.level = level;
 		this.isSpirit = isSpirit;
