@@ -13,6 +13,7 @@ import common.util.anim.EAnimU;
 import common.util.unit.Trait;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class EEnemy extends Entity {
 
@@ -145,21 +146,13 @@ public class EEnemy extends Entity {
 
 	@Override
 	public float getResistValue(AttackAb atk, String procName, int procResist) {
-		float ans = 1f - procResist / 100f;
+		float ans = 1f - procResist / 100f; // with resist (50) -> 0.5f
 
-		boolean canBeApplied = false;
+		if (atk.canon > 0 && getProc().IMUCANNON.exists() && (atk.canon & getProc().IMUCANNON.type) > 0)
+			ans = Math.max(0f, ans - getProc().IMUCANNON.mult);
+		if ((atk.abi & AB_SKILL) == 0 && traits.contains(BCTraits.get(TRAIT_SAGE)) && Arrays.asList(SUPER_SAGE_RESIST_TYPE).contains(procName))
+			ans *= (1f - SUPER_SAGE_RESIST); // 0.5f -> 0.15f(?)
 
-		for (int i = 0; i < SUPER_SAGE_RESIST_TYPE.length; i++) {
-			if (procName.equals(SUPER_SAGE_RESIST_TYPE[i])) {
-				canBeApplied = true;
-
-				break;
-			}
-		}
-
-		if ((atk.abi & AB_SKILL) == 0 && traits.contains(BCTraits.get(TRAIT_SAGE)) && canBeApplied) {
-			ans *= (1f - SUPER_SAGE_RESIST);
-		}
 
 		return ans;
 	}

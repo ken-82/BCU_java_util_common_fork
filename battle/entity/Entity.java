@@ -1530,35 +1530,15 @@ public abstract class Entity extends AbEntity {
 		if (anim.corpse != null && anim.corpse.type == ZombieEff.REVIVE && status[P_REVIVE][1] >= REVIVE_SHOW_TIME)
 			return;
 
-		Proc.CANNI cRes = getProc().IMUCANNON;
-
-		if (atk.canon > 0 && cRes.mult != 0)
-			if ((atk.canon & cRes.type) > 0) {
-				if (cRes.mult > 0)
-					anim.getEff(P_WAVE);
-
-				if (cRes.mult == 100)
-					return;
-				else {
-					dmg = dmg * (100 - cRes.mult) / 100;
-					switch (atk.canon) {
-						case 2:
-							atk.getProc().SLOW.time = atk.getProc().SLOW.time * (100 - cRes.mult) / 100;
-							break;
-						case 4:
-						case 16:
-							atk.getProc().STOP.time = atk.getProc().STOP.time * (100 - cRes.mult) / 100;
-							break;
-						case 32:
-							if (cRes.mult > 0 && basis.r.nextFloat() * 100 < cRes.mult)
-								atk.getProc().BREAK.clear();
-							atk.getProc().KB.time = atk.getProc().KB.time * (100 - cRes.mult) / 100;
-							break;
-						case 64:
-							atk.getProc().CURSE.time = atk.getProc().CURSE.time * (100 - cRes.mult) / 100;
-					}
-				}
+		Proc.CANNI imuCannon = getProc().IMUCANNON;
+		if (atk.canon > 0 && imuCannon.exists() && (atk.canon & imuCannon.type) > 0) {
+			if (imuCannon.mult != 100) {
+				dmg = dmg * (100 - imuCannon.mult) / 100;
+			} else {
+				anim.getEff(P_WAVE);
+				return;
 			}
+		}
 
 		// if immune to wave and the attack is wave, jump out
 		if (atk.waveType != 5 && ((atk.waveType & WT_WAVE) > 0 || (atk.waveType & WT_MINI) > 0) && atk.canon != 16) {
@@ -1839,6 +1819,7 @@ public abstract class Entity extends AbEntity {
 		if (!(ctargetable(atk.trait, atk.attacker, false) || (receive(-1) && atk.SPtr) || (receive(1) && !atk.SPtr)))
 			return;
 
+		boolean cannonResist = atk.canon > 0 && getProc().IMUCANNON.exists() && (atk.canon & getProc().IMUCANNON.type) > 0;
 		if (atk.getProc().POIATK.mult > 0) {
 			int rst = getProc().IMUPOIATK.mult;
 
