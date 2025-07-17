@@ -100,7 +100,7 @@ public class EEnemy extends Entity {
 		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_BARON))) {
 			if ((atk.abi & AB_BAKILL) > 0)
 				ans = (int) (ans * 1.6);
-			if (((EUnit) atk.attacker).coloGrade != -1)
+			if (atk.attacker instanceof EUnit && ((EUnit) atk.attacker).coloGrade != -1)
 				ans = ans * ORB_BARON_DAMAGE[((EUnit) atk.attacker).coloGrade] / 100;
 		}
 		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_BEAST)) && atk.getProc().BSTHUNT.active == 1)
