@@ -1688,8 +1688,9 @@ public class Data {
 	public static final int ORB_CURSE_RESIST = 15;
 	public static final int ORB_UL_BUFF = 16;
 
+	public static final int ORB_TOT = 17;
 	public static final int ORB_ABILITY_TOT = 12; // only count special orbs
-	public static final int ORB_TYPE = 0, ORB_TRAIT = 1, ORB_GRADE = 2, ORB_TOT = 3;
+	public static final int ORB_TYPE = 0, ORB_TRAIT = 1, ORB_GRADE = 2, ORB_INTS = 3;
 
 	// todo: use equipment json file to auto-populate orb data into BCAuxAssets
 	public static final int[] ORB_ATK_MULTI = { 100, 200, 300, 400, 500 }; // Atk orb multiplication

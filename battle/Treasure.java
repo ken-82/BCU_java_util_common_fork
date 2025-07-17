@@ -344,7 +344,7 @@ public class Treasure extends Data {
 			int[][] orbs = level.getOrbs();
 
 			for(int i = 0; i < orbs.length; i++) {
-				if (orbs[i].length < ORB_TOT)
+				if (orbs[i].length < ORB_INTS)
 					continue;
 
 				if (orbs[i][ORB_TYPE] == ORB_STRONG) {
@@ -404,7 +404,7 @@ public class Treasure extends Data {
 			int[][] orbs = level.getOrbs();
 
 			for(int i = 0; i < orbs.length; i++) {
-				if (orbs[i].length < ORB_TOT)
+				if (orbs[i].length < ORB_INTS)
 					continue;
 
 				if (orbs[i][ORB_TYPE] == ORB_RESISTANT) {

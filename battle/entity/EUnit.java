@@ -148,7 +148,7 @@ public class EUnit extends Entity {
 		if (getProc().MONEYBACK.exists())
 			basis.money += basis.elu.price[index[0]][index[1]] * getProc().MONEYBACK.mult / 100;
 		if (getProc().CANONCHARGE.exists() && basis.cannon != basis.maxCannon)
-			basis.cannon = Math.min(basis.maxCannon - 1, basis.cannon + basis.maxCannon * getProc().CANONCHARGE.mult / 100);
+			basis.cannon = Math.min(basis.maxCannon, basis.cannon + getProc().CANONCHARGE.mult); // todo: play cannon charged sfx
 	}
 
 	@Override
@@ -395,7 +395,7 @@ public class EUnit extends Entity {
 			int[][] levelOrbs = level.getOrbs();
 
 			for(int i = 0; i < levelOrbs.length; i++) {
-				if (levelOrbs[i].length < ORB_TOT)
+				if (levelOrbs[i].length < ORB_INTS)
 					continue;
 
 				if (levelOrbs[i][ORB_TYPE] == ORB_MASSIVE) {
@@ -432,7 +432,7 @@ public class EUnit extends Entity {
 			int[][] levelOrbs = level.getOrbs();
 
 			for (int i = 0; i < levelOrbs.length; i++) {
-				if (levelOrbs[i].length < ORB_TOT)
+				if (levelOrbs[i].length < ORB_INTS)
 						continue;
 
 				if (levelOrbs[i][ORB_TYPE] == ORB_STRONG) {
