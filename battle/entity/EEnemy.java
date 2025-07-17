@@ -154,7 +154,7 @@ public class EEnemy extends Entity {
 		if ((atk.abi & AB_SKILL) == 0 && traits.contains(BCTraits.get(TRAIT_SAGE)) && Arrays.asList(SUPER_SAGE_RESIST_TYPE).contains(procName))
 			resistMultiplier += SUPER_SAGE_RESIST;
 
-		return ans * (100 - resistMultiplier) / 100;
+		return ans * (100 - Math.min(100, resistMultiplier)) / 100;
 	}
 
 	@Override
