@@ -60,7 +60,7 @@ public abstract class PackData implements IndexContainer {
 		public void load(Consumer<String> progress, Consumer<Double> bar) {
 			progress.accept("loading basic images");
 			Res.readData();
-			Trait.addBCTraits();
+			Trait.read();
 			progress.accept("loading cannon data");
 			Treasure.readCannonCurveData();
 			progress.accept("loading enemies");

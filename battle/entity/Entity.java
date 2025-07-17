@@ -2247,14 +2247,14 @@ public abstract class Entity extends AbEntity {
 		if (attacker != null) {
 			if (attacker.dire == -1 && !attacker.traits.isEmpty()) {
 				for (int i = 0; i < traits.size(); i++) {
-					if (traits.get(i).BCTrait)
+					if (traits.get(i).id.pack.equals("000000"))
 						continue;
 					if (traits.get(i).others.contains(((MaskUnit) attacker.data).getPack()))
 						return true;
 				}
 			} else if (dire == -1 && !traits.isEmpty()) {
 				for (int i = 0; i < attacker.traits.size(); i++) {
-					if (attacker.traits.get(i).BCTrait)
+					if (attacker.traits.get(i).id.pack.equals("000000"))
 						continue;
 					if (attacker.traits.get(i).others.contains(((MaskUnit) data).getPack()))
 						return true;

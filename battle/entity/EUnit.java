@@ -255,7 +255,7 @@ public class EUnit extends Entity {
 			sharedTraits.retainAll(traits);
 			boolean isAntiTraited = targetTraited(atk.trait);
 			for (Trait t : traits) {
-				if (t.BCTrait || sharedTraits.contains(t))
+				if (t.id.pack.equals("000000") || sharedTraits.contains(t))
 					continue;
 				if ((t.targetType && isAntiTraited) || t.others.contains(((MaskUnit)data).getPack()))
 					sharedTraits.add(t);
