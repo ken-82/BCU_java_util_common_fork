@@ -20,6 +20,8 @@ import java.util.Queue;
 
 @JsonClass(read = JsonClass.RType.FILL)
 public class PCoin extends Data {
+	public static int PCOIN_MIN = 1;
+	public static int PCOIN_MAX;
 	public static void read() {
 		Queue<String> qs = VFile.readLine("./org/data/SkillAcquisition.csv");
 
@@ -30,18 +32,13 @@ public class PCoin extends Data {
 
 			if (strs.length >= 2) {
 				int[] data = CommonStatic.parseIntsN(str);
-
 				Unit u = Identifier.parseInt(data[0], Unit.class).get();
 
 				if (u != null) {
-					if (u.forms.length > 2) {
-						new PCoin(data, u.forms[2].du);
-					}
-
-					if (u.forms.length > 3) {
-						new PCoin(data, u.forms[3].du);
-					}
+					for (int i = 2; i < u.forms.length; i++)
+						new PCoin(data, u.forms[i].du);
 				}
+				PCOIN_MAX = Math.max(PCOIN_MAX, data[2]);
 			}
 		}
 	}
@@ -129,7 +126,7 @@ public class PCoin extends Data {
 				return;
 			}
 
-			switch (data[0]) {
+			switch (data[0]) { // todo: use editorgroup (please)
 				case 0:
 					break;
 				case 56: case 65: // normalize surge chance
@@ -147,7 +144,7 @@ public class PCoin extends Data {
 				case 61:
 					data[2] = MathUtil.clip(data[2], 0, 100);
 					data[3] = MathUtil.clip(data[3], data[2], 100);
-                    break;
+					break;
 				case 25: case 26: case 31: case 32:
 					data[2] = Math.max(data[2], 0);
 					data[3] = Math.max(data[3], data[2]);
