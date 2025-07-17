@@ -1765,7 +1765,7 @@ public class Data {
 	public static final int COUNTER_SURGE_SOUND = 18;
 	public static final int SPIRIT_SUMMON_RANGE = 150;
 	public static final int SPIRIT_SUMMON_DELAY = 15; // unsure
-	public static final float SUPER_SAGE_RESIST = 0.7f;
+	public static final int SUPER_SAGE_RESIST = 70; // todo: sage value consistency to match other percentage data standard
 	public static final String[] SUPER_SAGE_RESIST_TYPE = { "IMUWEAK", "IMUSTOP", "IMUSLOW", "IMUCURSE", "IMUKB", "IMUWARP" };
 	public static final float SUPER_SAGE_HUNTER_ATTACK = 1.2f;
 	public static final float SUPER_SAGE_HUNTER_HP = 0.5f;
