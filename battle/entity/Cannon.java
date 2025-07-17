@@ -124,7 +124,7 @@ public class Cannon extends AtkModelAb {
             atka = null;
         if (exta != null && exta.done())
             exta = null;
-        if (anim != null) {
+        if (anim != null && b.s_stop == 0) {
             if (id == 7) {
                 if (anim.ind() < 32) {
                     anim.update(false);

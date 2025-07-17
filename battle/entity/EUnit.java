@@ -68,7 +68,7 @@ public class EUnit extends Entity {
 		layer = layer0 == layer1 ? layer0 : layer0 + (int) (b.r.nextFloat() * (layer1 - layer0 + 1));
 		traits = de.getTraits();
 		lvl = level.getLv() + level.getPlusLv();
-		isOrbBoosted = b.elu.tick[index[0]][index[1]] == 1;
+		isOrbBoosted = b.elu.tick[index[0]][index[1]] == 1; // todo: change this
 		this.index = index;
 		this.level = level;
 		this.isSpirit = isSpirit;
@@ -349,7 +349,7 @@ public class EUnit extends Entity {
 	private int getOrbRes(ArrayList<Trait> trait, int atk) {
 		OrbInfo orb = ((MaskUnit) data).getOrb();
 
-		if (orb == null || level.getOrbs() == null)
+		if (orb == null || level == null || level.getOrbs() == null)
 			return atk;
 
 		int ans = atk;
