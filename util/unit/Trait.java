@@ -20,10 +20,8 @@ public class Trait extends Data implements Indexable<PackData, Trait> {
     public static void read() {
         //Reads traits from BC and implements it into the main pack
         PackData.DefPack data = UserProfile.getBCData();
-        String[] traitNames = {"Red", "Floating", "Black", "Metal", "Angel", "Alien", "Zombie", "Aku", "Relic", "White", "EVA", "Witch", "Baron", "Beast", "Super Sage", "base", "cannon"};
-        for (int i = 0; i < traitNames.length ; i++) {
+        for (int i = 0; i < 17 ; i++) {
             Trait t = new Trait(data.getNextID(Trait.class));
-            t.name = traitNames[i];
             data.traits.add(t);
         }
     }

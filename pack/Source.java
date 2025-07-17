@@ -780,7 +780,7 @@ public abstract class Source {
 		MUSIC("musics"),
 		REPLAY("replays"),
 		SOUL("souls"),
-		TRAIT("traitIcons");
+		TRAIT("traitIcons"); // i would prefer this not be traitIcons to match with rest of folders
 
 		private final String path;
 
