@@ -32,7 +32,7 @@ public class ContVolcano extends ContAb {
 	public ContVolcano(AttackVolcano v, float p, int lay, int alive, int ind) {
 		super(v.model.b, p, lay);
 
-		if(v.waveType == WT_VOLC) {
+		if((v.waveType & WT_VOLC) > 0) {
 			anim = (v.dire == 1 ? effas().A_E_VOLC : effas().A_VOLC).getEAnim(VolcEff.START);
 		} else {
 			anim = (v.dire == 1 ? effas().A_E_MINIVOLC : effas().A_MINIVOLC).getEAnim(VolcEff.START);
@@ -65,7 +65,7 @@ public class ContVolcano extends ContAb {
 	protected ContVolcano(AttackVolcano v, float p, int lay, int alive, int startPoint, int endPoint, int ind) {
 		super(v.model.b, p, lay);
 
-		if(v.waveType == WT_VOLC) {
+		if((v.waveType & WT_VOLC) > 0) {
 			anim = (v.dire == 1 ? effas().A_E_VOLC : effas().A_VOLC).getEAnim(VolcEff.START);
 		} else {
 			anim = (v.dire == 1 ? effas().A_E_MINIVOLC : effas().A_MINIVOLC).getEAnim(VolcEff.START);

@@ -240,12 +240,13 @@ public class EUnit extends Entity {
 
 	@Override
 	protected int getDamage(AttackAb atk, int ans) {
-		if (atk instanceof AttackWave && atk.waveType == WT_MINI) {
+		if (atk instanceof AttackWave && atk.waveType == WT_MINI)
 			ans = (int) ((float) ans * atk.getProc().MINIWAVE.multi / 100.0);
-		}
-		if (atk instanceof AttackVolcano && atk.waveType == WT_MIVC) {
-			ans = (int) ((float) ans * atk.getProc().MINIVOLC.mult / 100.0);
-		}
+		if (atk instanceof AttackVolcano && (atk.waveType & WT_MIVC) > 0)
+			if ((atk.waveType & WT_SOUL) > 0)
+				ans = (int) (ans * atk.attacker.getProc().MINIDEATHSURGE.mult / 100f);
+			else
+				ans = (int) (ans * atk.getProc().MINIVOLC.mult / 100f);
 
 		if (atk.model instanceof AtkModelEnemy && status[P_CURSE][0] == 0) {
 			ArrayList<Trait> sharedTraits = new ArrayList<>(atk.trait);

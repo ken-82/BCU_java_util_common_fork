@@ -647,13 +647,10 @@ public abstract class Entity extends AbEntity {
 			if (dead >= 0) {
 				if (deathSurge > 0 && soul.len() - dead == 21) // 21 is guessed delay compared to BC
 					e.aam.getDeathSurge(deathSurge);
-
 				if (e.data.getResurrection() != null) {
 					AtkDataModel adm = e.data.getResurrection();
-
 					if ((soul == null && !e.dead) || (soul != null && adm.pre == soul.len() - dead))
 						e.basis.getAttack(e.aam.getAttack(e.data.getAtkCount() + 1));
-
 					if (soul != null && dead == 0 && adm.pre >= soul.len() && !e.dead) {
 						e.basis.getAttack(e.aam.getAttack(e.data.getAtkCount() + 1));
 					}
