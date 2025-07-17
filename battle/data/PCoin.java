@@ -231,14 +231,15 @@ public class PCoin extends Data {
 				ProcItem tar = ans.getProc().getArr(type[1]);
 
 				if (type[1] == P_VOLC || type[1] == P_MINIVOLC) {
-					if (du instanceof DataUnit) {
+					if (du instanceof DataUnit) { // todo: restructure talents to account for more modifiers
 						tar.set(0, modifs[0]);
 						tar.set(1, modifs[2] / 4);
 						tar.set(2, (modifs[2] + modifs[3]) / 4);
 						tar.set(3, modifs[1] * 20);
+						tar.set(4, modifs[1] * 20);
 
 						if (type[1] == P_MINIVOLC) {
-							tar.set(4, 20);
+							tar.set(5, 20);
 						}
 					} else {
 						tar.set(0, tar.get(0) + modifs[0]);
@@ -263,8 +264,11 @@ public class PCoin extends Data {
 						tar.set(0, tar.get(0) + modifs[0]);
 						tar.set(1, tar.get(1) + Math.min(modifs[1], modifs[2]));
 						tar.set(2, tar.get(2) + Math.max(modifs[1], modifs[2]));
-						tar.set(3, tar.get(3) + modifs[3]);
 					}
+				} else if (type[1] == P_MINIWAVE && du instanceof DataUnit) {
+					tar.set(0, tar.get(0) + modifs[0]);
+					tar.set(1, tar.get(1) + modifs[1]);
+					tar.set(3, tar.get(3) + modifs[2]);
 				} else {
 					for (int j = 0; j < 4; j++) {
 						if (modifs[j] > 0) {
