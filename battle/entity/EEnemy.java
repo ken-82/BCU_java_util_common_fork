@@ -146,12 +146,12 @@ public class EEnemy extends Entity {
 
 	@Override
 	public float getResistValue(AttackAb atk, String procName, int procResist) {
-		float ans = 1f - procResist / 100f; // with resist (50) -> 0.5f
+		float ans = 1f - procResist / 100f;
 
 		if (atk.canon > 0 && getProc().IMUCANNON.exists() && (atk.canon & getProc().IMUCANNON.type) > 0)
 			ans = Math.max(0f, ans - getProc().IMUCANNON.mult);
 		if ((atk.abi & AB_SKILL) == 0 && traits.contains(BCTraits.get(TRAIT_SAGE)) && Arrays.asList(SUPER_SAGE_RESIST_TYPE).contains(procName))
-			ans *= (1f - SUPER_SAGE_RESIST); // 0.5f -> 0.15f(?)
+			ans *= (1f - SUPER_SAGE_RESIST);
 
 
 		return ans;
