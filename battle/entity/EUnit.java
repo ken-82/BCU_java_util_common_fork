@@ -95,6 +95,8 @@ public class EUnit extends Entity {
 		if (orbs == null)
 			return;
 		for (int[] orb : orbs) {
+			if (orb.length == 0)
+				continue;
 			int id = orb[0];
 			if (id < ORB_DEATH_SURGE)
 				continue;
