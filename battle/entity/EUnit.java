@@ -95,7 +95,7 @@ public class EUnit extends Entity {
 		if (orbs == null)
 			return;
 		for (int[] orb : orbs) {
-			if (orb.length == 0)
+			if (orb.length != ORB_INTS)
 				continue;
 			int id = orb[0];
 			if (id < ORB_DEATH_SURGE)
@@ -136,6 +136,8 @@ public class EUnit extends Entity {
 				orbProc.CANONCHARGE.mult = Math.max(orbProc.CANONCHARGE.mult, ORB_CANNON_RECHARGE_MULT[orb[2]]);
 			else if (id == ORB_BARON_KILLER)
 				coloGrade = Math.max(coloGrade, orb[2]);
+			else if (id == ORB_IMUATK)
+				orbProc.IMUATKANY.prob = Math.max(orbProc.IMUATKANY.prob, ORB_IMUATK_MULT[orb[2]]);
 		}
 		if (legendGrade != -1)
 			maxH = health = health * (100 + ORB_LEGEND_HEATLH[legendGrade]) / 100;
@@ -147,8 +149,8 @@ public class EUnit extends Entity {
 
 		if (getProc().MONEYBACK.exists())
 			basis.money += basis.elu.price[index[0]][index[1]] * getProc().MONEYBACK.mult / 100;
-		if (getProc().CANONCHARGE.exists() && basis.cannon != basis.maxCannon)
-			basis.cannon = Math.min(basis.maxCannon, basis.cannon + getProc().CANONCHARGE.mult); // todo: play cannon charged sfx
+		if (getProc().CANONCHARGE.exists() && basis.cannon < basis.maxCannon - 1)
+			basis.cannon = Math.min(basis.maxCannon - 1, basis.cannon + getProc().CANONCHARGE.mult);
 	}
 
 	@Override
@@ -193,7 +195,7 @@ public class EUnit extends Entity {
 			Proc.BSTHUNT beastDodge = getProc().BSTHUNT;
 
 			if (beastDodge.prob > 0 && (atk.dire != dire)) {
-				if (status[P_BSTHUNT][0] == 0 && (beastDodge.prob == 100 || basis.r.nextFloat() * 100 < beastDodge.prob)) {
+				if (status[P_BSTHUNT][0] == 0 && beastDodge.perform(basis.r)) {
 					status[P_BSTHUNT][0] = beastDodge.time;
 					anim.getEff(P_IMUATK);
 				}

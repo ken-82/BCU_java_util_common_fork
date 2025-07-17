@@ -889,6 +889,8 @@ public class Data {
 		public final MULT MONEYBACK = new MULT();
 		@Order(63)
 		public final MULT CANONCHARGE = new MULT();
+		@Order(64)
+		public final PROB IMUATKANY = new PROB();
 
 		@Override
 		public Proc clone() {
@@ -1691,6 +1693,7 @@ public class Data {
 	public static final int ORB_TOT = 17;
 	public static final int ORB_ABILITY_TOT = 12; // only count special orbs
 	public static final int ORB_TYPE = 0, ORB_TRAIT = 1, ORB_GRADE = 2, ORB_INTS = 3;
+	public static final int[] ORB_EVERY_OTHER = { ORB_DEATH_SURGE, ORB_MONEY_BACK, ORB_BARON_KILLER, ORB_CANNON_RECHARGE, ORB_IMUATK };
 
 	// todo: use equipment json file to auto-populate orb data into BCAuxAssets
 	public static final int[] ORB_ATK_MULTI = { 100, 200, 300, 400, 500 }; // Atk orb multiplication

@@ -1580,19 +1580,28 @@ public abstract class Entity extends AbEntity {
 		tokens.add(atk);
 
 		Proc.PT imuatk = getProc().IMUATK;
-
-		if (imuatk.prob > 0 && (atk.dire == -1 || receive(-1)) || ctargetable(atk.trait, atk.attacker, false)) {
-			if (status[P_IMUATK][0] == 0 && (imuatk.prob == 100 || basis.r.nextFloat() * 100 < imuatk.prob)) {
+		if (imuatk.exists() && (atk.dire == -1 || receive(-1)) || ctargetable(atk.trait, atk.attacker, false)) {
+			if (status[P_IMUATK][0] == 0 && imuatk.perform(basis.r)) {
 				status[P_IMUATK][0] = (int) (imuatk.time * (1 + 0.2 / 3 * getFruit(atk.trait, atk.dire, -1)));
 				anim.getEff(P_IMUATK);
 			}
 			if (status[P_IMUATK][0] > 0)
 				return;
 		}
+		if (getProc().IMUATKANY.exists()) { // todo: figure out if dodge orb is affected by treasure or by dodge ability
+			if (status[P_IMUATK][0] == 0 && getProc().IMUATKANY.perform(basis.r)) {
+				status[P_IMUATK][0] = 30;
+				anim.getEff(P_IMUATK);
+			}
+
+			if (status[P_IMUATK][0] > 0)
+				return;
+		}
 
 		Proc.DMGCUT dmgcut = getProc().DMGCUT;
 
-		if (dmgcut.prob > 0 && ((dmgcut.type.traitIgnore && status[P_CURSE][0] == 0) || ctargetable(atk.trait, atk.attacker, false)) && dmg < status[P_DMGCUT][0] && dmg > 0 && (dmgcut.prob == 100 || basis.r.nextFloat() * 100 < dmgcut.prob)) {
+		if (dmgcut.exists() && ((dmgcut.type.traitIgnore && status[P_CURSE][0] == 0) || ctargetable(atk.trait, atk.attacker, false))
+				&& dmg < status[P_DMGCUT][0] && dmg > 0 && dmgcut.perform(basis.r)) {
 			anim.getEff(P_DMGCUT);
 
 			if (dmgcut.type.procs)
@@ -1608,7 +1617,8 @@ public abstract class Entity extends AbEntity {
 
 		Proc.DMGCAP dmgcap = getProc().DMGCAP;
 
-		if (dmgcap.prob > 0 && ((dmgcap.type.traitIgnore && status[P_CURSE][0] == 0) || ctargetable(atk.trait, atk.attacker, false)) && dmg > status[P_DMGCAP][0] && (dmgcap.prob == 100 || basis.r.nextFloat() * 100 < dmgcap.prob)) {
+		if (dmgcap.exists() && ((dmgcap.type.traitIgnore && status[P_CURSE][0] == 0) || ctargetable(atk.trait, atk.attacker, false)) && dmg > status[P_DMGCAP][0]
+				&& dmgcap.perform(basis.r)) {
 			anim.getEff(dmgcap.type.nullify ? DMGCAP_SUCCESS : DMGCAP_FAIL);
 			if (dmgcap.type.procs)
 				proc = false;
@@ -1737,7 +1747,7 @@ public abstract class Entity extends AbEntity {
 
 		atk.notifyEntity(e -> {
 			Proc.COUNTER counter = getProc().COUNTER;
-			if ((counter.prob == 100 || basis.r.nextFloat() * 100 < counter.prob) && e.dire != dire && (e.touchable() & getTouch()) > 0) {
+			if (e.dire != dire && (e.touchable() & getTouch()) > 0 && counter.perform(basis.r)) {
 				boolean isWave = (atk.waveType & WT_WAVE) > 0 || (atk.waveType & WT_MINI) > 0 || (atk.waveType & WT_MOVE) > 0 || (atk.waveType & WT_VOLC) > 0;
 				if (!isWave || counter.type.counterWave != 0) {
 					float[] ds = counter.minRange != 0 || counter.maxRange != 0 ? new float[]{pos + counter.minRange, pos + counter.maxRange} : aam.touchRange();
@@ -2156,8 +2166,7 @@ public abstract class Entity extends AbEntity {
 		}
 		// lethal strike
 		if (getProc().LETHAL.prob > 0 && health <= 0) {
-			boolean b = getProc().LETHAL.prob == 100 || basis.r.nextFloat() * 100 < getProc().LETHAL.prob;
-			if (status[P_LETHAL][0] == 0 && b) {
+			if (status[P_LETHAL][0] == 0 && getProc().LETHAL.perform(basis.r)) {
 				health = 1;
 				anim.getEff(P_LETHAL);
 			}

@@ -39,8 +39,7 @@ public class ELineUp extends BattleObj {
 					maxC[i][j] = maxC[i][j] * lim.stageLimit.cooldownMultiplier[form.unit.rarity] / 100;
 				}
 				int[][] orbs = lu.efs[i][j].getLevel().getOrbs();
-				if (orbs != null && Arrays.stream(orbs).anyMatch(o -> o.length > 0 && (o[0] == ORB_DEATH_SURGE || o[0] == ORB_MONEY_BACK
-						|| o[0] == ORB_CANNON_RECHARGE || o[0] == ORB_IMUATK || o[0] == ORB_BARON_KILLER)))
+				if (orbs != null && Arrays.stream(orbs).anyMatch(o -> o.length == ORB_INTS && Arrays.stream(ORB_EVERY_OTHER).anyMatch(v -> v == o[0])))
 					tick[i][j] = 0;
 				else
 					tick[i][j] = -1;

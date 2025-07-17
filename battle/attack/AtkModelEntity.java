@@ -249,7 +249,7 @@ public abstract class AtkModelEntity extends AtkModelAb {
 		if (data.getAtkModel(ind).getAltAbi() != 0)
 			e.altAbi(data.getAtkModel(ind).getAltAbi());
 		if (abis[ind] == 1) {
-			if (getProc(ind).TIME.prob != 0 && (getProc(ind).TIME.prob == 100 || b.r.nextFloat() * 100 < getProc(ind).TIME.prob)) {
+			if (getProc(ind).TIME.prob != 0 && getProc(ind).TIME.perform(b.r)) {
 				if (getProc(ind).TIME.intensity > 0) {
 					b.temp_s_stop = Math.max(b.temp_s_stop, getProc(ind).TIME.time);
 					b.temp_inten = getProc(ind).TIME.intensity;
@@ -258,7 +258,7 @@ public abstract class AtkModelEntity extends AtkModelAb {
 					b.temp_n_inten = (float)Math.abs(getProc(ind).TIME.intensity) / b.sn_temp_stop;
 				}
 			}
-			if (getProc(ind).THEME.prob != 0 && (getProc(ind).THEME.prob == 100 || b.r.nextFloat() * 100 < getProc(ind).THEME.prob))
+			if (getProc(ind).THEME.prob != 0 && getProc(ind).THEME.perform(b.r))
 				b.changeTheme(getProc(ind).THEME);
 		}
 	}

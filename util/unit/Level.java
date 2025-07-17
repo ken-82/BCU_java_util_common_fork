@@ -10,6 +10,8 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static common.util.Data.ORB_INTS;
+
 @SuppressWarnings("unused")
 @JsonClass(noTag = NoTag.LOAD)
 public class Level implements BattleStatic, LevelInterface {
@@ -92,7 +94,7 @@ public class Level implements BattleStatic, LevelInterface {
 				continue;
 			}
 
-			if (data.length != 3) {
+			if (data.length != ORB_INTS) {
 				valid = false;
 				break;
 			}
@@ -173,7 +175,7 @@ public class Level implements BattleStatic, LevelInterface {
 			}
 			if (data.length == 0)
 				continue;
-			if (data.length != 3) {
+			if (data.length != ORB_INTS) {
 				valid = false;
 				break;
 			}
