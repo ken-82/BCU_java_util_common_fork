@@ -441,13 +441,10 @@ public class PCoin extends Data {
 				System.arraycopy(data, 0, newData, 0, data.length);
 				return newData;
 			}
-
 			return data;
 		});
-
-		max = new int[info.size()];
-		for (int i = 0; i < info.size(); i++)
-			max[i] = Math.max(1, info.get(i)[1]);
+		info.removeIf(d -> d[0] > PCOIN_MAX);
+		max = info.stream().mapToInt(i -> Math.max(1, i[1])).toArray();
 	}
 
 	private static boolean talentExist(String[] data, int index) {
