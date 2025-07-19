@@ -158,7 +158,7 @@ public class AttackSimple extends AttackAb {
 			float p0 = model.getPos() + dire * addp;
 
 			if (proc.WAVE.maxlv > proc.WAVE.lv) {
-				proc.WAVE.lv = proc.WAVE.lv + (int)(Math.random() * ((proc.WAVE.maxlv - proc.WAVE.lv) + 1));
+				proc.WAVE.lv = proc.WAVE.lv + (int)(model.b.r.nextFloat() * ((proc.WAVE.maxlv - proc.WAVE.lv) + 1));
 			}
 
 			if (proc.WAVE.inverted) {
@@ -180,7 +180,7 @@ public class AttackSimple extends AttackAb {
 			float p0 = model.getPos() + dire * addp;
 
 			if (proc.MINIWAVE.maxlv > proc.MINIWAVE.lv) {
-				proc.MINIWAVE.lv = proc.MINIWAVE.lv + (int)(Math.random() * ((proc.MINIWAVE.maxlv - proc.MINIWAVE.lv) + 1));
+				proc.MINIWAVE.lv = proc.MINIWAVE.lv + (int)(model.b.r.nextFloat() * ((proc.MINIWAVE.maxlv - proc.MINIWAVE.lv) + 1));
 			}
 
 			if (proc.MINIWAVE.inverted) {
@@ -203,7 +203,7 @@ public class AttackSimple extends AttackAb {
 			float end = p0 - (dire == 1 ? W_VOLC_INNER : W_VOLC_PIERCE);
 
 			if (volc.maxtime > volc.time) {
-				volc.time = volc.time + (int)(Math.random() * ((volc.maxtime - volc.time) + 1));
+				volc.time = volc.time + (int)(model.b.r.nextFloat() * ((volc.maxtime - volc.time) + 1));
 				volc.time = (int) (Math.floor(volc.time / 20.0) * 20);
 			}
 
@@ -223,7 +223,7 @@ public class AttackSimple extends AttackAb {
 			float end = p0 - (dire == 1 ? W_VOLC_INNER : W_VOLC_PIERCE);
 
 			if (volc.maxtime > volc.time) {
-				volc.time = volc.time + (int)(Math.random() * ((volc.maxtime - volc.time) + 1));
+				volc.time = volc.time + (int)(model.b.r.nextFloat() * ((volc.maxtime - volc.time) + 1));
 				volc.time = (int) (Math.floor(volc.time / 20.0) * 20);
 			}
 

@@ -11,6 +11,7 @@ import common.system.P;
 import common.system.fake.FakeGraphics;
 import common.system.fake.FakeTransform;
 import common.util.BattleObj;
+import common.util.CopRand;
 import common.util.Data;
 import common.util.Data.Proc.POISON;
 import common.util.Data.Proc.REVIVE;
@@ -2346,7 +2347,7 @@ public abstract class Entity extends AbEntity {
 						regenDisabled = true;
 					}
 					regentimer = getProc().HPREGEN.interval;
-					if (Math.random() < (getProc().HPREGEN.prob / 100f)) {
+					if (basis.r.nextFloat() < (getProc().HPREGEN.prob / 100f)) {
 						regenerate();
 					}
 				}
