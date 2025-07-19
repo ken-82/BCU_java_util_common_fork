@@ -5,14 +5,19 @@ import common.util.BattleObj;
 import common.util.stage.Limit;
 import common.util.unit.Form;
 
+import java.util.Arrays;
+
 public class ELineUp extends BattleObj {
 
-	public final int[][] price, cool, maxC;
+	public final int[][] price, cool, maxC, tick;
+	private final StageBasis b;
 
 	protected ELineUp(LineUp lu, StageBasis sb) {
+		b = sb;
 		price = new int[2][5];
 		cool = new int[2][5];
 		maxC = new int[2][5];
+		tick = new int[2][5];
 		Limit lim = sb.est.lim;
 		for (int i = 0; i < 2; i++)
 			for (int j = 0; j < 5; j++) {
@@ -24,7 +29,7 @@ public class ELineUp extends BattleObj {
 				if (lim != null && ((lim.line == 1 && i == 1) || lim.unusable(lu.efs[i][j].du, sb.st.getCont().price)))
 					price[i][j] = -1;
 				else
-					price[i][j] = (int) (lu.efs[i][j].getPrice(sb.st.getCont().price) * 100);
+					price[i][j] = 100 * (sb.globalCost() > -1 ? sb.globalCost() : (int) (lu.efs[i][j].getPrice(sb.st.getCont().price)));
 				maxC[i][j] = sb.globalCdLimit() > 0
 						? sb.b.t().getFinResGlobal(sb.globalCdLimit(), sb.isBanned(C_RESP))
 						: sb.b.t().getFinRes(lu.efs[i][j].du.getRespawn(), sb.isBanned(C_RESP));
@@ -33,6 +38,11 @@ public class ELineUp extends BattleObj {
 						price[i][j] = price[i][j] * lim.stageLimit.costMultiplier[form.unit.rarity] / 100;
 					maxC[i][j] = maxC[i][j] * lim.stageLimit.cooldownMultiplier[form.unit.rarity] / 100;
 				}
+				int[][] orbs = lu.efs[i][j].getLevel().getOrbs();
+				if (orbs != null && Arrays.stream(orbs).anyMatch(o -> o.length == ORB_INTS && Arrays.stream(ORB_EVERY_OTHER).anyMatch(v -> v == o[0])))
+					tick[i][j] = 0;
+				else
+					tick[i][j] = -1;
 			}
 	}
 
@@ -52,8 +62,10 @@ public class ELineUp extends BattleObj {
 				if (cool[i][j] > 0) {
 					cool[i][j]--;
 
-					if (cool[i][j] == 0)
+					if (cool[i][j] == 0) {
 						CommonStatic.setSE(SE_SPEND_REF);
+						b.frameOffCd[i][j] = b.time;
+					}
 				}
 			}
 	}

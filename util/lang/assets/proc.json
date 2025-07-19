@@ -79,7 +79,7 @@
         "abbr_name": "wave",
         "full_name": "Wave",
         "tooltip": null,
-        "format": "(prob)% chance to create a Lv.(lv) [(inverted){inverted }]wave attack",
+        "format": "(prob)% chance to create a Lv.[(maxlv<=lv){(lv)}(maxlv>lv){(lv) ~ (maxlv)}] [(inverted){inverted }]wave attack",
         "class": {
             "prob": {
                 "name": "chance",
@@ -88,6 +88,10 @@
             "lv": {
                 "name": "level",
                 "tooltip": null
+            },
+            "maxlv": {
+                "name": "max level",
+                "tooltip": ""
             },
             "inverted": {
                 "name": "Inverted Wave",
@@ -193,7 +197,7 @@
         "abbr_name": "inc. spd",
         "full_name": "Adrenaline",
         "tooltip": null,
-        "format": "Speed [(mult>=100){increased}(mult<100){decreased}] to (mult)% after health drops below (health)%",
+        "format": "Speed [(mult>0){increased}(mult<0){decreased}] by [(mult>0){(mult)}(mult<0){(mult*-1)}]% after health drops below (health)%",
         "class": {
             "health": {
                 "name": "health",
@@ -202,6 +206,54 @@
             "mult": {
                 "name": "increment",
                 "tooltip": "Set negative to slow"
+            }
+        }
+    },
+    "HPREGEN": {
+        "abbr_name": "hp regen",
+        "full_name": "Regeneration",
+        "tooltip": "heal or harm the entity every so often. Note that this doesn't trigger hitbacks",
+        "format": "[(amount>0){Heals by (amount) HP}(amount<0){Hurts by (amount*-1) HP}(amount==0){No healing}] at a (prob)% chance every (interval)f[(scaleWithBuff){, affected by buff}][(onlyOnce){, only occurring once}][(resetWhenDamaged){, resetting when damaged}][(freezeEff){, affected by freeze}][(removeProcs){, clearing all procs}][(idleTrigger){, only while standing still}][(noHB){, ignoring hitbacks}]",
+        "class": {
+            "prob": {
+                "name": "chance",
+                "tooltip": null
+            },
+            "interval": {
+                "name": "interval",
+                "tooltip": null
+            },
+            "amount": {
+                "name": "amount",
+                "tooltip": "Can be negative"
+            },
+            "scaleWithBuff": {
+                "name": "scale with buff",
+                "tooltip": "Increases amount as buff/level increases"
+            },
+            "onlyOnce": {
+                "name": "only once",
+                "tooltip": "Regeneration only happens once then never again"
+            },
+            "resetWhenDamaged": {
+                "name": "reset on damage",
+                "tooltip": "Regeneration timer resets when the entity is damaged"
+            },
+            "freezeEff": {
+                "name": "affected by freeze",
+                "tooltip": "Freeze will stop the regeneration timer"
+            },
+            "removeProcs": {
+                "name": "remove procs",
+                "tooltip": "When hp regeneration fires, all procs are removed (even if amount is 0)"
+            },
+            "idleTrigger": {
+                "name": "static only",
+                "tooltip": "HP regeneration will only begin when the entity isn't moving (either idle or attacking)"
+            },
+            "noHB": {
+                "name": "ignore hitback",
+                "tooltip": "Does not play hitback animations (useful if you want a timed entity like Iron Wall Cat or an instant soul spawner)"
             }
         }
     },
@@ -850,7 +902,7 @@
         "abbr_name": "surge",
         "full_name": "Surge",
         "tooltip": null,
-        "format": "(prob)% chance to make a Lv (time/20) surge attack (_left)Lasts (_dispTime(time)), created within (dis_0) ~ (dis_1) range(_right)",
+        "format": "(prob)% chance to make a Lv. [(maxtime>time){(time/20) ~ (maxtime/20)}(maxtime<=time){(time/20)}] surge attack (_left)Lasts (_dispTime(time)) ~ (_dispTime(maxtime)), created within (dis_0) ~ (dis_1) range(_right)",
         "class": {
             "prob": {
                 "name": "chance",
@@ -867,6 +919,10 @@
             "time": {
                 "name": "duration",
                 "tooltip": null
+            },
+            "maxtime": {
+                "name": "max duration",
+                "tooltip": ""
             }
         }
     },
@@ -1003,7 +1059,7 @@
         "abbr_name" : "mini-wave",
         "full_name" : "Mini-Wave",
         "tooltip" : "Creates small wave which moves twice faster than normal wave with dynamic damage multiplication parameter",
-        "format" : "(prob)% chance to create a lv.(lv) [(inverted){inverted }]mini-wave [(multi!=20){(_left)Gives target (multi)% of activator's damage(_right)}]",
+        "format" : "(prob)% chance to create a lv.[(maxlv<=lv){(lv)}(maxlv>lv){(lv) ~ (maxlv)}] [(inverted){inverted }]mini-wave [(multi!=20){(_left)Gives target (multi)% of activator's damage(_right)}]",
         "class" : {
             "prob" : {
                 "name" : "chance",
@@ -1013,13 +1069,17 @@
                 "name" : "level",
                 "tooltip" : null
             },
+            "maxlv": {
+                "name": "max level",
+                "tooltip": ""
+            },
             "multi" : {
                 "name" : "multi",
                 "tooltip" : "Percentage of activator's damage.<br>If multi is 20, it will have 20% of activator's damage. Negative values are allowed"
             },
             "inverted": {
                 "name": "Inverted Wave",
-                "tooltip": "Inverts the wave, causing it to go backwards from the end point to the start point."
+                "tooltip": "Inverts the wave, causing it to go backwards from the end point to the start point"
             }
         }
     },
@@ -1286,7 +1346,7 @@
         "abbr_name": "m. surge",
         "full_name": "Mini Surge",
         "tooltip": "Creates small surge that does exactly same behavior of normal surge, but with less damage",
-        "format": "(prob)% chance to make a Lv (time/20) mini surge attack (_left)Lasts (_dispTime(time)), created within (dis_0) ~ (dis_1) range, with (mult)% damage of attacker(_right)",
+        "format": "(prob)% chance to make a Lv. [(maxtime>time){(time/20) ~ (maxtime/20)}(maxtime<=time){(time/20)}] mini surge attack (_left)Lasts (_dispTime(time)) ~ (_dispTime(maxtime)), created within (dis_0) ~ (dis_1) range, with (mult)% damage of attacker(_right)",
         "class": {
             "prob": {
                 "name": "chance",
@@ -1303,6 +1363,10 @@
             "time": {
                 "name": "duration",
                 "tooltip": null
+            },
+            "maxtime": {
+                "name": "max duration",
+                "tooltip": ""
             },
             "mult" : {
                 "name": "multiplier",
@@ -1331,6 +1395,45 @@
             "mult": {
                 "name": "multiplier",
                 "tooltip": null
+            }
+        }
+    },
+    "BLAST" : {
+        "abbr_name": "blast atk",
+        "full_name": "Blast Attack",
+        "tooltip": "Creates blast attack that spreads to each side with weaker damage over each blasts",
+        "format": "(prob)% chance to create a blast attack (_left)Created [(dis_0==dis_1){at (dis_0) range}(dis_0!=dis_1){within (dis_0) ~ (dis_1) range}](_right)",
+        "class": {
+            "prob": {
+                "name": "chance",
+                "tooltip": null
+            },
+            "dis_0": {
+                "name": "point near",
+                "tooltip": null
+            },
+            "dis_1": {
+                "name": "point far",
+                "tooltip": null
+            }
+        }
+    },
+    "IMUBLAST" : {
+        "abbr_name": "imu. Blast",
+        "full_name": "Immune/Resistant to Blast",
+        "tooltip": null,
+        "format": ["[(mult!=0&block!=100){[(mult==100){Immune}(mult<100&mult>0){Resistant}(mult<0){Weak}] to Blast",
+            "[(mult<100&mult>0){ (_left)Decreases damage by (mult)%(_right)}(mult<0){ (_left)Increases damage by (_abs(mult))%(_right)}]",
+            "[(block!=0&block<100){ & }]}][(block!=0){Blast [(block==100){blocker}(block<100&block>0){absorber}(block<0){increaser}]",
+            "[(block<100&block>0){ (_left)Decreases damage by (block)%(_right)}(block<0){ (_left)Increases damage by (_abs(block))%(_right)}]}]"],
+        "class": {
+            "mult": {
+                "name": "percent",
+                "tooltip": "Set negative to make this unit weak to the effect"
+            },
+            "block": {
+                "name": "Blocker",
+                "tooltip": "Set from 1 to 99 to reduce duration amongst all units. Set to 100 to completely block slow. Set negative to increase the effect."
             }
         }
     }

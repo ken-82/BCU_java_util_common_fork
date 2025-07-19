@@ -79,7 +79,7 @@ public class Limit extends Data implements BattleStatic {
 		l.lvr = lvr;
 		l.rich = rich;
 		l.sniper = sniper;
-		l.stageLimit = l.stageLimit != null ? l.stageLimit.clone() : null;
+		l.stageLimit = stageLimit != null ? stageLimit.clone() : null;
 		return l;
 	}
 

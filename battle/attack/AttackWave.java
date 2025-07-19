@@ -71,7 +71,7 @@ public class AttackWave extends AttackAb {
 			if (attacker.status[P_WEAK][0] != 0)
 				atk = atk * attacker.status[P_WEAK][1] / 100;
 			if (attacker.dire == 1 && attacker.basis.canon.deco == DECO_BASE_WALL)
-				atk *= attacker.basis.b.t().getDecorationMagnification(attacker.basis.canon.deco, Data.DECO_WAVE);
+				atk = (int) (atk * attacker.basis.b.t().getDecorationMagnification(attacker.basis.canon.deco, Data.DECO_WAVE));
 		}
 
 		for (AbEntity e : capt) {

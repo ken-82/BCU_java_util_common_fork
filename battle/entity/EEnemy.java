@@ -13,6 +13,7 @@ import common.util.anim.EAnimU;
 import common.util.unit.Trait;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class EEnemy extends Entity {
 
@@ -55,13 +56,14 @@ public class EEnemy extends Entity {
 
 	@Override
 	protected int getDamage(AttackAb atk, int ans) {
-		if (atk instanceof AttackWave && atk.waveType == WT_MINI) {
-			ans = (int) ((float) ans * atk.getProc().MINIWAVE.multi / 100.0);
-		}
+		if (atk instanceof AttackWave && atk.waveType == WT_MINI)
+			ans = (int) (ans * atk.getProc().MINIWAVE.multi / 100f);
 
-		if (atk instanceof AttackVolcano && atk.waveType == WT_MIVC) {
-			ans = (int) ((float) ans * atk.getProc().MINIVOLC.mult / 100.0);
-		}
+		if (atk instanceof AttackVolcano && (atk.waveType & WT_MIVC) > 0)
+			if ((atk.waveType & WT_SOUL) > 0)
+				ans = (int) (ans * atk.attacker.getProc().MINIDEATHSURGE.mult / 100f);
+			else
+				ans = (int) (ans * atk.getProc().MINIVOLC.mult / 100f);
 
 		if (atk.model instanceof AtkModelUnit && ((AtkModelUnit) atk.model).e.status[P_CURSE][0] == 0) {
 			ArrayList<Trait> sharedTraits = new ArrayList<>(atk.trait);
@@ -93,19 +95,18 @@ public class EEnemy extends Entity {
 
 		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_WITCH)) && (atk.abi & AB_WKILL) > 0)
 			ans = (int) (ans * basis.b.t().getWKAtk(basis.isBanned(Data.C_WKILL)));
-
 		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_EVA)) && (atk.abi & AB_EKILL) > 0)
 			ans = (int) (ans * basis.b.t().getEKAtk(basis.isBanned(Data.C_EKILL)));
-
-		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_BARON)) && (atk.abi & AB_BAKILL) > 0)
-			ans = (int) (ans * 1.6);
-
-		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_BEAST)) && atk.getProc().BSTHUNT.type.active)
+		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_BARON))) {
+			if ((atk.abi & AB_BAKILL) > 0)
+				ans = (int) (ans * 1.6);
+			if (atk.attacker instanceof EUnit && ((EUnit) atk.attacker).coloGrade != -1)
+				ans = ans * ORB_BARON_DAMAGE[((EUnit) atk.attacker).coloGrade] / 100;
+		}
+		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_BEAST)) && atk.getProc().BSTHUNT.active == 1)
 			ans = (int) (ans * 2.5);
-
 		if (traits.contains(BCTraits.get(TRAIT_SAGE)) && (atk.abi & AB_SKILL) > 0)
 			ans = (int) (ans * SUPER_SAGE_HUNTER_ATTACK);
-
 		if (atk.canon == 16)
 			if ((touchable() & TCH_UG) > 0)
 				ans = (int) (maxH * basis.b.t().getCannonMagnification(5, BASE_HOLY_ATK_UNDERGROUND));
@@ -146,22 +147,14 @@ public class EEnemy extends Entity {
 	@Override
 	public float getResistValue(AttackAb atk, String procName, int procResist) {
 		float ans = 1f - procResist / 100f;
+		int resistMultiplier = 0;
 
-		boolean canBeApplied = false;
+		if (atk.canon > 0 && getProc().IMUCANNON.exists() && (atk.canon & getProc().IMUCANNON.type) > 0)
+			resistMultiplier += getProc().IMUCANNON.mult;
+		if ((atk.abi & AB_SKILL) == 0 && traits.contains(BCTraits.get(TRAIT_SAGE)) && Arrays.asList(SUPER_SAGE_RESIST_TYPE).contains(procName))
+			resistMultiplier += SUPER_SAGE_RESIST;
 
-		for (int i = 0; i < SUPER_SAGE_RESIST_TYPE.length; i++) {
-			if (procName.equals(SUPER_SAGE_RESIST_TYPE[i])) {
-				canBeApplied = true;
-
-				break;
-			}
-		}
-
-		if ((atk.abi & AB_SKILL) == 0 && traits.contains(BCTraits.get(TRAIT_SAGE)) && canBeApplied) {
-			ans *= (1f - SUPER_SAGE_RESIST);
-		}
-
-		return ans;
+		return ans * (100 - Math.min(100, resistMultiplier)) / 100;
 	}
 
 	@Override

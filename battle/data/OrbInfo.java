@@ -2,6 +2,7 @@ package common.battle.data;
 
 import common.CommonStatic;
 import common.CommonStatic.BCAuxAssets;
+import common.pack.Context;
 import common.pack.Identifier;
 import common.system.VImg;
 import common.system.files.VFile;
@@ -16,11 +17,11 @@ import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class Orb extends Data {
+public class OrbInfo extends Data {
 
-	public static final int[] orbTrait = {
+	public static final int[] orbTrait = { // the 12 connects to the "ability orb" sprite (since no targets)
 			Data.TRAIT_RED, Data.TRAIT_FLOAT, Data.TRAIT_BLACK, Data.TRAIT_METAL, Data.TRAIT_ANGEL, Data.TRAIT_ALIEN,
-			Data.TRAIT_ZOMBIE, Data.TRAIT_RELIC, Data.TRAIT_WHITE, Data.TRAIT_EVA, Data.TRAIT_WITCH, Data.TRAIT_DEMON
+			Data.TRAIT_ZOMBIE, Data.TRAIT_RELIC, Data.TRAIT_WHITE, Data.TRAIT_EVA, Data.TRAIT_WITCH, Data.TRAIT_DEMON, 12
 	};
 
 	public static void read() {
@@ -35,22 +36,17 @@ public class Orb extends Data {
 					continue;
 
 				String[] strs = line.trim().split(",");
-
 				int value = 0;
-
 				for (int i = 0; i < strs.length; i++) {
-					if(strs.length != orbTrait.length)
-						continue;
-
-					int t = CommonStatic.parseIntN(strs[i]);
-
-					if (t == 1) {
-						value |= 1 << orbTrait[i];
+					if (i >= orbTrait.length) {
+						CommonStatic.ctx.printErr(Context.ErrType.WARN, "unknown orb trait line(s): index " + i);
+						break;
 					}
+					if (CommonStatic.parseIntN(strs[i]) == 1)
+						value |= 1 << orbTrait[i];
 				}
 
 				aux.DATA.put(key, value);
-
 				key++;
 			}
 
@@ -66,21 +62,21 @@ public class Orb extends Data {
 
 				JSONObject obj = (JSONObject) lists.get(i);
 
-				int trait = obj.getInt("attribute");
-				int type = obj.getInt("content");
-				int grade = obj.getInt("gradeID");
+				int orbID = obj.getInt("content"); // main orb type
+				int grade = obj.getInt("gradeID"); // grade type D to S
+				int trait = obj.has("attribute") ? obj.getInt("attribute") : 12; // trait target
 
-				Map<Integer, List<Integer>> orb;
+				Map<Integer, List<Integer>> orbData;
 
-				if(aux.ORB.containsKey(type))
-					orb = aux.ORB.get(type);
+				if(aux.ORB.containsKey(orbID))
+					orbData = aux.ORB.get(orbID);
 				else
-					orb = new TreeMap<>();
+					orbData = new TreeMap<>();
 
 				List<Integer> grades;
 
-				if(orb.containsKey(aux.DATA.get(trait))) {
-					grades = orb.get(aux.DATA.get(trait));
+				if(orbData.containsKey(aux.DATA.get(trait))) {
+					grades = orbData.get(aux.DATA.get(trait));
 				} else {
 					grades = new ArrayList<>();
 				}
@@ -89,9 +85,8 @@ public class Orb extends Data {
 					grades.add(grade);
 				}
 
-				orb.put(aux.DATA.get(trait), grades);
-
-				aux.ORB.put(type, orb);
+				orbData.put(aux.DATA.get(trait), grades);
+				aux.ORB.put(orbID, orbData);
 			}
 
 			Queue<String> units = VFile.readLine("./org/data/equipmentslot.csv");
@@ -102,45 +97,39 @@ public class Orb extends Data {
 				}
 
 				String[] strs = line.trim().split(",");
-
-				if (strs.length != 2 && strs.length != 4) {
+				if (strs.length != 2 && strs.length != 2 + CommonStatic.parseIntN(strs[1]))
 					continue;
-				}
 
 				int id = CommonStatic.parseIntN(strs[0]);
 				int slots = CommonStatic.parseIntN(strs[1]);
-
 				Unit u = Identifier.parseInt(id, Unit.class).get();
-
-				if (u == null || u.forms.length != 3) {
+				if (u == null || u.forms.length < 3)
 					continue;
-				}
 
 				Form f = u.forms[2];
-
-				if (f == null) {
+				if (f == null)
 					continue;
-				}
 
 				if(strs.length == 2) {
-					f.orbs = new Orb(slots);
+					f.unit.orbs = new OrbInfo(slots);
 				} else {
-					f.orbs = new Orb(slots, new int[] { CommonStatic.parseIntN(strs[2]), CommonStatic.parseIntN(strs[3]) });
+					f.unit.orbs = new OrbInfo(slots, new int[] { CommonStatic.parseIntN(strs[2]), CommonStatic.parseIntN(strs[3]) });
 				}
 			}
 
 			String pre = "./org/page/orb/equipment_";
 			VImg type = new VImg(pre + "effect.png");
-			ImgCut it = ImgCut.newIns(pre + "effect.imgcut");
-			aux.TYPES = it.cut(type.getImg());
+			aux.TYPES[0] = ImgCut.newIns(pre + "effect.imgcut").cut(type.getImg());
+			VImg typeS = new VImg(pre + "effect_s.png");
+			aux.TYPES[1] = ImgCut.newIns(pre + "effect_s.imgcut").cut(typeS.getImg());
 
 			VImg trait = new VImg(pre + "attribute.png");
-			ImgCut itr = ImgCut.newIns(pre + "attribute.imgcut");
-			aux.TRAITS = itr.cut(trait.getImg());
+			aux.TRAITS[0] = ImgCut.newIns(pre + "attribute.imgcut").cut(trait.getImg());
+			VImg traitS = new VImg(pre + "attribute_s.png");
+			aux.TRAITS[1] = ImgCut.newIns(pre + "attribute_s.imgcut").cut(traitS.getImg());
 
 			VImg grade = new VImg(pre + "grade.png");
-			ImgCut ig = ImgCut.newIns(pre + "grade.imgcut");
-			aux.GRADES = ig.cut(grade.getImg());
+			aux.GRADES[0] = ImgCut.newIns(pre + "grade.imgcut").cut(grade.getImg());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -168,7 +157,7 @@ public class Orb extends Data {
 	private final int slots;
 	private final int[] limit;
 
-	public Orb(int slots) {
+	public OrbInfo(int slots) {
 		this.slots = slots;
 
 		if(slots == -1)
@@ -177,7 +166,7 @@ public class Orb extends Data {
 			this.limit = new int[slots];
 	}
 
-	public Orb(int slots, int[] limit) {
+	public OrbInfo(int slots, int[] limit) {
 		this.slots = slots;
 
 		if(slots != limit.length) {

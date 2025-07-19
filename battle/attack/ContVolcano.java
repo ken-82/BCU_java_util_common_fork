@@ -32,7 +32,7 @@ public class ContVolcano extends ContAb {
 	public ContVolcano(AttackVolcano v, float p, int lay, int alive, int ind) {
 		super(v.model.b, p, lay);
 
-		if(v.waveType == WT_VOLC) {
+		if((v.waveType & WT_VOLC) > 0) {
 			anim = (v.dire == 1 ? effas().A_E_VOLC : effas().A_VOLC).getEAnim(VolcEff.START);
 		} else {
 			anim = (v.dire == 1 ? effas().A_E_MINIVOLC : effas().A_MINIVOLC).getEAnim(VolcEff.START);
@@ -65,7 +65,7 @@ public class ContVolcano extends ContAb {
 	protected ContVolcano(AttackVolcano v, float p, int lay, int alive, int startPoint, int endPoint, int ind) {
 		super(v.model.b, p, lay);
 
-		if(v.waveType == WT_VOLC) {
+		if((v.waveType & WT_VOLC) > 0) {
 			anim = (v.dire == 1 ? effas().A_E_VOLC : effas().A_VOLC).getEAnim(VolcEff.START);
 		} else {
 			anim = (v.dire == 1 ? effas().A_E_MINIVOLC : effas().A_MINIVOLC).getEAnim(VolcEff.START);
@@ -120,9 +120,9 @@ public class ContVolcano extends ContAb {
 			activate = false;
 		} else {
 			t++;
-			if (t >= VOLC_PRE && t <= VOLC_PRE + aliveTime)
+			if (t > VOLC_PRE && t < VOLC_POST + aliveTime)
 				sb.getAttack(v);
-			anim.update(false);
+			updateAnimation();
 		}
 	}
 
@@ -174,7 +174,7 @@ public class ContVolcano extends ContAb {
 			return;
 
 		// after this is the drawing of hit boxes
-		siz *= 1.25;
+		siz *= 1.25f;
 		float rat = BattleConst.ratio;
 		int h = (int) (640 * rat * siz);
 		gra.setColor(FakeGraphics.MAGENTA);

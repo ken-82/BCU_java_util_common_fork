@@ -185,6 +185,70 @@
             }
         }
     },
+    "SPEEDUP": {
+        "abbr_name": "inc. spd",
+        "full_name": "Adrenaline",
+        "tooltip": null,
+        "format": "Speed [(mult>0){increased}(mult<0){decreased}] by [(mult>0){(mult)}(mult<0){(mult*-1)}]% after health drops below (health)%",
+        "class": {
+            "health": {
+                "name": "health",
+                "tooltip": null
+            },
+            "mult": {
+                "name": "increment",
+                "tooltip": "Set negative to slow"
+            }
+        }
+    },
+    "HPREGEN": {
+        "abbr_name": "hp regen",
+        "full_name": "Regeneration",
+        "tooltip": "heal or harm the entity every so often. Note that this doesn't trigger hitbacks",
+        "format": "[(amount>0){Heals by (amount) HP}(amount<0){Hurts by (amount*-1) HP}(amount==0){No healing}] at a (prob)% chance every (interval)f[(scaleWithBuff){, affected by buff}][(onlyOnce){, only occurring once}][(resetWhenDamaged){, resetting when damaged}][(freezeEff){, affected by freeze}][(removeProcs){, clearing all procs}][(idleTrigger){, only while standing still}][(noHB){, ignoring hitbacks}]",
+        "class": {
+            "prob": {
+                "name": "chance",
+                "tooltip": null
+            },
+            "interval": {
+                "name": "interval",
+                "tooltip": null
+            },
+            "amount": {
+                "name": "amount",
+                "tooltip": "Can be negative"
+            },
+            "scaleWithBuff": {
+                "name": "scale with buff",
+                "tooltip": "Increases amount as buff/level increases"
+            },
+            "onlyOnce": {
+                "name": "only once",
+                "tooltip": "Regeneration only happens once then never again"
+            },
+            "resetWhenDamaged": {
+                "name": "reset on damage",
+                "tooltip": "Regeneration timer resets when the entity is damaged"
+            },
+            "freezeEff": {
+                "name": "affected by freeze",
+                "tooltip": "Freeze will stop the regeneration timer"
+            },
+            "removeProcs": {
+                "name": "remove procs",
+                "tooltip": "When hp regeneration fires, all procs are removed (even if amount is 0)"
+            },
+            "idleTrigger": {
+                "name": "static only",
+                "tooltip": "HP regeneration will only begin when the entity isn't moving (either idle or attacking)"
+            },
+            "noHB": {
+                "name": "ignore hitback",
+                "tooltip": "Does not play hitback animations (useful if you want a timed entity like Iron Wall Cat or an instant soul spawner)"
+            }
+        }
+    },
     "LETHAL": {
         "abbr_name": "летальный удар",
         "full_name": "Летальный Удар",
@@ -1291,6 +1355,45 @@
             "mult": {
                 "name": "множитель",
                 "tooltip": null
+            }
+        }
+    },
+    "BLAST" : {
+        "abbr_name": "разрыватель",
+        "full_name": "Разрыватель",
+        "tooltip": "Создает взрывную атаку, которая распространяется в каждую сторону с меньшим уроном с каждым взрывом",
+        "format": "(prob)% шанс сделать взрыв (_left)Создаётся [(dis_0==dis_1){на расстоянии (dis_0) }(dis_0!=dis_1){в радиусе (dis_0) ~ (dis_1)}](_right)",
+        "class": {
+            "prob": {
+                "name": "шанс",
+                "tooltip": null
+            },
+            "dis_0": {
+                "name": "начальная точка",
+                "tooltip": null
+            },
+            "dis_1": {
+                "name": "конечная точка",
+                "tooltip": null
+            }
+        }
+    },
+    "IMUBLAST" : {
+        "abbr_name": "имунн. Разрыв",
+        "full_name": "Иммунитет/Защита к Разрывателю",
+        "tooltip": null,
+        "format": ["[(mult!=0&block!=100){[(mult==100){Иммунитет}(mult<100&mult>0){Защита}(mult<0){Слабость}] к Разрывателю",
+            "[(mult<100&mult>0){ (_left)Уменьшает урон на (mult)%(_right)}(mult<0){ (_left)Увеличивает урон на (_abs(mult))%(_right)}]",
+            "[(block!=0&block<100){ & }]}][(block!=0){Разрываетль [(block==100){блокируется}(block<100&block>0){поглощается}(block<0){увеличивается}]",
+            "[(block<100&block>0){ (_left)Уменьшает урон на (block)%(_right)}(block<0){ (_left)Увеличивает урон на (_abs(block))%(_right)}]}]"],
+        "class": {
+            "mult": {
+                "name": "проценты",
+                "tooltip": "Установите отрицательное значение, чтобы сделать этот блок слабым для эффекта"
+            },
+            "block": {
+                "name": "Блокировка",
+                "tooltip": "Установите от 1 до 99, чтобы уменьшить длительность среди всех юнитов. Установите 100, чтобы полностью заблокировать разрывателя. Установите отрицательное значение, чтобы увеличить эффект."
             }
         }
     }

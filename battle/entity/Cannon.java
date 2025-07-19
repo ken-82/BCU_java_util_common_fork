@@ -124,7 +124,7 @@ public class Cannon extends AtkModelAb {
             atka = null;
         if (exta != null && exta.done())
             exta = null;
-        if (anim != null) {
+        if (anim != null && b.s_stop == 0) {
             if (id == 7) {
                 if (anim.ind() < 32) {
                     anim.update(false);
@@ -200,7 +200,7 @@ public class Cannon extends AtkModelAb {
             proc.SNIPER.prob = 1;
             float wid = NYRAN[0];
             float p = (float) (b.ubase.pos - 332.5 + wid / 2);
-            int atk = b.b.t().getCanonAtk(b.isBanned(Data.C_C_ATK));
+            int atk = b.b.t().getCanonAtk(b.isBanned(Data.C_C_ATK)) * b.cannonMultiplier() / 100;
             AttackCanon eatk = new AttackCanon(this, atk, traits, 0, proc, 0, 0, 1);
             new ContWaveCanon(new AttackWave(eatk.attacker, eatk, p, wid, WT_CANN | WT_WAVE), p, 0);
         } else if (id == 1) {

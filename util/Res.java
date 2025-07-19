@@ -62,6 +62,12 @@ public class Res extends ImgCore {
 		return coor.draw(input);
 	}
 
+	public static void getRarity(int r, SymCoord coor) {
+		BCAuxAssets aux = CommonStatic.getBCAssets();
+		FakeImage rarity = aux.rarity[r].getImg();
+		coor.draw(rarity);
+	}
+
 	public static P getMoney(int mon, int max, SymCoord sym) {
 		BCAuxAssets aux = CommonStatic.getBCAssets();
 		int[] val0 = getLab(mon);
@@ -225,6 +231,8 @@ public class Res extends ImgCore {
 		aux.icon[1][P_METALKILL] = new VImg(parts[321]);
 		aux.icon[1][P_DEMONSHIELD] = new VImg(parts[331]);
 		aux.icon[1][P_DEATHSURGE] = new VImg(parts[332]);
+		aux.icon[1][P_BLAST] = new VImg(parts[335]);
+		aux.icon[1][P_IMUBLAST] = new VImg(parts[337]);
 
 		aux.icon[1][P_IMUSUMMON] = new VImg("./org/page/icons/SummonX.png");
 		aux.icon[1][P_DMGCUT] = new VImg("./org/page/icons/DmgCut.png");
@@ -272,19 +280,21 @@ public class Res extends ImgCore {
 		aux.icon[1][P_ARMOR] = new VImg("./org/page/icons/ArmorBreak.png");
 		aux.icon[1][P_SPEED] = new VImg("./org/page/icons/Speed.png");
 		aux.icon[1][P_SPEEDUP] = new VImg("./org/page/icons/Speed.png");
+		aux.icon[1][P_HPREGEN] = new VImg("./org/page/icons/Barrier.png");
 		CommonStatic.getConfig().icon = false;
 	}
 
 	private static void readBattle() {
 		BCAuxAssets aux = CommonStatic.getBCAssets();
 		aux.battle[0] = new VImg[4];
-		aux.battle[1] = new VImg[22];
+		aux.battle[1] = new VImg[23];
 		aux.battle[2] = new VImg[9];
 		ImgCut ic001 = ImgCut.newIns("./org/page/img001.imgcut");
 		VImg img001 = new VImg("./org/page/img001.png");
 		FakeImage[] parts = ic001.cut(img001.getImg());
 		int[] vals = new int[] { 5, 19, 30, 40, 51, 62, 73, 88, 115 };
 		int[] adds = new int[] { 1, 2, 2, 0, 0, 1, 1, 1, 0 };
+		aux.num[0] = new VImg[12];
 		aux.num[5] = new VImg[12];
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 10; j++)
@@ -293,6 +303,8 @@ public class Res extends ImgCore {
 				aux.num[i][10] = new VImg(parts[vals[i] + 5]);
 			if (adds[i] == 2)
 				aux.num[i][10] = new VImg(parts[vals[i] - 6]);
+			if (i == 0)
+				aux.num[i][11] = new VImg(parts[103]);
 			if (i == 5)
 				aux.num[i][11] = new VImg(parts[108]);
 		}
@@ -300,6 +312,10 @@ public class Res extends ImgCore {
 
 		for(int i = 0; i < aux.timer.length; i++)
 			aux.timer[i] = new VImg(parts[i + 83]);
+		for (int i = 0; i < aux.rarity.length; i++)
+			aux.rarity[i] = new VImg(parts[i + 135]);
+		for (int i = 0; i < aux.maxcat.length; i++)
+			aux.maxcat[i] = new VImg(parts[i + 141]);
 
 		ImgCut moneyCut = ImgCut.newIns("./org/page/moneySign.imgcut");
 		VImg moneyImg = new VImg("./org/page/moneySign.png");
@@ -323,6 +339,7 @@ public class Res extends ImgCore {
 		aux.battle[1][1] = new VImg(parts[7]);
 		for (int i = 0; i < 10; i++)
 			aux.battle[1][2 + i] = new VImg(parts[11 + i]);
+		aux.battle[1][22] = new VImg(parts[54]);
 
 		//jp fire
 		aux.battle[1][12] = new VImg(parts[9]);

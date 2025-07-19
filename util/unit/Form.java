@@ -65,7 +65,6 @@ public class Form extends Animable<AnimU<?>, AnimU.UType> implements BasedCopabl
 	public final Identifier<Unit> uid;
 	@JsonField
 	public int fid;
-	public Orb orbs = null;
 
 	@JsonField(io = JsonField.IOType.R)
 	public String name = "";
@@ -82,7 +81,6 @@ public class Form extends Animable<AnimU<?>, AnimU.UType> implements BasedCopabl
 		du = null;
 		unit = u;
 		uid = unit.id;
-		orbs = new Orb(-1);
 	}
 
 	public Form(Unit u, int f, String str, AnimU<?> ac, CustomUnit cu) {
@@ -93,7 +91,6 @@ public class Form extends Animable<AnimU<?>, AnimU.UType> implements BasedCopabl
 		anim = ac;
 		du = cu;
 		cu.pack = this;
-		orbs = new Orb(-1);
 	}
 
 	//Used for BC units
@@ -214,6 +211,10 @@ public class Form extends Animable<AnimU<?>, AnimU.UType> implements BasedCopabl
 				if (UserProfile.isOlderPack(pack, "0.7.4.1") && data.pcoin != null) {
 					data.pcoin.info.forEach(i -> i[12] = -1);
 				}
+				if (UserProfile.isOlderPack(pack, "0.7.12.2") && data.pcoin != null) {
+					data.pcoin.info.removeIf(d -> d[0] == 68);
+					data.pcoin.update();
+				}
 
 				if (data.getProc().SUMMON.prob > 0 && data.getProc().SUMMON.form <= 0) {
 					data.getProc().SUMMON.form = 1;
@@ -327,5 +328,25 @@ public class Form extends Animable<AnimU<?>, AnimU.UType> implements BasedCopabl
 
 	public boolean hasZeroForm() {
 		return unit.info.hasZeroForm() && fid == 3;
+	}
+
+	public boolean checkOrb(int level) {
+		for (int lim : unit.orbs.getLimits())
+			if (lim == 0 && fid >= 2 || lim == 1 && level >= 60)
+				return true;
+		return false;
+	}
+
+	public boolean checkOrb(int level, int index) {
+		if (index >= unit.orbs.getLimits().length)
+			return false;
+
+		int limit = unit.orbs.getLimits()[index];
+		if (limit == 0 && fid >= 2)
+			return true;
+		else if (limit == 1 && level >= 60)
+			return true;
+		else
+			return false;
 	}
 }

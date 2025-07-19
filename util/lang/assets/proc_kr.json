@@ -181,6 +181,70 @@
             }
         }
     },
+    "SPEEDUP": {
+        "abbr_name": "inc. spd",
+        "full_name": "Adrenaline",
+        "tooltip": null,
+        "format": "Speed [(mult>0){increased}(mult<0){decreased}] by [(mult>0){(mult)}(mult<0){(mult*-1)}]% after health drops below (health)%",
+        "class": {
+            "health": {
+                "name": "health",
+                "tooltip": null
+            },
+            "mult": {
+                "name": "increment",
+                "tooltip": "Set negative to slow"
+            }
+        }
+    },
+    "HPREGEN": {
+        "abbr_name": "hp regen",
+        "full_name": "Regeneration",
+        "tooltip": "heal or harm the entity every so often. Note that this doesn't trigger hitbacks",
+        "format": "[(amount>0){Heals by (amount) HP}(amount<0){Hurts by (amount*-1) HP}(amount==0){No healing}] at a (prob)% chance every (interval)f[(scaleWithBuff){, affected by buff}][(onlyOnce){, only occurring once}][(resetWhenDamaged){, resetting when damaged}][(freezeEff){, affected by freeze}][(removeProcs){, clearing all procs}][(idleTrigger){, only while standing still}][(noHB){, ignoring hitbacks}]",
+        "class": {
+            "prob": {
+                "name": "chance",
+                "tooltip": null
+            },
+            "interval": {
+                "name": "interval",
+                "tooltip": null
+            },
+            "amount": {
+                "name": "amount",
+                "tooltip": "Can be negative"
+            },
+            "scaleWithBuff": {
+                "name": "scale with buff",
+                "tooltip": "Increases amount as buff/level increases"
+            },
+            "onlyOnce": {
+                "name": "only once",
+                "tooltip": "Regeneration only happens once then never again"
+            },
+            "resetWhenDamaged": {
+                "name": "reset on damage",
+                "tooltip": "Regeneration timer resets when the entity is damaged"
+            },
+            "freezeEff": {
+                "name": "affected by freeze",
+                "tooltip": "Freeze will stop the regeneration timer"
+            },
+            "removeProcs": {
+                "name": "remove procs",
+                "tooltip": "When hp regeneration fires, all procs are removed (even if amount is 0)"
+            },
+            "idleTrigger": {
+                "name": "static only",
+                "tooltip": "HP regeneration will only begin when the entity isn't moving (either idle or attacking)"
+            },
+            "noHB": {
+                "name": "ignore hitback",
+                "tooltip": "Does not play hitback animations (useful if you want a timed entity like Iron Wall Cat or an instant soul spawner)"
+            }
+        }
+    },
     "LETHAL": {
         "abbr_name": "살아남는다",
         "full_name": "살아남는다",
@@ -1268,6 +1332,45 @@
             "mult": {
                 "name": "퍼센트",
                 "tooltip": "메탈 타겟의 현재 체력의 몇 퍼센트만큼 감소시킬지 정합니다"
+            }
+        }
+    },
+    "BLAST" : {
+        "abbr_name": "폭발 공격",
+        "full_name": "폭발 공격",
+        "tooltip": "양쪽으로 퍼지면서 점점 약해지는 폭발 공격을 생성합니다",
+        "format": "(prob)% 확률로 폭발 공격 생성 (_left)[(dis_0==dis_1){(dis_0)에}(dis_0!=dis_1){(dis_0) ~ (dis_1) 사이에서}] 생성(_right)",
+        "class": {
+            "prob": {
+                "name": "확률",
+                "tooltip": "타겟에게 해당 능력을 발동시킬 확률입니다"
+            },
+            "dis_0": {
+                "name": "최소 거리",
+                "tooltip": "열파 공격이 소환되는 최소 거리를 정합니다"
+            },
+            "dis_1": {
+                "name": "최대 거리",
+                "tooltip": "열파 공격이 소환되는 최대 거리를 정합니다"
+            }
+        }
+    },
+    "IMUBLAST" : {
+        "abbr_name": "폭발 공격 무효",
+        "full_name": "폭발 공격 무효",
+        "tooltip": "폭발 공격을 약하게 받거나 무효화 합니다",
+        "format": [
+            "[(block==0){폭발 공격[(mult==100){ 무효}(mult<100&mult>0){ 내성}(mult<0){에 약함}]}(block!=0){폭발 공격 [(block>0&block<100){약화}(block==100){삭제}(block<0){강화}]}]",
+            "[(block==0&mult!=0&mult<100){ (_left)폭발 공격 데미지를 (_abs(mult))% 만큼 [(mult>0){감소}(mult<0){증가}](_right)}(block<100&block!=0){ (_left)공격 받는 모든 아군의 폭발 공격의 데미지를 (_abs(block))% 만큼 [(block>0){감소}(block<0){증가}](_right)}]"
+        ],
+        "class": {
+            "mult": {
+                "name": "퍼센트",
+                "tooltip": "폭발 공격 데미지를 퍼센트로 감소시킵니다"
+            },
+            "block": {
+                "name": "폭발 공격 삭제",
+                "tooltip": "받은 공격 자체의 폭발 공격 데미지를 퍼센트로 조정하여 다른 아군들한테도 영향을 줍니다. 100으로 설정하여 완전히 막아냅니다"
             }
         }
     }
