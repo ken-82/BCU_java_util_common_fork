@@ -76,7 +76,7 @@ public class EEnemy extends Entity {
 				if (t.id.pack.equals("000000") || sharedTraits.contains(t))
 					continue;
 
-				if ((t.targetType && isAntiTraited) || t.others.contains(((MaskUnit)atk.attacker.data).getPack()))
+				if ((t.targetType && isAntiTraited) || t.targetForms.contains(((MaskUnit)atk.attacker.data).getPack()))
 					sharedTraits.add(t);
 			}
 
@@ -105,7 +105,7 @@ public class EEnemy extends Entity {
 		}
 		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_BEAST)) && atk.getProc().BSTHUNT.active == 1)
 			ans = (int) (ans * 2.5);
-		if (traits.contains(BCTraits.get(TRAIT_SAGE)) && (atk.abi & AB_SKILL) > 0)
+		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_SAGE)) && (atk.abi & AB_SKILL) > 0)
 			ans = (int) (ans * SUPER_SAGE_HUNTER_ATTACK);
 		if (atk.canon == 16)
 			if ((touchable() & TCH_UG) > 0)
@@ -151,7 +151,7 @@ public class EEnemy extends Entity {
 
 		if (atk.canon > 0 && getProc().IMUCANNON.exists() && (atk.canon & getProc().IMUCANNON.type) > 0)
 			resistMultiplier += getProc().IMUCANNON.mult;
-		if ((atk.abi & AB_SKILL) == 0 && traits.contains(BCTraits.get(TRAIT_SAGE)) && Arrays.asList(SUPER_SAGE_RESIST_TYPE).contains(procName))
+		if ((atk.abi & AB_SKILL) == 0 && traits.contains(UserProfile.getBCData().traits.get(TRAIT_SAGE)) && Arrays.asList(SUPER_SAGE_RESIST_TYPE).contains(procName))
 			resistMultiplier += SUPER_SAGE_RESIST;
 
 		return ans * (100 - Math.min(100, resistMultiplier)) / 100;

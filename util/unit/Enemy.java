@@ -174,7 +174,7 @@ public class Enemy extends Animable<AnimU<?>, UType> implements AbEnemy {
 
 			if (UserProfile.isOlderPack(pack, "0.6.0.0")) {
 				proc.BARRIER.health = enemy.shield;
-				enemy.traits = Trait.convertType(enemy.type);
+				enemy.traits = Trait.bitmaskToTrait(enemy.type);
 				if ((enemy.abi & (1 << 18)) != 0) //Seal Immunity
 					proc.IMUSEAL.mult = 100;
 				if ((enemy.abi & (1 << 7)) != 0) //Moving atk Immunity

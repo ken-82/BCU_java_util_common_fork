@@ -11,7 +11,6 @@ import common.system.P;
 import common.system.fake.FakeGraphics;
 import common.system.fake.FakeTransform;
 import common.util.BattleObj;
-import common.util.CopRand;
 import common.util.Data;
 import common.util.Data.Proc.POISON;
 import common.util.Data.Proc.REVIVE;
@@ -40,11 +39,6 @@ public abstract class Entity extends AbEntity {
 		SELF_DESTRUCT,
 		SPIRIT
 	}
-
-	/**
-	 * Obtains BC's traits
-	 */
-	protected static final List<Trait> BCTraits = UserProfile.getBCData().traits.getList();
 
 	public static class AnimManager extends BattleObj {
 
@@ -572,7 +566,7 @@ public abstract class Entity extends AbEntity {
 				e.kbTime += 1;
 
 			// Z-kill icon
-			if (e.health <= 0 && e.zx.tempZK && e.traits.contains(BCTraits.get(TRAIT_ZOMBIE))) {
+			if (e.health <= 0 && e.zx.tempZK && e.traits.contains(UserProfile.getBCData().traits.get(TRAIT_ZOMBIE))) {
 				EAnimD<DefEff> eae = effas().A_Z_STRONG.getEAnim(DefEff.DEF);
 				e.basis.lea.add(new EAnimCont(e.pos, e.layer, eae));
 				e.basis.leaSort = true;
@@ -1222,7 +1216,7 @@ public abstract class Entity extends AbEntity {
 				if (em.kb.kbType == INT_WARP)
 					continue;
 				REVIVE.TYPE conf = em.getProc().REVIVE.type;
-				if (!conf.revive_non_zombie && e.traits.contains(BCTraits.get(TRAIT_ZOMBIE)))
+				if (!conf.revive_non_zombie && e.traits.contains(UserProfile.getBCData().traits.get(TRAIT_ZOMBIE)))
 					continue;
 				int type = conf.range_type;
 				if (type == 0 && (em.touchable() & (TCH_N | TCH_EX)) == 0)
@@ -2246,14 +2240,14 @@ public abstract class Entity extends AbEntity {
 				for (int i = 0; i < traits.size(); i++) {
 					if (traits.get(i).id.pack.equals("000000"))
 						continue;
-					if (traits.get(i).others.contains(((MaskUnit) attacker.data).getPack()))
+					if (traits.get(i).targetForms.contains(((MaskUnit) attacker.data).getPack()))
 						return true;
 				}
 			} else if (dire == -1 && !traits.isEmpty()) {
 				for (int i = 0; i < attacker.traits.size(); i++) {
 					if (attacker.traits.get(i).id.pack.equals("000000"))
 						continue;
-					if (attacker.traits.get(i).others.contains(((MaskUnit) data).getPack()))
+					if (attacker.traits.get(i).targetForms.contains(((MaskUnit) data).getPack()))
 						return true;
 				}
 			}
@@ -2269,7 +2263,7 @@ public abstract class Entity extends AbEntity {
 		for (int j = 0; j < t.size(); j++)
 			if (traits.contains(t.get(j)))
 				return true;
-		return t.contains(BCTraits.get(TRAIT_TOT));
+		return t.contains(UserProfile.getBCData().traits.get(TRAIT_TOT));
 	}
 
 	/**

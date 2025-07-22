@@ -59,7 +59,7 @@ public class PCoin extends Data {
 	}
 
 	public PCoin(String[] strs, MaskUnit du) { // leaving reminder that this is unused at least in PC ver.
-		trait = Trait.convertType(CommonStatic.parseIntN(strs[1]));
+		trait = Trait.bitmaskToTrait(CommonStatic.parseIntN(strs[1]));
 		for (int i = 0; i < 8; i++) {
 			if(talentExist(strs, 2 + i * 14)) {
 				info.add(new int[14]);
@@ -78,7 +78,7 @@ public class PCoin extends Data {
 	}
 
 	private PCoin(int[] strs, MaskUnit du) {
-		trait = Trait.convertTalentType(strs[1]);
+		trait = Trait.talentBitmaskToTrait(strs[1]);
 
 		for (int i = 0; i < 8; i++) {
 			if (2 + i * 14 >= strs.length) {

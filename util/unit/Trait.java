@@ -10,6 +10,7 @@ import common.system.VImg;
 import common.util.Data;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,50 +27,7 @@ public class Trait extends Data implements Indexable<PackData, Trait> {
         }
     }
 
-    @JsonField
-    public String name = "new trait";
-
-    @JsonClass.JCIdentifier
-    @JsonField
-    public Identifier<Trait> id;
-    public VImg icon = null;
-
-    @JsonField
-    public boolean targetType;
-    // Target type will be used to toggle whether Anti-Traited, Anti-Non Metal, or Anti-All units will target this trait or not
-
-    @JsonField(generic = Form.class, alias = Form.FormJson.class)
-    public final ArrayList<Form> others = new ArrayList<>();
-    // This is used to make custom traits targeted by units whose stats can't be modified otherwise, such as BC units or units from Parented Packs
-
-
-    @JsonClass.JCConstructor
-    public Trait() {
-        id = null;
-    }
-
-    public Trait(Trait t) {
-        name = t.name;
-        targetType = t.targetType;
-        id = t.id;
-        icon = t.icon;
-        others.addAll(t.others);
-    }
-
-    public Trait(Identifier<Trait> id) {
-        this.id = id;
-    }
-
-    @Override
-    public Identifier<Trait> getID() { return id; }
-
-    @Override
-    public String toString() {
-        return id + " - " + name;
-    }
-
-    // Convert Bitmask Type format to new format
-    public static ArrayList<Trait> convertType(int type) {
+    public static ArrayList<Trait> bitmaskToTrait(int type) {
         ArrayList<Trait> traits = new ArrayList<>();
         PackData.DefPack data = UserProfile.getBCData();
         if ((type & TB_RED) != 0)
@@ -101,7 +59,7 @@ public class Trait extends Data implements Indexable<PackData, Trait> {
         return traits;
     }
 
-    public static ArrayList<Trait> convertTalentType(int type) {
+    public static ArrayList<Trait> talentBitmaskToTrait(int type) {
         ArrayList<Trait> traits = new ArrayList<>();
         PackData.DefPack data = UserProfile.getBCData();
         if ((type & TB_RED_T) != 0)
@@ -144,10 +102,72 @@ public class Trait extends Data implements Indexable<PackData, Trait> {
         return ans;
     }
 
+    public static boolean isUsed(Trait t) {
+        if (t.getCont() instanceof PackData.DefPack)
+            return true;
+        PackData.UserPack pack = (PackData.UserPack) t.getCont();
+        Collection<PackData.UserPack> pacs = UserProfile.getUserPacks();
+        for (PackData.UserPack pacc : pacs) {
+            if (pacc.desc.dependency.contains(pack.desc.id) || pacc.desc.id.equals(pack.desc.id)) {
+                for (Enemy en : pacc.enemies.getList())
+                    if (en.de.getTraits().contains(t))
+                        return true;
+                for (Unit un : pacc.units.getList())
+                    for (Form uf : un.forms)
+                        if (uf.du.getTraits().contains(t))
+                            return true;
+            }
+        }
+        return false;
+    }
+
+    @JsonField
+    public String name = "new trait";
+
+    @JsonClass.JCIdentifier
+    @JsonField
+    public Identifier<Trait> id;
+    public VImg icon = null;
+
+    @JsonField
+    public boolean targetType;
+    @JsonField(generic = Form.class, alias = Form.FormJson.class)
+    public final ArrayList<Form> targetForms = new ArrayList<>();
+
+
+    @JsonClass.JCConstructor
+    public Trait() {
+        id = null;
+    }
+
+    public Trait(Trait t) {
+        name = t.name;
+        targetType = t.targetType;
+        id = t.id;
+        icon = t.icon;
+        targetForms.addAll(t.targetForms);
+    }
+
+    public Trait(Identifier<Trait> id) {
+        this.id = id;
+    }
+
+    @Override
+    public Identifier<Trait> getID() { return id; }
+
+    @Override
+    public String toString() {
+        return id + " - " + name;
+    }
+
+    public void verify() {
+        targetForms.removeIf(Objects::isNull);
+    }
+
     @JsonDecoder.OnInjected
     public void onInjected() {
-        icon = UserProfile.getUserPack(id.pack).source.readImage(Source.BasePath.TRAIT.toString(), id.id);
-        others.removeIf(Objects::isNull);
+        icon = ((PackData.UserPack) getCont()).source.readImage(Source.BasePath.TRAIT.toString(), id.id);
+        verify();
     }
 
     @JsonClass.JCGetter

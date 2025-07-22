@@ -168,7 +168,7 @@ public class Form extends Animable<AnimU<?>, AnimU.UType> implements BasedCopabl
 					MaModel model = anim.loader.getMM();
 					data.limit = CommonStatic.customFormMinPos(model);
 					data.getProc().BARRIER.health = data.shield;
-					data.traits = Trait.convertType(data.type);
+					data.traits = Trait.bitmaskToTrait(data.type);
 					Proc proc = data.getProc();
 					if ((data.abi & (1 << 18)) != 0) //Seal Immunity
 						proc.IMUSEAL.mult = 100;

@@ -2,6 +2,8 @@ package common.battle.data;
 
 import common.CommonStatic;
 import common.pack.Identifier;
+import common.pack.PackData;
+import common.pack.UserProfile;
 import common.util.pack.Soul;
 import common.util.unit.Form;
 import common.util.unit.Trait;
@@ -216,7 +218,7 @@ public class DataUnit extends DefaultData implements MaskUnit, Cloneable {
 		} catch (IndexOutOfBoundsException ignored) {
 		}
 
-		traits = new ArrayList<>(Trait.convertType(t));
+		traits = new ArrayList<>(Trait.bitmaskToTrait(t));
 		abi = a;
 
 		datks = new DataAtk[getAtkCount()];
@@ -263,6 +265,16 @@ public class DataUnit extends DefaultData implements MaskUnit, Cloneable {
 
 	@Override
 	public PCoin getPCoin() { return pcoin; }
+
+	@Override
+	public ArrayList<Trait> getTraits() {
+		ArrayList<Trait> result = new ArrayList<>(super.getTraits());
+		for (PackData.UserPack userPack : UserProfile.getUserPacks())
+			for (Trait trait : userPack.traits)
+				if (trait.targetForms.contains(form))
+					result.add(trait);
+		return result;
+	}
 
 	@Override
 	public DataUnit clone() {
