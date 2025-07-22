@@ -922,7 +922,7 @@
             },
             "maxtime": {
                 "name": "max duration",
-                "tooltip": ""
+                "tooltip": null
             }
         }
     },
@@ -1270,6 +1270,10 @@
             },
             "time": {
                 "name": "duration",
+                "tooltip": null
+            },
+            "max time": {
+                "name": "max duration",
                 "tooltip": null
             }
         }

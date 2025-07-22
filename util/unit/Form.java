@@ -211,6 +211,10 @@ public class Form extends Animable<AnimU<?>, AnimU.UType> implements BasedCopabl
 				if (UserProfile.isOlderPack(pack, "0.7.4.1") && data.pcoin != null) {
 					data.pcoin.info.forEach(i -> i[12] = -1);
 				}
+				if (UserProfile.isOlderPack(pack, "0.7.12.2") && data.pcoin != null) {
+					data.pcoin.info.removeIf(d -> d[0] == 68);
+					data.pcoin.update();
+				}
 
 				if (data.getProc().SUMMON.prob > 0 && data.getProc().SUMMON.form <= 0) {
 					data.getProc().SUMMON.form = 1;

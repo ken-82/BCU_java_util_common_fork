@@ -1432,7 +1432,7 @@ public class Data {
 			{ 1, AB_CKILL, 0, -1 }, //59 : corpse killer
 			{ 0, P_CURSE, 2, -1 }, //60 : curse
 			{ 2, PC2_TBA, 1, -1 }, //61 : tba
-			{ 0, P_MINIWAVE, 3, -1 }, //62 : mini-wave
+			{ 0, P_MINIWAVE, 4, -1 }, //62 : mini-wave
 			{ 1, AB_BAKILL, 0, -1 }, //63 : baron killer
 			{ 0, P_BSTHUNT, 2, -1 }, //64 : beheoth hunter
 			{ 0, P_MINIVOLC, 4, -1 }, //65 : Mini surge
@@ -1765,7 +1765,7 @@ public class Data {
 	public static final int COUNTER_SURGE_SOUND = 18;
 	public static final int SPIRIT_SUMMON_RANGE = 150;
 	public static final int SPIRIT_SUMMON_DELAY = 15; // unsure
-	public static final float SUPER_SAGE_RESIST = 0.7f;
+	public static final int SUPER_SAGE_RESIST = 70; // todo: sage value consistency to match other percentage data standard
 	public static final String[] SUPER_SAGE_RESIST_TYPE = { "IMUWEAK", "IMUSTOP", "IMUSLOW", "IMUCURSE", "IMUKB", "IMUWARP" };
 	public static final float SUPER_SAGE_HUNTER_ATTACK = 1.2f;
 	public static final float SUPER_SAGE_HUNTER_HP = 0.5f;

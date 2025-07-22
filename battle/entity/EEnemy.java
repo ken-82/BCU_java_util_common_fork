@@ -100,7 +100,7 @@ public class EEnemy extends Entity {
 		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_BARON))) {
 			if ((atk.abi & AB_BAKILL) > 0)
 				ans = (int) (ans * 1.6);
-			if (((EUnit) atk.attacker).coloGrade != -1)
+			if (atk.attacker instanceof EUnit && ((EUnit) atk.attacker).coloGrade != -1)
 				ans = ans * ORB_BARON_DAMAGE[((EUnit) atk.attacker).coloGrade] / 100;
 		}
 		if (traits.contains(UserProfile.getBCData().traits.get(TRAIT_BEAST)) && atk.getProc().BSTHUNT.active == 1)
@@ -147,14 +147,14 @@ public class EEnemy extends Entity {
 	@Override
 	public float getResistValue(AttackAb atk, String procName, int procResist) {
 		float ans = 1f - procResist / 100f;
+		int resistMultiplier = 0;
 
 		if (atk.canon > 0 && getProc().IMUCANNON.exists() && (atk.canon & getProc().IMUCANNON.type) > 0)
-			ans = Math.max(0f, ans - getProc().IMUCANNON.mult);
+			resistMultiplier += getProc().IMUCANNON.mult;
 		if ((atk.abi & AB_SKILL) == 0 && traits.contains(BCTraits.get(TRAIT_SAGE)) && Arrays.asList(SUPER_SAGE_RESIST_TYPE).contains(procName))
-			ans *= (1f - SUPER_SAGE_RESIST);
+			resistMultiplier += SUPER_SAGE_RESIST;
 
-
-		return ans;
+		return ans * (100 - Math.min(100, resistMultiplier)) / 100;
 	}
 
 	@Override
