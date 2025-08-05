@@ -157,6 +157,10 @@ public class AttackSimple extends AttackAb {
 			float addp = (dire == 1 ? W_E_INI : W_U_INI) + wid / 2f;
 			float p0 = model.getPos() + dire * addp;
 
+			if (proc.WAVE.maxlv > proc.WAVE.lv) {
+				proc.WAVE.lv = proc.WAVE.lv + (int)(model.b.r.nextFloat() * ((proc.WAVE.maxlv - proc.WAVE.lv) + 1));
+			}
+
 			if (proc.WAVE.inverted) {
 				p0 = model.getPos() + (dire * addp) + ((200 * (proc.WAVE.lv - 1)) * dire);
 			}
@@ -174,6 +178,10 @@ public class AttackSimple extends AttackAb {
 			int wid = dire == 1 ? W_E_WID : W_U_WID;
 			float addp = (dire == 1 ? W_E_INI : W_U_INI) + wid / 2f;
 			float p0 = model.getPos() + dire * addp;
+
+			if (proc.MINIWAVE.maxlv > proc.MINIWAVE.lv) {
+				proc.MINIWAVE.lv = proc.MINIWAVE.lv + (int)(model.b.r.nextFloat() * ((proc.MINIWAVE.maxlv - proc.MINIWAVE.lv) + 1));
+			}
 
 			if (proc.MINIWAVE.inverted) {
 				p0 = model.getPos() + (dire * addp) + ((200 * (proc.MINIWAVE.lv - 1)) * dire);
@@ -194,6 +202,11 @@ public class AttackSimple extends AttackAb {
 			float sta = p0 + (dire == 1 ? W_VOLC_PIERCE : W_VOLC_INNER);
 			float end = p0 - (dire == 1 ? W_VOLC_INNER : W_VOLC_PIERCE);
 
+			if (volc.maxtime > volc.time) {
+				volc.time = volc.time + (int)(model.b.r.nextFloat() * ((volc.maxtime - volc.time) + 1));
+				volc.time = (int) (Math.floor(volc.time / 20.0) * 20);
+			}
+
 			ContVolcano volcano = new ContVolcano(new AttackVolcano(attacker, this, sta, end, Data.WT_VOLC), p0, layer, volc.time, volc.dis_0, volc.dis_1, ind);
 
 			if(attacker != null) {
@@ -209,11 +222,26 @@ public class AttackSimple extends AttackAb {
 			float sta = p0 + (dire == 1 ? W_VOLC_PIERCE : W_VOLC_INNER);
 			float end = p0 - (dire == 1 ? W_VOLC_INNER : W_VOLC_PIERCE);
 
+			if (volc.maxtime > volc.time) {
+				volc.time = volc.time + (int)(model.b.r.nextFloat() * ((volc.maxtime - volc.time) + 1));
+				volc.time = (int) (Math.floor(volc.time / 20.0) * 20);
+			}
+
 			ContVolcano volcano = new ContVolcano(new AttackVolcano(attacker, this, sta, end, Data.WT_MIVC), p0, layer, volc.time, volc.dis_0, volc.dis_1, ind);
 
 			if(attacker != null) {
 				attacker.summoned.add(volcano);
 			}
+		}
+
+		if (!capt.isEmpty() && proc.BLAST.exists()) {
+			int dire = model.getDire();
+			Proc.BLAST blast = proc.BLAST;
+			int addp = blast.dis_0 + (int) (model.b.r.nextFloat() * (blast.dis_1 - blast.dis_0));
+			float pos = model.getPos() + dire * addp;
+			ContBlast cblast = new ContBlast(new AttackBlast(attacker, this, pos + 75, pos - 75, Data.WT_BLST), pos, layer);
+			if (attacker != null)
+				attacker.summoned.add(cblast);
 		}
 	}
 

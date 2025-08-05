@@ -10,6 +10,8 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static common.util.Data.ORB_INTS;
+
 @SuppressWarnings("unused")
 @JsonClass(noTag = NoTag.LOAD)
 public class Level implements BattleStatic, LevelInterface {
@@ -44,11 +46,9 @@ public class Level implements BattleStatic, LevelInterface {
 
 		if(coin != null) {
 			int[] talents = new int[coin.max.length];
-
-			if(arr.length > 2) {
-				System.arraycopy(arr, 2, talents, 0, arr.length - 2);
-			}
-
+			int min = Math.min(arr.length - 2, talents.length);
+			if (min >= 0)
+                System.arraycopy(arr, 2, talents, 0, min);
 			lv.setTalents(talents);
 		}
 
@@ -94,7 +94,7 @@ public class Level implements BattleStatic, LevelInterface {
 				continue;
 			}
 
-			if (data.length != 3) {
+			if (data.length != ORB_INTS) {
 				valid = false;
 				break;
 			}
@@ -173,12 +173,9 @@ public class Level implements BattleStatic, LevelInterface {
 				valid = false;
 				break;
 			}
-
-			if (data.length == 0) {
+			if (data.length == 0)
 				continue;
-			}
-
-			if (data.length != 3) {
+			if (data.length != ORB_INTS) {
 				valid = false;
 				break;
 			}

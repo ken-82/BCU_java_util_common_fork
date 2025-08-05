@@ -2,6 +2,7 @@ package common.util.unit;
 
 import common.CommonStatic;
 import common.battle.data.CustomUnit;
+import common.battle.data.OrbInfo;
 import common.battle.data.PCoin;
 import common.io.json.FieldOrder;
 import common.io.json.JsonClass;
@@ -95,6 +96,7 @@ public class Unit extends Data implements Comparable<Unit>, Indexable<PackData, 
 	@JsonField(alias = Identifier.class)
 	@FieldOrder.Order(3)
 	public UnitLevel lv;
+	public OrbInfo orbs = null;
 
 	public final UnitInfo info = new UnitInfo();
 
@@ -115,6 +117,7 @@ public class Unit extends Data implements Comparable<Unit>, Indexable<PackData, 
 		rarity = 4;
 		lv = CommonStatic.getBCAssets().defLv;
 		lv.units.add(this);
+		orbs = new OrbInfo(-1);
 	}
 
 	public Unit(VFile p, int[] m) {
@@ -135,6 +138,7 @@ public class Unit extends Data implements Comparable<Unit>, Indexable<PackData, 
 			} else
 				forms[i] = new Form(this, i, m[i], "./org/img/m/" + Data.trio(m[i]) + "/", qs.poll());
 		}
+		orbs = new OrbInfo(-1);
 	}
 
 	protected Unit(Identifier<Unit> id, Unit u) {
@@ -154,6 +158,7 @@ public class Unit extends Data implements Comparable<Unit>, Indexable<PackData, 
 			cu.importData(u.forms[i].du);
 			forms[i] = new Form(this, i, str, ac, cu);
 		}
+		orbs = new OrbInfo(-1);
 	}
 
 	public List<Combo> allCombo() {

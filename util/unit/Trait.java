@@ -1,15 +1,16 @@
 package common.util.unit;
 
-import common.battle.data.Orb;
+import common.battle.data.OrbInfo;
 import common.io.json.JsonClass;
 import common.io.json.JsonDecoder;
 import common.io.json.JsonField;
 import common.pack.*;
+import common.pack.IndexContainer.Indexable;
 import common.system.VImg;
 import common.util.Data;
-import common.pack.IndexContainer.Indexable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,63 +18,16 @@ import java.util.Objects;
 @JsonClass.JCGeneric(Identifier.class)
 @JsonClass
 public class Trait extends Data implements Indexable<PackData, Trait> {
-    public static void addBCTraits() {
+    public static void read() {
         //Reads traits from BC and implements it into the main pack
         PackData.DefPack data = UserProfile.getBCData();
-        String[] traitNames = {"Red", "Floating", "Black", "Metal", "Angel", "Alien", "Zombie", "Aku", "Relic", "White", "EVA", "Witch", "Baron", "Beast", "Super Sage", "base", "cannon"};
-        for (int i = 0; i < traitNames.length ; i++) {
+        for (int i = 0; i < 17 ; i++) {
             Trait t = new Trait(data.getNextID(Trait.class));
-            t.BCTrait = true;
-            t.name = traitNames[i];
             data.traits.add(t);
         }
     }
 
-    @JsonField
-    public String name = "new trait";
-
-    @JsonClass.JCIdentifier
-    @JsonField
-    public Identifier<Trait> id;
-    public VImg icon = null;
-    public boolean BCTrait = false;
-
-    @JsonField
-    public boolean targetType;
-    // Target type will be used to toggle whether Anti-Traited, Anti-Non Metal, or Anti-All units will target this trait or not
-
-    @JsonField(generic = Form.class, alias = Form.FormJson.class)
-    public final ArrayList<Form> others = new ArrayList<>();
-    // This is used to make custom traits targeted by units whose stats can't be modified otherwise, such as BC units or units from Parented Packs
-
-
-    @JsonClass.JCConstructor
-    public Trait() {
-        id = null;
-    }
-
-    public Trait(Trait t) {
-        name = t.name;
-        targetType = t.targetType;
-        id = t.id;
-        icon = t.icon;
-        others.addAll(t.others);
-    }
-
-    public Trait(Identifier<Trait> id) {
-        this.id = id;
-    }
-
-    @Override
-    public Identifier<Trait> getID() { return id; }
-
-    @Override
-    public String toString() {
-        return id + " - " + name;
-    }
-
-    // Convert Bitmask Type format to new format
-    public static ArrayList<Trait> convertType(int type) {
+    public static ArrayList<Trait> bitmaskToTrait(int type) {
         ArrayList<Trait> traits = new ArrayList<>();
         PackData.DefPack data = UserProfile.getBCData();
         if ((type & TB_RED) != 0)
@@ -105,7 +59,7 @@ public class Trait extends Data implements Indexable<PackData, Trait> {
         return traits;
     }
 
-    public static ArrayList<Trait> convertTalentType(int type) {
+    public static ArrayList<Trait> talentBitmaskToTrait(int type) {
         ArrayList<Trait> traits = new ArrayList<>();
         PackData.DefPack data = UserProfile.getBCData();
         if ((type & TB_RED_T) != 0)
@@ -139,19 +93,81 @@ public class Trait extends Data implements Indexable<PackData, Trait> {
         List<Trait> ans = new ArrayList<>();
         PackData.DefPack data = UserProfile.getBCData();
 
-        for (int i = 0; i < Orb.orbTrait.length; i++) {
-            if ((mask & (1 << Orb.orbTrait[i])) > 0) {
-                ans.add(data.traits.get(Orb.orbTrait[i]));
+        for (int i = 0; i < OrbInfo.orbTrait.length; i++) {
+            if ((mask & (1 << OrbInfo.orbTrait[i])) > 0) {
+                ans.add(data.traits.get(OrbInfo.orbTrait[i]));
             }
         }
 
         return ans;
     }
 
+    public static boolean isUsed(Trait t) {
+        if (t.getCont() instanceof PackData.DefPack)
+            return true;
+        PackData.UserPack pack = (PackData.UserPack) t.getCont();
+        Collection<PackData.UserPack> pacs = UserProfile.getUserPacks();
+        for (PackData.UserPack pacc : pacs) {
+            if (pacc.desc.dependency.contains(pack.desc.id) || pacc.desc.id.equals(pack.desc.id)) {
+                for (Enemy en : pacc.enemies.getList())
+                    if (en.de.getTraits().contains(t))
+                        return true;
+                for (Unit un : pacc.units.getList())
+                    for (Form uf : un.forms)
+                        if (uf.du.getTraits().contains(t))
+                            return true;
+            }
+        }
+        return false;
+    }
+
+    @JsonField
+    public String name = "new trait";
+
+    @JsonClass.JCIdentifier
+    @JsonField
+    public Identifier<Trait> id;
+    public VImg icon = null;
+
+    @JsonField
+    public boolean targetType;
+    @JsonField(generic = Form.class, alias = Form.FormJson.class)
+    public final ArrayList<Form> targetForms = new ArrayList<>();
+
+
+    @JsonClass.JCConstructor
+    public Trait() {
+        id = null;
+    }
+
+    public Trait(Trait t) {
+        name = t.name;
+        targetType = t.targetType;
+        id = t.id;
+        icon = t.icon;
+        targetForms.addAll(t.targetForms);
+    }
+
+    public Trait(Identifier<Trait> id) {
+        this.id = id;
+    }
+
+    @Override
+    public Identifier<Trait> getID() { return id; }
+
+    @Override
+    public String toString() {
+        return id + " - " + name;
+    }
+
+    public void verify() {
+        targetForms.removeIf(Objects::isNull);
+    }
+
     @JsonDecoder.OnInjected
     public void onInjected() {
-        icon = UserProfile.getUserPack(id.pack).source.readImage(Source.BasePath.TRAIT.toString(), id.id);
-        others.removeIf(Objects::isNull);
+        icon = ((PackData.UserPack) getCont()).source.readImage(Source.BasePath.TRAIT.toString(), id.id);
+        verify();
     }
 
     @JsonClass.JCGetter

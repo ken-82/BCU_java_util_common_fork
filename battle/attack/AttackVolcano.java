@@ -52,7 +52,7 @@ public class AttackVolcano extends AttackAb {
 			if (attacker.status[P_WEAK][0] != 0)
 				atk = atk * attacker.status[P_WEAK][1] / 100;
 			if (attacker.dire == 1 && attacker.basis.canon.deco == DECO_BASE_WATER)
-				atk *= attacker.basis.b.t().getDecorationMagnification(attacker.basis.canon.deco, Data.DECO_SURGE);
+				atk = (int) (atk * attacker.basis.b.t().getDecorationMagnification(attacker.basis.canon.deco, Data.DECO_SURGE));
 		}
 
 		for (AbEntity e : capt) {

@@ -7,6 +7,7 @@ import common.io.json.JsonClass;
 import common.io.json.JsonClass.RType;
 import common.io.json.JsonDecoder.OnInjected;
 import common.io.json.JsonField;
+import common.pack.Context;
 import common.pack.FixIndexList.FixIndexMap;
 import common.pack.IndexContainer;
 import common.pack.PackData.UserPack;
@@ -73,17 +74,22 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 			if (f == null)
 				return;
 			for (VFile fi : f.list()) {
-                switch (fi.getName()) {
+				String name = fi.getName();
+                switch (name) {
                     case "CH":
                     case "D":
                     case "DM":
                         continue;
                 }
+				if (!idmap.containsKey(name)) {
+					CommonStatic.ctx.printErr(Context.ErrType.WARN, "unknown stage collection code: " + fi.getName());
+					continue;
+				}
                 List<VFile> list = new ArrayList<>(fi.list());
 				VFile map = list.get(0);
 				List<VFile> stage = new ArrayList<>();
 				for (int i = 1; i < list.size(); i++) {
-					if(fi.getName().equals("N") && list.get(i).getName().contains("stageRN-1"))
+					if (name.equals("N") && list.get(i).getName().contains("stageRN-1"))
 						continue;
 
 					if (list.get(i).list() != null)
@@ -663,11 +669,11 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 										}
 
 										if (unitActivate > 0) {
-											stage.lim.stageLimit.unitSpeedLimit = parameter.get(1).getAsInt();
+											stage.lim.stageLimit.unitSpeedOverride = parameter.get(1).getAsInt();
 										}
 
 										if (enemyActivate > 0) {
-											stage.lim.stageLimit.enemySpeedLimit = parameter.get(3).getAsInt();
+											stage.lim.stageLimit.enemySpeedOverride = parameter.get(3).getAsInt();
 										}
 									}
 								}
@@ -1351,6 +1357,18 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 						if (st.lim.stageLimit == null)
 							continue;
 						st.lim.stageLimit.coolStart = st.lim.stageLimit.globalCooldown > 0 || st.lim.stageLimit.maxMoney > 0;
+					}
+				}
+			}
+			if (UserProfile.isOlderPack(pack, "0.7.12.1")) {
+				for (StageMap sm : maps) {
+					for (Stage st : sm.list) {
+						if (st.lim.stageLimit == null)
+							continue;
+						if (st.lim.stageLimit.maxUnitSpawn == 0)
+							st.lim.stageLimit.maxUnitSpawn = -1;
+						if (st.lim.stageLimit.globalCost == 0)
+							st.lim.stageLimit.globalCost = -1;
 					}
 				}
 			}

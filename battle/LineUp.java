@@ -236,9 +236,7 @@ public class LineUp extends Data {
 			l.setOrbs(orbs);
 		} else {
 			l = lv.clone();
-
 			l.setOrbs(orbs);
-
 			map.put(u.id, l);
 		}
 

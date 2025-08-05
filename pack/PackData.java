@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import common.CommonStatic;
 import common.battle.Treasure;
 import common.battle.data.DataEnemy;
-import common.battle.data.Orb;
+import common.battle.data.OrbInfo;
 import common.battle.data.PCoin;
 import common.io.assets.AssetLoader;
 import common.io.json.Dependency;
@@ -33,8 +33,6 @@ import common.util.stage.*;
 import common.util.stage.CastleList.PackCasList;
 import common.util.stage.MapColc.DefMapColc;
 import common.util.stage.MapColc.PackMapColc;
-import common.util.stage.Limit;
-import common.util.stage.LvRestrict;
 import common.util.unit.*;
 import kotlin.Pair;
 
@@ -62,7 +60,7 @@ public abstract class PackData implements IndexContainer {
 		public void load(Consumer<String> progress, Consumer<Double> bar) {
 			progress.accept("loading basic images");
 			Res.readData();
-			Trait.addBCTraits();
+			Trait.read();
 			progress.accept("loading cannon data");
 			Treasure.readCannonCurveData();
 			progress.accept("loading enemies");
@@ -88,7 +86,7 @@ public abstract class PackData implements IndexContainer {
 			loadLimit();
 			CastleImg.loadBossSpawns();
 			progress.accept("loading orbs");
-			Orb.read();
+			OrbInfo.read();
 			progress.accept("loading musics");
 			loadMusic();
 			progress.accept("process data");

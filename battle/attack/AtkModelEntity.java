@@ -40,7 +40,7 @@ public abstract class AtkModelEntity extends AtkModelAb {
 	protected final BattleObj[] acs;
 	private final Proc[] sealed;
 
-	protected AtkModelEntity(Entity ent, float d0, float d1) {
+	protected AtkModelEntity(Entity ent, float d0, float d1) { // enemy
 		super(ent.basis);
 		e = ent;
 		data = e.data;
@@ -64,7 +64,7 @@ public abstract class AtkModelEntity extends AtkModelAb {
 		}
 	}
 
-	protected AtkModelEntity(Entity ent, float d0, float d1, PCoin pc, Level lv) {
+	protected AtkModelEntity(Entity ent, float d0, float d1, PCoin pc, Level lv) { // cat
 		super(ent.basis);
 		e = ent;
 		data = e.data;
@@ -89,8 +89,9 @@ public abstract class AtkModelEntity extends AtkModelAb {
 		sealed = new Proc[data.getAtkCount()];
 		for (int i = 0; i < sealed.length; i++) {
 			sealed[i] = Proc.blank();
-			if(data.getAtkModel(i).getProc() != null)
+			if (data.getAtkModel(i).getProc() != null) {
 				sealed[i].MOVEWAVE.set(data.getAtkModel(i).getProc().MOVEWAVE);
+			}
 		}
 	}
 
@@ -164,17 +165,29 @@ public abstract class AtkModelEntity extends AtkModelAb {
 	/**
 	 * Generate death surge when this entity is killed and the surge procs
 	 */
-	public void getDeathSurge() {
-		Proc p = Proc.blank();
-		int atk = getAttack(0, p);
-		AttackSimple as = new AttackSimple(e, this, atk, e.traits, getAbi(), p, 0, 0, e.data.getAtkModel(0), 0, false);
-		Proc.VOLC ds = e.getProc().DEATHSURGE;
-		int addp = ds.dis_0 + (int) (b.r.nextFloat() * (ds.dis_1 - ds.dis_0));
-		float p0 = getPos() + getDire() * addp;
-		float sta = p0 + (getDire() == 1 ? W_VOLC_PIERCE : W_VOLC_INNER);
-		float end = p0 - (getDire() == 1 ? W_VOLC_INNER : W_VOLC_PIERCE);
-
-		new ContVolcano(new AttackVolcano(e, as, sta, end, Data.WT_VOLC), p0, e.layer, ds.time, ds.dis_0, ds.dis_1, 0);
+	public void getDeathSurge(int d) {
+		if ((d & 1) > 0) {
+			Proc p = Proc.blank();
+			int atk = getAttack(0, p);
+			AttackSimple as = new AttackSimple(e, this, atk, e.traits, getAbi(), p, 0, 0, e.data.getAtkModel(0), 0, false);
+			Proc.VOLC ds = e.getProc().DEATHSURGE;
+			int addp = ds.dis_0 + (int) (b.r.nextFloat() * (ds.dis_1 - ds.dis_0));
+			float p0 = getPos() + getDire() * addp;
+			float sta = p0 + (getDire() == 1 ? W_VOLC_PIERCE : W_VOLC_INNER);
+			float end = p0 - (getDire() == 1 ? W_VOLC_INNER : W_VOLC_PIERCE);
+			new ContVolcano(new AttackVolcano(e, as, sta, end, Data.WT_VOLC | Data.WT_SOUL), p0, e.layer, ds.time, ds.dis_0, ds.dis_1, 0);
+		}
+		if ((d & 2) > 0) {
+			Proc p = Proc.blank();
+			int atk = getAttack(0, p);
+			AttackSimple as = new AttackSimple(e, this, atk, e.traits, getAbi(), p, 0, 0, e.data.getAtkModel(0), 0, false);
+			Proc.MINIVOLC ds = e.getProc().MINIDEATHSURGE;
+			int addp = ds.dis_0 + (int) (b.r.nextFloat() * (ds.dis_1 - ds.dis_0));
+			float p0 = getPos() + getDire() * addp;
+			float sta = p0 + (getDire() == 1 ? W_VOLC_PIERCE : W_VOLC_INNER);
+			float end = p0 - (getDire() == 1 ? W_VOLC_INNER : W_VOLC_PIERCE);
+			new ContVolcano(new AttackVolcano(e, as, sta, end, Data.WT_MIVC | Data.WT_SOUL), p0, e.layer, ds.time, ds.dis_0, ds.dis_1, 0);
+		}
 	}
 
 	@Override
@@ -236,7 +249,7 @@ public abstract class AtkModelEntity extends AtkModelAb {
 		if (data.getAtkModel(ind).getAltAbi() != 0)
 			e.altAbi(data.getAtkModel(ind).getAltAbi());
 		if (abis[ind] == 1) {
-			if (getProc(ind).TIME.prob != 0 && (getProc(ind).TIME.prob == 100 || b.r.nextFloat() * 100 < getProc(ind).TIME.prob)) {
+			if (getProc(ind).TIME.prob != 0 && getProc(ind).TIME.perform(b.r)) {
 				if (getProc(ind).TIME.intensity > 0) {
 					b.temp_s_stop = Math.max(b.temp_s_stop, getProc(ind).TIME.time);
 					b.temp_inten = getProc(ind).TIME.intensity;
@@ -245,7 +258,7 @@ public abstract class AtkModelEntity extends AtkModelAb {
 					b.temp_n_inten = (float)Math.abs(getProc(ind).TIME.intensity) / b.sn_temp_stop;
 				}
 			}
-			if (getProc(ind).THEME.prob != 0 && (getProc(ind).THEME.prob == 100 || b.r.nextFloat() * 100 < getProc(ind).THEME.prob))
+			if (getProc(ind).THEME.prob != 0 && getProc(ind).THEME.perform(b.r))
 				b.changeTheme(getProc(ind).THEME);
 		}
 	}
@@ -267,7 +280,7 @@ public abstract class AtkModelEntity extends AtkModelAb {
 		String[] par = {
 				"CRIT", "WAVE", "KB", "WARP", "STOP", "SLOW", "WEAK", "POISON", "MOVEWAVE", "CURSE", "SNIPER",
 				"BOSS", "SEAL", "BREAK", "SUMMON", "SATK", "POIATK", "VOLC", "ARMOR", "SPEED", "MINIWAVE", "SHIELDBREAK",
-				"MINIVOLC", "METALKILL"
+				"MINIVOLC", "METALKILL", "BLAST"
 		};
 
 		for (String s0 : par)

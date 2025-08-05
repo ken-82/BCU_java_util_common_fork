@@ -164,6 +164,10 @@ public abstract class CustomEntity extends DataEntity {
 
 	@Override
 	public int getTBA() {
+		return Math.abs(tba);
+	}
+	@Override
+	public int getRealTBA() {
 		return tba;
 	}
 
@@ -180,11 +184,10 @@ public abstract class CustomEntity extends DataEntity {
 		abi = de.getAbi();
 		loop = de.getAtkLoop();
 		traits = new ArrayList<>();
-		for(Trait t : de.getTraits()) {
-			if(!t.BCTrait)
+		for (Trait t : de.getTraits()) {
+			if (t.id.pack.equals("000000") && t.id.id != Data.TRAIT_EVA && t.id.id != Data.TRAIT_WITCH)
 				traits.add(t);
-			else if(t.id.id != Data.TRAIT_EVA && t.id.id != Data.TRAIT_WITCH)
-				traits.add(t);
+			// todo: check if trait is usable in destination unit's pack
 		}
 		width = de.getWidth();
 		tba = de.getTBA();

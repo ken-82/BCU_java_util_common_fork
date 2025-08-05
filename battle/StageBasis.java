@@ -3,6 +3,7 @@ package common.battle;
 import common.CommonStatic;
 import common.battle.attack.AttackAb;
 import common.battle.attack.ContAb;
+import common.battle.data.MaskUnit;
 import common.battle.entity.*;
 import common.pack.Identifier;
 import common.util.BattleObj;
@@ -20,6 +21,7 @@ import common.util.unit.EneRand;
 import common.util.unit.Form;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("ForLoopReplaceableByForEach")
 public class StageBasis extends BattleObj {
@@ -56,9 +58,11 @@ public class StageBasis extends BattleObj {
 	public final float boss_spawn;
 	public final int[] shakeCoolDown = {0, 0};
 	public int activeGuard = -1;
+	public int maxCatSpawns = -1;
 
 	public float siz;
-	public int work_lv, money, maxMoney, cannon, maxCannon, upgradeCost, max_num, pos;
+	public int work_lv, money, maxMoney, cannon, maxCannon, upgradeCost, maxNum, pos;
+	public int[] maxRarityNum = { -1, -1, -1, -1, -1, -1 };
 	public int frontLineup = 0;
 	public boolean lineupChanging = false;
 	public boolean shock = false;
@@ -88,6 +92,7 @@ public class StageBasis extends BattleObj {
 	private boolean bgEffectInitialized = false;
 
 	public final int[][] spiritCooldown = new int[2][5];
+	public int[][] frameOffCd = new int[2][5];
 	/**
 	 * Flag for whether summoner has been summoned or not
 	 */
@@ -96,13 +101,10 @@ public class StageBasis extends BattleObj {
 	 * Flag for whether spirit has been summoned or not
 	 */
 	public final boolean[][] spiritSummoned = new boolean[2][5];
-	/**
-	 * Summoner entity that has been spawned in the battle. Used for spirit summon positioning
-	 */
-	public final Entity[][] summoner = new Entity[2][5];
 
 	public final int[][] spiritEmphasizeCount = new int[2][5];
 	public final int[][] spiritEmphasizeStartTime = new int[2][5];
+	public final int[][][] deployDupe = new int[2][5][2]; // [count, delay]
 
 	public StageBasis(BattleField bf, EStage stage, BasisLU bas, int[] ints, long seed, boolean buttonDelayOn) {
 		b = bas;
@@ -135,8 +137,17 @@ public class StageBasis extends BattleObj {
 			if (st.getCont().id.id < 3)
 				sttime = st.getCont().id.id;
 		}
-		int max = est.lim != null ? est.lim.num : 50;
-		max_num = max <= 0 ? 50 : max;
+		int max;
+		if (est.lim != null) {
+			max = est.lim.num;
+			if (est.lim.stageLimit != null) {
+				maxCatSpawns = est.lim.stageLimit.maxUnitSpawn;
+				maxRarityNum = est.lim.stageLimit.rarityDeployLimit;
+			}
+		} else {
+			max = 50;
+		}
+		maxNum = max <= 0 ? 50 : max;
 		maxCannon = bas.t().CanonTime(sttime, isBanned(C_C_SPE));
 
 		int bank = maxBankLimit();
@@ -224,12 +235,30 @@ public class StageBasis extends BattleObj {
 		theme = id;
 	}
 
+	public List<Entity> findEntitiesOf(int i, int j) {
+		List<Entity> ans = new ArrayList<>();
+		for (Entity ent : le) {
+			if (ent.dire == -1 && b.lu.efs[i][j] != null && ent.data == b.lu.efs[i][j].du)
+				ans.add(ent);
+		}
+		return ans;
+	}
+
 	public int entityCount(int d) {
 		int ans = 0;
 		if (ebase instanceof EEnemy && d == 1)
 			ans += ((EEnemy)ebase).data.getWill() + 1;
 		for (Entity ent : le) {
 			if (ent.dire == d && !ent.dead)
+				ans += ent.data.getWill() + 1;
+		}
+		return ans;
+	}
+
+	public int entityCountRar(int r) {
+		int ans = 0;
+		for (Entity ent : le) {
+			if (ent.dire == -1 && !ent.dead && ((MaskUnit) ent.data).getPack().unit.rarity == r)
 				ans += ent.data.getWill() + 1;
 		}
 		return ans;
@@ -266,7 +295,7 @@ public class StageBasis extends BattleObj {
 	/**
 	 * list of entities in the range d0 ~ d1 that can be touched by entity with given direction and touch mode
 	 * entity is picked if d0 <= pos <= d1 when excludeRightEdge is false
-	 *                  if d0 <= pos <  d1 when excludeRightEdge is true (currently only used by bblast, TODO: waves should use it)
+	 *                  if d0 <= pos <  d1 when excludeRightEdge is true (used by breakerblast and blast ability), TODO: waves should use it)
 	 */
 	public List<AbEntity> inRange(int touch, int dire, float d0, float d1, boolean excludeRightEdge) {
 
@@ -278,15 +307,12 @@ public class StageBasis extends BattleObj {
 		float left = Math.min(d0, d1);
 		float right = Math.max(d0, d1);
 
-		if (excludeRightEdge) {
-			for (int i = 0; i < le.size(); i++)
-				if (le.get(i).dire == dire && (le.get(i).touchable() & touch) != 0 && le.get(i).pos >= left && le.get(i).pos < right)
-					ans.add(le.get(i));
-		} else {
-			for (int i = 0; i < le.size(); i++)
-				if (le.get(i).dire == dire && (le.get(i).touchable() & touch) != 0 && le.get(i).pos >= left && le.get(i).pos <= right)
-					ans.add(le.get(i));
-		}
+		if (excludeRightEdge)
+			right -= 1;
+
+		for (int i = 0; i < le.size(); i++)
+			if (le.get(i).dire == dire && (le.get(i).touchable() & touch) != 0 && le.get(i).pos >= left && le.get(i).pos <= right)
+				ans.add(le.get(i));
 
 		AbEntity b = dire == 1 ? ebase : ubase;
 
@@ -294,6 +320,38 @@ public class StageBasis extends BattleObj {
 			ans.add(b);
 
 		return ans;
+	}
+
+	public List<AbEntity> inRange(int touch, int dire, float d0, float d1, boolean excludeRightEdge, float blindSpot) {
+		List<AbEntity> ans = new ArrayList<>();
+
+		if (dire == 0)
+			return ans;
+
+		float farLeft = Math.min(d0, d1); // would be furthest left (1st point) -175
+		float farRight = Math.max(d0, d1); // would be furthest right (4th point) 175
+
+		float innerLeft = (farLeft + farRight) / 2 - (blindSpot / 2); // would be second to furthest left (3rd point)
+		float innerRight = (farLeft + farRight) / 2 + (blindSpot / 2); // would be second to furthest right (2nd point)
+
+		if (excludeRightEdge) {
+			innerRight -= 1;
+			farRight -= 1;
+		}
+
+		for (int i = 0; i < le.size(); i++)
+			if (le.get(i).dire == dire && (le.get(i).touchable() & touch) != 0
+					&& (le.get(i).pos >= farLeft && le.get(i).pos <= innerLeft || le.get(i).pos >= innerRight && le.get(i).pos <= farRight))
+				ans.add(le.get(i));
+
+		AbEntity b = dire == 1 ? ebase : ubase;
+
+		if ((b.touchable() & touch) != 0
+				&& (b.pos >= farLeft && b.pos <= innerLeft || b.pos >= innerRight && b.pos <= farRight))
+			ans.add(b);
+
+		return ans;
+
 	}
 
 	public void registerBattleDimension(float midH, float battleHeight) {
@@ -339,7 +397,7 @@ public class StageBasis extends BattleObj {
 			return false;
 
 		if (cannon == maxCannon) {
-			if(canon.id == BASE_WALL && entityCount(-1) >= max_num) {
+			if(canon.id == BASE_WALL && entityCount(-1) >= maxNum) {
 				CommonStatic.setSE(SE_SPEND_FAIL);
 				return false;
 			}
@@ -452,7 +510,8 @@ public class StageBasis extends BattleObj {
 		if (f == null)
 			return false;
 
-		if (manual && f.du.getProc().SPIRIT.exists() && summonerSummoned[i][j] && summoner[i][j].anim.dead < 0 && !spiritSummoned[i][j]) {
+		List<Entity> summoners = findEntitiesOf(i, j).stream().filter(e -> e.anim.dead < 0).collect(Collectors.toList());
+		if (manual && f.du.getProc().SPIRIT.exists() && summonerSummoned[i][j] && !summoners.isEmpty() && !spiritSummoned[i][j]) {
 			if (spiritCooldown[i][j] > 0) {
 				CommonStatic.setSE(SE_SPEND_FAIL);
 				return false;
@@ -461,20 +520,20 @@ public class StageBasis extends BattleObj {
 			f = b.lu.spirits[i][j];
 			if (f == null)
 				return false;
-			if (entityCount(-1) >= max_num - f.du.getWill()) {
+
+			if (entityCount(-1) >= maxNum - f.du.getWill() * summoners.size()) {
 				CommonStatic.setSE(SE_SPEND_FAIL);
 				return false;
 			}
 
 			CommonStatic.setSE(SE_SPIRIT_SUMMON);
-			EUnit su = f.getEntity(this, null, true);
 
-			// summoner.pos and not summoner.lastPosition
-			// actions are processed before the update so it's automatic for the spirit to spawn relative to the summoner last pos
-			// 800 + range and not ebase.pos + range because it doesn't respond to entity enemy base
-			su.added(-1, Math.max(800 + su.data.getRange(), Math.min(summoner[i][j].pos + SPIRIT_SUMMON_RANGE, ubase.pos)));
+			for (Entity summoner : summoners) {
+				EUnit su = f.getEntity(this, null, true, false);
+				su.added(-1, Math.max(800 + su.data.getRange(), Math.min(summoner.pos + SPIRIT_SUMMON_RANGE, ubase.pos)));
+				le.add(su);
+			}
 
-			le.add(su);
 			le.sort(Comparator.comparingInt(e -> e.layer));
 
 			spiritSummoned[i][j] = true;
@@ -482,33 +541,42 @@ public class StageBasis extends BattleObj {
 
 			return true;
 		} else if (locks[i][j] || manual) {
-			if (entityCount(-1) >= max_num - f.du.getWill()) {
+			int rar = b.lu.fs[i][j].unit.rarity;
+			if (entityCount(-1) >= maxNum - f.du.getWill()) {
 				if (manual)
 					CommonStatic.setSE(SE_SPEND_FAIL);
 
 				return false;
 			}
+			if (maxRarityNum[rar] > -1 && entityCountRar(rar) >= maxRarityNum[rar] - b.lu.fs[i][j].du.getWill()) {
+				if (manual)
+					CommonStatic.setSE(SE_SPEND_FAIL);
 
+				return false;
+			}
+			if (maxCatSpawns == 0) {
+				if (manual)
+					CommonStatic.setSE(SE_SPEND_FAIL);
+
+				return false;
+			}
 			if (elu.cool[i][j] > 0) {
-				if(manual) {
+				if (manual) {
 					CommonStatic.setSE(SE_SPEND_FAIL);
 				}
 
 				return false;
 			}
-
 			if (elu.price[i][j] == -1) {
 				return false;
 			}
-
 			if (elu.price[i][j] > money) {
 				if (manual)
 					CommonStatic.setSE(SE_SPEND_FAIL);
 
 				return false;
 			}
-
-			if (f.du.getProc().SPIRIT.exists() && summonerSummoned[i][j] && summoner[i][j] != null) {
+			if (f.du.getProc().SPIRIT.exists() && summonerSummoned[i][j] && !findEntitiesOf(i, j).isEmpty()) {
 				if (manual)
 					CommonStatic.setSE(SE_SPEND_FAIL);
 
@@ -516,25 +584,29 @@ public class StageBasis extends BattleObj {
 			}
 
 			CommonStatic.setSE(SE_SPEND_SUC);
-
 			elu.get(i, j);
-
-			EUnit eu = f.getEntity(this, new int[] {i, j}, false);
-
+			EUnit eu = f.getEntity(this, new int[] {i, j}, false, elu.tick[i][j] == 1);
 			eu.added(-1, st.len - 700);
 
+			if (elu.tick[i][j] != -1)
+				elu.tick[i][j] = (elu.tick[i][j] + 1) % 2;
 			if (f.du.getProc().SPIRIT.exists()) {
 				summonerSummoned[i][j] = true;
 				spiritCooldown[i][j] = SPIRIT_SUMMON_DELAY;
-				summoner[i][j] = eu;
+			}
+			if (getDupeCount(rar) > 0) {
+				deployDupe[i][j][0] += getDupeCount(rar);
+				if (deployDupe[i][j][1] == 0)
+					deployDupe[i][j][1] = getDupeDelay(rar);
 			}
 
 			le.add(eu);
 			le.sort(Comparator.comparingInt(e -> e.layer));
 
 			money -= elu.price[i][j];
-
 			unitRespawnTime = 1;
+			if (maxCatSpawns > 0)
+				maxCatSpawns--;
 
 			return true;
 		}
@@ -549,118 +621,6 @@ public class StageBasis extends BattleObj {
 			er.updateCopy((StageBasis) hardCopy(this), hardCopy(er.map.get(this)));
 	}
 
-	// -------------------- DEV_ONLY -------------------- //
-	private final int[][] transcription = {
-			{ 215,0},
-			{ 613,11},
-			{1029,2},
-			{ 947,0},
-			{1214,1},
-			{1251,9},
-			{ 537,2},
-			{ 623,1},
-			{ 848,4},
-			{ 670,2},
-			{1425,6},
-			{ 884,2},
-			{1318,9},
-			{ 720,3},
-			{ 201,1},
-			{ 238,0},
-			{ 428,1},
-			{ 407,2},
-			{ 796,4},
-			{ 264,1},
-			{ 798,5},
-			{ 724,3},
-			{ 397,2},
-			{1181,10},
-			{2221,11},
-			{1494,2},
-			{1317,1},
-			{1391,4},
-			{1234,9},
-			{ 898,1},
-			{ 850,2},
-			{ 863,3},
-			{ 825,6},
-			{ 540,0},
-			{ 899,4},
-			{ 328,0},
-			{ 553,1},
-			{ 498,2},
-			{1260,0},
-			{1259,8},
-			{ 494,1},
-			{2929,5},
-			{2512,9},
-			{1556,4},
-			{1463,3},
-			{ 931,6},
-			{ 401,0},
-			{ 489,1},
-			{ 746,2},
-			{ 685,0},
-			{ 725,1},
-			{1799,5},
-			{1280,6},
-			{ 778,4},
-			{1322,7},
-			{ 779,5},
-			{ 104,10},
-			{ 802,4},
-			{ 536,2},
-			{ 570,1},
-			{ 630,0},
-			{ 833,3},
-			{ 449,1},
-			{ 755,2},
-			{ 869,4},
-			{ 976,5},
-			{ 647,2},
-			{1176,3},
-			{1084,4},
-			{1095,0},
-			{1209,9},
-			{ 349,1},
-			{ 704,2},
-			{ 520,0},
-			{ 764,5},
-			{ 719,2},
-			{1946,4},
-			{1389,3},
-			{1046,6},
-			{ 741,2},
-			{2606,1},
-			{2652,7},
-			{1757,9},
-			{ 992,5},
-			{ 772,4},
-			{ 798,6},
-			{ 679,10},
-			{1727,8},
-			{ 894,3},
-			{ 986,5},
-			{1067,6},
-			{ 754,5},
-			{ 452,1},
-			{ 383,2},
-			{ 816,5},
-			{1224,6},
-			{1040,5},
-			{1491,5},
-			{2304,5},
-			{3499,2},
-			{3295,1},
-			{3450,0},
-			{3863,1},
-			{3998,2},
-			{3807,9},
-			{3429,1}
-	};
-	private int tranIdx = 0;
-	// -------------------- DEV_ONLY -------------------- //
-
 	/**
 	 * process actions and add enemies from stage first then update each entity
 	 * and receive attacks then excuse attacks and do post update then delete dead
@@ -674,25 +634,25 @@ public class StageBasis extends BattleObj {
 			bgEffectInitialized = true;
 		}
 
-		// -------------------- DEV_ONLY -------------------- //
-		if(false) {
-			if (time == 1)
-				tranIdx = 0;
-			if (tranIdx < transcription.length) {
-				if (money / 100 == transcription[tranIdx][0]) {
-					if(transcription[tranIdx][1] < 10) {
-						act_spawn(transcription[tranIdx][1] / 5, transcription[tranIdx][1] % 5, true);
-					} else {
-						if(transcription[tranIdx][1] == 10)
-							act_can();
-						else
-							act_mon();
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 5; j++) {
+				if (deployDupe[i][j][0] > 0)
+					while (deployDupe[i][j][0] > 0 && deployDupe[i][j][1] == 0) {
+						deployDupe[i][j][0]--;
+						EForm f = b.lu.efs[i][j];
+						EUnit eu = b.lu.efs[i][j].getEntity(this, new int[] {i, j}, false, false);
+						eu.added(-1, st.len - 700);
+						le.add(eu);
+						deployDupe[i][j][1] = getDupeDelay(f.du.getPack().unit.rarity);
 					}
-					tranIdx++;
-				}
+				if (deployDupe[i][j][1] > 0)
+					deployDupe[i][j][1]--;
 			}
 		}
-		// -------------------- DEV_ONLY -------------------- //
+
+		le.sort(Comparator.comparingInt(e -> e.layer));
+
+		// i would prefer "dev only" code to be on its own separate branch so it's not clogging main branch, im too lazy to do that, sorry  -- red
 
 		if (buttonDelay > 0 && --buttonDelay == 0) {
 			act_spawn(selectedUnit[0], selectedUnit[1], true);
@@ -717,17 +677,9 @@ public class StageBasis extends BattleObj {
 			}
 		}
 
-		if (s_stop == 0 || (ebase.getAbi() & AB_TIMEI) != 0) {
-			// ebase.update();
-			// ebase.update2();
-		}
-
 		if (s_stop == 0) {
 			if(bgEffect != null)
 				bgEffect.update(st.len, battleHeight, midH);
-
-			// ubase.update();
-			// ubase.update2();
 
 			if (activeGuard == 0 && est.hasBoss(true, false))
 				activeGuard = 1;
@@ -913,16 +865,10 @@ public class StageBasis extends BattleObj {
 				boolean dead = e.anim.dead == 0 && e.summoned.isEmpty();
 
 				if (dead && e instanceof EUnit && e.getProc().SPIRIT.exists()) {
-					for (int i = 0; i < 2; i++) {
-						for (int j = 0; j < 5; j++) {
-							if (e == summoner[i][j]) {
-								summoner[i][j] = null;
-								summonerSummoned[i][j] = false;
-								spiritSummoned[i][j] = false;
-
-								break;
-							}
-						}
+					int[] index = ((EUnit) e).index;
+					if (findEntitiesOf(index[0], index[1]).stream().noneMatch(ent -> ent.anim.dead != 0)) {
+						summonerSummoned[index[0]][index[1]] = false;
+						spiritSummoned[index[0]][index[1]] = false;
 					}
 				}
 
@@ -1176,5 +1122,34 @@ public class StageBasis extends BattleObj {
 			return 0;
 		else
 			return est.lim.stageLimit.globalCooldown;
+	}
+
+	public int globalCost() {
+		if (est.lim.stageLimit == null)
+			return -1;
+		else
+			return est.lim.stageLimit.globalCost;
+	}
+
+	public int cannonMultiplier() {
+		if (est.lim.stageLimit == null)
+			return 100;
+		else
+			return est.lim.stageLimit.cannonMultiplier;
+	}
+
+	public int getGlobalSpeed(int dire) {
+		if (est.lim.stageLimit == null)
+			return -1;
+		else
+			return dire == -1 ? est.lim.stageLimit.unitSpeedOverride : est.lim.stageLimit.enemySpeedOverride;
+	}
+
+	public int getDupeCount(int rar) {
+		return est.lim.stageLimit == null ? 0 : est.lim.stageLimit.deployDuplicationTimes[rar];
+	}
+
+	public int getDupeDelay(int rar) {
+		return est.lim.stageLimit == null ? 0 : est.lim.stageLimit.deployDuplicationDelay[rar];
 	}
 }

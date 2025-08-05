@@ -24,7 +24,7 @@ import java.util.TreeMap;
 public class LvRestrict extends Data implements Indexable<PackData, LvRestrict> {
 
 	@StaticPermitted
-	public static final int[] MAX = new int[] { 50, 70, 10, 10, 10, 10, 10 };
+	public static final int[] MAX = new int[] { 50, 90, 10, 10, 10, 10, 10 };
 
 	@JsonField(generic = { CharaGroup.class, int[].class }, alias = Identifier.class)
 	public final TreeMap<CharaGroup, int[]> res = new TreeMap<>();

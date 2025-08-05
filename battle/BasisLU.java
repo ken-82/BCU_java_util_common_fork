@@ -92,22 +92,31 @@ public class BasisLU extends Basis implements Copable<BasisLU>, BattleStatic {
 	}
 
 	public void performRealisticLeveling() {
-		if(!CommonStatic.getConfig().realLevel)
-			return;
-
 		for(Form[] fs : lu.fs) {
 			for(int i = 0; i < fs.length; i++) {
 				if(fs[i] == null)
 					continue;
 
-				Level lv = lu.getLv(fs[i]);
+				Form f = fs[i];
+				Level lv = lu.getLv(f);
 
 				if(lv == null) {
 					throw new IllegalStateException("Battle started without initializing level of form in lineup");
 				}
 
-				int maxForm;
+				int[][] orbs = lv.getOrbs();
 
+				if(orbs != null && f.unit.orbs != null && f.unit.orbs.getSlots() != -1) {
+					for (int j = 0; j < orbs.length; j++) {
+						if (!f.checkOrb(lv.getLv() + lv.getPlusLv(), j))
+							orbs[j] = new int[3];
+					}
+				}
+
+				if(!CommonStatic.getConfig().realLevel)
+					continue;
+
+				int maxForm;
 				if (lv.getLv() + lv.getPlusLv() < 10) {
 					maxForm = 0;
 				} else if (lv.getLv() + lv.getPlusLv() < (fs[i].unit.info.tfLevel == -1 ? 20 : fs[i].unit.info.tfLevel)) {
@@ -119,7 +128,6 @@ public class BasisLU extends Basis implements Copable<BasisLU>, BattleStatic {
 				}
 
 				fs[i] = fs[i].unit.forms[Math.min(maxForm, fs[i].fid)];
-
 				if(fs[i].fid >= 2 && fs[i].du.getPCoin() != null) {
 					int[] talents = lv.getTalents();
 					PCoin pc = fs[i].du.getPCoin();
@@ -127,17 +135,6 @@ public class BasisLU extends Basis implements Copable<BasisLU>, BattleStatic {
 					for(int j = 0; j < Math.min(pc.info.size(), talents.length); j++) {
 						if(pc.info.get(j)[13] == 1 && lv.getLv() + lv.getPlusLv() < 60) {
 							talents[j] = 0;
-						}
-					}
-
-					int[][] orbs = lv.getOrbs();
-
-					if(orbs != null && fs[i].orbs != null && fs[i].orbs.getSlots() != -1) {
-						int[] limits = fs[i].orbs.getLimits();
-
-						for(int j = 0; j < orbs.length; j++) {
-							if(limits[j] == 1 && lv.getLv() + lv.getPlusLv() < 60)
-								orbs[j] = new int[0];
 						}
 					}
 				}

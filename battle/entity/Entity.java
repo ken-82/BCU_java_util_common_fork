@@ -40,11 +40,6 @@ public abstract class Entity extends AbEntity {
 		SPIRIT
 	}
 
-	/**
-	 * Obtains BC's traits
-	 */
-	protected static final List<Trait> BCTraits = UserProfile.getBCData().traits.getList();
-
 	public static class AnimManager extends BattleObj {
 
 		private final Entity e;
@@ -232,7 +227,8 @@ public abstract class Entity extends AbEntity {
 		public void getEff(int t) {
 			int dire = e.dire;
 			if (t == INV) {
-				effs[eftp] = null;
+				if (eftp != 0)
+					effs[eftp] = null;
 				eftp = A_EFF_INV;
 				effs[eftp] = effas().A_EFF_INV.getEAnim(DefEff.DEF);
 				efft = effas().A_EFF_INV.len(DefEff.DEF);
@@ -330,7 +326,7 @@ public abstract class Entity extends AbEntity {
 				if (status[P_SPEED][2] <= 1) {
 					index = status[P_SPEED][1] >= 0 ? SpeedEff.UP : SpeedEff.DOWN;
 				} else {
-					index = status[P_SPEED][1] >= e.data.getSpeed() ? SpeedEff.UP : SpeedEff.DOWN;
+					index = status[P_SPEED][1] >= (e.data.getSpeed() > 0 && e.basis.getGlobalSpeed(-1) > -1 ? e.basis.getGlobalSpeed(-1) : e.data.getSpeed()) ? SpeedEff.UP : SpeedEff.DOWN;
 				}
 
 				effs[id] = eff.getEAnim(index);
@@ -570,7 +566,7 @@ public abstract class Entity extends AbEntity {
 				e.kbTime += 1;
 
 			// Z-kill icon
-			if (e.health <= 0 && e.zx.tempZK && e.traits.contains(BCTraits.get(TRAIT_ZOMBIE))) {
+			if (e.health <= 0 && e.zx.tempZK && e.traits.contains(UserProfile.getBCData().traits.get(TRAIT_ZOMBIE))) {
 				EAnimD<DefEff> eae = effas().A_Z_STRONG.getEAnim(DefEff.DEF);
 				e.basis.lea.add(new EAnimCont(e.pos, e.layer, eae));
 				e.basis.leaSort = true;
@@ -578,7 +574,7 @@ public abstract class Entity extends AbEntity {
 			}
 		}
 
-		private boolean deathSurge = false;
+		private int deathSurge = 0;
 
 		/**
 		 * set kill anim
@@ -590,9 +586,12 @@ public abstract class Entity extends AbEntity {
 				return;
 			}
 
-			if (e.getProc().DEATHSURGE.perform(e.basis.r)) {
-				deathSurge = true;
+			if (e.getProc().DEATHSURGE.perform(e.basis.r))
+				deathSurge |= 1;
+			else if (e.getProc().MINIDEATHSURGE.perform(e.basis.r))
+				deathSurge |= 2;
 
+			if (deathSurge != 0) {
 				e.weaks.list.clear();
 				status[P_WEAK] = new int[PROC_WIDTH];
 
@@ -642,15 +641,12 @@ public abstract class Entity extends AbEntity {
 			if (anim.done() && anim.type == UType.ENTER)
 				setAnim(UType.IDLE, true);
 			if (dead >= 0) {
-				if (deathSurge && soul.len() - dead == 21) // 21 is guessed delay compared to BC
-					e.aam.getDeathSurge();
-
+				if (deathSurge > 0 && soul.len() - dead == 21) // 21 is guessed delay compared to BC
+					e.aam.getDeathSurge(deathSurge);
 				if (e.data.getResurrection() != null) {
 					AtkDataModel adm = e.data.getResurrection();
-
 					if ((soul == null && !e.dead) || (soul != null && adm.pre == soul.len() - dead))
 						e.basis.getAttack(e.aam.getAttack(e.data.getAtkCount() + 1));
-
 					if (soul != null && dead == 0 && adm.pre >= soul.len() && !e.dead) {
 						e.basis.getAttack(e.aam.getAttack(e.data.getAtkCount() + 1));
 					}
@@ -1220,7 +1216,7 @@ public abstract class Entity extends AbEntity {
 				if (em.kb.kbType == INT_WARP)
 					continue;
 				REVIVE.TYPE conf = em.getProc().REVIVE.type;
-				if (!conf.revive_non_zombie && e.traits.contains(BCTraits.get(TRAIT_ZOMBIE)))
+				if (!conf.revive_non_zombie && e.traits.contains(UserProfile.getBCData().traits.get(TRAIT_ZOMBIE)))
 					continue;
 				int type = conf.range_type;
 				if (type == 0 && (em.touchable() & (TCH_N | TCH_EX)) == 0)
@@ -1442,6 +1438,11 @@ public abstract class Entity extends AbEntity {
 	 */
 	private boolean killCounted = false;
 
+	/**
+	 * cooldown timer for regeneration ability
+	 */
+	private int regentimer;
+
 	protected Entity(StageBasis b, MaskEntity de, EAnimU ea, float atkMagnif, float hpMagnif) {
 		super((int) (de.getHp() * hpMagnif));
 		basis = b;
@@ -1453,6 +1454,7 @@ public abstract class Entity extends AbEntity {
 		presetSealedProcs();
 		maxCurrentShield = currentShield = (int) (de.getProc().DEMONSHIELD.hp * hpMagnif);
 		shieldMagnification = hpMagnif;
+		regentimer = getProc().HPREGEN.interval;
 	}
 
 	protected Entity(StageBasis b, MaskEntity de, EAnimU ea, float lvMagnif, float tAtk, float tHP, PCoin pc, Level lv) {
@@ -1463,6 +1465,9 @@ public abstract class Entity extends AbEntity {
 		);
 		basis = b;
 		data = de;
+		if (data.getRealTBA() < 0) {
+			waitTime = data.getTBA();
+		}
 		aam = AtkModelEntity.getUnitAtk(this, tAtk, lvMagnif, pc, lv);
 		anim = new AnimManager(this, ea);
 		atkm = new AtkManager(this);
@@ -1477,6 +1482,7 @@ public abstract class Entity extends AbEntity {
 		presetSealedProcs();
 		maxCurrentShield = currentShield = (int) (de.getProc().DEMONSHIELD.hp * lvMagnif);
 		shieldMagnification = lvMagnif;
+		regentimer = getProc().HPREGEN.interval;
 	}
 
 	private void presetStatus(float mag) {
@@ -1487,6 +1493,7 @@ public abstract class Entity extends AbEntity {
 		status[P_REVIVE][0] = getProc().REVIVE.count;
 		status[P_DMGCUT][0] = getProc().DMGCUT.type.magnif ? (int) (mag * getProc().DMGCUT.dmg) : getProc().DMGCUT.dmg;
 		status[P_DMGCAP][0] = getProc().DMGCAP.type.magnif ? (int) (mag * getProc().DMGCAP.dmg) : getProc().DMGCAP.dmg;
+		status[P_HPREGEN][2] = getProc().HPREGEN.scaleWithBuff ? (int) (mag * getProc().HPREGEN.amount) : getProc().HPREGEN.amount;
 	}
 
 	private void presetSealedProcs() {
@@ -1512,38 +1519,22 @@ public abstract class Entity extends AbEntity {
 		int dmg = getDamage(atk, atk.atk);
 		boolean proc = true;
 
+		if (getProc().HPREGEN.resetWhenDamaged && getProc().HPREGEN.prob > 0) {
+			regentimer = getProc().HPREGEN.interval; // Reset if enabled
+		}
+
 		if (anim.corpse != null && anim.corpse.type == ZombieEff.REVIVE && status[P_REVIVE][1] >= REVIVE_SHOW_TIME)
 			return;
 
-		Proc.CANNI cRes = getProc().IMUCANNON;
-
-		if (atk.canon > 0 && cRes.mult != 0)
-			if ((atk.canon & cRes.type) > 0) {
-				if (cRes.mult > 0)
-					anim.getEff(P_WAVE);
-
-				if (cRes.mult == 100)
-					return;
-				else {
-					dmg = dmg * (100 - cRes.mult) / 100;
-					switch (atk.canon) {
-						case 2:
-							atk.getProc().SLOW.time = atk.getProc().SLOW.time * (100 - cRes.mult) / 100;
-							break;
-						case 4:
-						case 16:
-							atk.getProc().STOP.time = atk.getProc().STOP.time * (100 - cRes.mult) / 100;
-							break;
-						case 32:
-							if (cRes.mult > 0 && basis.r.nextFloat() * 100 < cRes.mult)
-								atk.getProc().BREAK.clear();
-							atk.getProc().KB.time = atk.getProc().KB.time * (100 - cRes.mult) / 100;
-							break;
-						case 64:
-							atk.getProc().CURSE.time = atk.getProc().CURSE.time * (100 - cRes.mult) / 100;
-					}
-				}
+		Proc.CANNI imuCannon = getProc().IMUCANNON;
+		if (atk.canon > 0 && imuCannon.exists() && (atk.canon & imuCannon.type) > 0) {
+			if (imuCannon.mult != 100) {
+				dmg = dmg * (100 - imuCannon.mult) / 100;
+			} else {
+				anim.getEff(P_WAVE);
+				return;
 			}
+		}
 
 		// if immune to wave and the attack is wave, jump out
 		if (atk.waveType != 5 && ((atk.waveType & WT_WAVE) > 0 || (atk.waveType & WT_MINI) > 0) && atk.canon != 16) {
@@ -1573,22 +1564,40 @@ public abstract class Entity extends AbEntity {
 				dmg = dmg * (100 - getProc().IMUVOLC.mult) / 100;
 		}
 
+		if ((atk.waveType & WT_BLST) > 0) {
+			if (getProc().IMUBLAST.mult > 0)
+				anim.getEff(P_WAVE);
+			if (getProc().IMUBLAST.mult == 100)
+				return;
+			else
+				dmg = dmg * (100 - getProc().IMUBLAST.mult) / 100;
+		}
+
 		tokens.add(atk);
 
 		Proc.PT imuatk = getProc().IMUATK;
-
-		if (imuatk.prob > 0 && (atk.dire == -1 || receive(-1)) || ctargetable(atk.trait, atk.attacker, false)) {
-			if (status[P_IMUATK][0] == 0 && (imuatk.prob == 100 || basis.r.nextFloat() * 100 < imuatk.prob)) {
+		if (imuatk.exists() && (atk.dire == -1 || receive(-1)) || ctargetable(atk.trait, atk.attacker, false)) {
+			if (status[P_IMUATK][0] == 0 && imuatk.perform(basis.r)) {
 				status[P_IMUATK][0] = (int) (imuatk.time * (1 + 0.2 / 3 * getFruit(atk.trait, atk.dire, -1)));
 				anim.getEff(P_IMUATK);
 			}
 			if (status[P_IMUATK][0] > 0)
 				return;
 		}
+		if (getProc().IMUATKANY.exists()) { // todo: figure out if dodge orb is affected by treasure or by dodge ability
+			if (status[P_IMUATK][0] == 0 && getProc().IMUATKANY.perform(basis.r)) {
+				status[P_IMUATK][0] = 30;
+				anim.getEff(P_IMUATK);
+			}
+
+			if (status[P_IMUATK][0] > 0)
+				return;
+		}
 
 		Proc.DMGCUT dmgcut = getProc().DMGCUT;
 
-		if (dmgcut.prob > 0 && ((dmgcut.type.traitIgnore && status[P_CURSE][0] == 0) || ctargetable(atk.trait, atk.attacker, false)) && dmg < status[P_DMGCUT][0] && dmg > 0 && (dmgcut.prob == 100 || basis.r.nextFloat() * 100 < dmgcut.prob)) {
+		if (dmgcut.exists() && ((dmgcut.type.traitIgnore && status[P_CURSE][0] == 0) || ctargetable(atk.trait, atk.attacker, false))
+				&& dmg < status[P_DMGCUT][0] && dmg > 0 && dmgcut.perform(basis.r)) {
 			anim.getEff(P_DMGCUT);
 
 			if (dmgcut.type.procs)
@@ -1604,7 +1613,8 @@ public abstract class Entity extends AbEntity {
 
 		Proc.DMGCAP dmgcap = getProc().DMGCAP;
 
-		if (dmgcap.prob > 0 && ((dmgcap.type.traitIgnore && status[P_CURSE][0] == 0) || ctargetable(atk.trait, atk.attacker, false)) && dmg > status[P_DMGCAP][0] && (dmgcap.prob == 100 || basis.r.nextFloat() * 100 < dmgcap.prob)) {
+		if (dmgcap.exists() && ((dmgcap.type.traitIgnore && status[P_CURSE][0] == 0) || ctargetable(atk.trait, atk.attacker, false)) && dmg > status[P_DMGCAP][0]
+				&& dmgcap.perform(basis.r)) {
 			anim.getEff(dmgcap.type.nullify ? DMGCAP_SUCCESS : DMGCAP_FAIL);
 			if (dmgcap.type.procs)
 				proc = false;
@@ -1733,7 +1743,7 @@ public abstract class Entity extends AbEntity {
 
 		atk.notifyEntity(e -> {
 			Proc.COUNTER counter = getProc().COUNTER;
-			if ((counter.prob == 100 || basis.r.nextFloat() * 100 < counter.prob) && e.dire != dire && (e.touchable() & getTouch()) > 0) {
+			if (e.dire != dire && (e.touchable() & getTouch()) > 0 && counter.perform(basis.r)) {
 				boolean isWave = (atk.waveType & WT_WAVE) > 0 || (atk.waveType & WT_MINI) > 0 || (atk.waveType & WT_MOVE) > 0 || (atk.waveType & WT_VOLC) > 0;
 				if (!isWave || counter.type.counterWave != 0) {
 					float[] ds = counter.minRange != 0 || counter.maxRange != 0 ? new float[]{pos + counter.minRange, pos + counter.maxRange} : aam.touchRange();
@@ -1815,6 +1825,7 @@ public abstract class Entity extends AbEntity {
 		if (!(ctargetable(atk.trait, atk.attacker, false) || (receive(-1) && atk.SPtr) || (receive(1) && !atk.SPtr)))
 			return;
 
+		boolean cannonResist = atk.canon > 0 && getProc().IMUCANNON.exists() && (atk.canon & getProc().IMUCANNON.type) > 0;
 		if (atk.getProc().POIATK.mult > 0) {
 			int rst = getProc().IMUPOIATK.mult;
 
@@ -1855,7 +1866,7 @@ public abstract class Entity extends AbEntity {
 			} else
 				anim.getEff(INV);
 
-			if(dire == - 1 && basis.canon.deco == DECO_BASE_STOP) {
+			if(dire == -1 && basis.canon.deco == DECO_BASE_STOP) {
 				status[P_STOP][0] = (int) (status[P_STOP][0] * basis.b.t().getDecorationMagnification(basis.canon.deco, Data.DECO_FREEZE));
 			}
 		}
@@ -1883,7 +1894,6 @@ public abstract class Entity extends AbEntity {
 
 		if (atk.getProc().WEAK.time > 0) {
 			int val = (int) (atk.getProc().WEAK.time * time);
-
 			float rst = getResistValue(
 					atk,
 					"IMUWEAK",
@@ -1891,14 +1901,12 @@ public abstract class Entity extends AbEntity {
 			);
 
 			val = (int) (val * rst);
-
 			if(dire == -1 && basis.canon.deco == DECO_BASE_GROUND) {
 				val = (int) (val * basis.b.t().getDecorationMagnification(basis.canon.deco, Data.DECO_WEAK));
 			}
 
 			if (rst > 0f) {
 				weaks.add(new int[] { val, atk.getProc().WEAK.mult });
-
 				anim.getEff(P_WEAK);
 			} else
 				anim.getEff(INV);
@@ -1906,12 +1914,10 @@ public abstract class Entity extends AbEntity {
 
 		if (atk.getProc().CURSE.time != 0 || atk.getProc().CURSE.prob > 0) {
 			int val = (int) (atk.getProc().CURSE.time * time);
-
 			float rst = getResistValue(atk, "IMUCURSE", getProc().IMUCURSE.mult);
 
 			if (rst > 0f) {
 				val = (int) (val * rst);
-
 				if (val < 0)
 					status[P_CURSE][0] = Math.max(status[P_CURSE][0], Math.abs(val));
 				else
@@ -1921,7 +1927,7 @@ public abstract class Entity extends AbEntity {
 			} else
 				anim.getEff(INV);
 
-			if(dire == - 1 && basis.canon.deco == DECO_BASE_CURSE) {
+			if(dire == -1 && basis.canon.deco == DECO_BASE_CURSE) {
 				status[P_CURSE][0] = (int) (status[P_CURSE][0] * basis.b.t().getDecorationMagnification(basis.canon.deco, Data.DECO_CURSE));
 			}
 		}
@@ -1952,10 +1958,9 @@ public abstract class Entity extends AbEntity {
 				EffAnim<WarpEff> e = effas().A_W;
 
 				int len = e.len(WarpEff.ENTER) + e.len(WarpEff.EXIT);
-				int val = atk.getProc().WARP.time;
-				int rst = getProc().IMUWARP.mult;
-
-				val = val * (100 - rst) / 100;
+				int val = (int) (warp.time * time);
+				float rst = getResistValue(atk, "IMUWARP", getProc().IMUWARP.mult);
+				val = (int) (val * rst);
 
 				status[P_WARP][0] = val + len;
 			} else
@@ -2011,11 +2016,14 @@ public abstract class Entity extends AbEntity {
 
 		if (atk.getProc().SPEED.time > 0) {
 			int res = getProc().IMUSPEED.mult;
+			int speed = data.getSpeed();
+			if (speed > 0 && basis.getGlobalSpeed(dire) > 0)
+				speed = basis.getGlobalSpeed(dire);
 
 			boolean b;
 
 			if (atk.getProc().SPEED.type == 2)
-				b = (data.getSpeed() > atk.getProc().SPEED.speed && res > 0) || (data.getSpeed() < atk.getProc().SPEED.speed && res < 0);
+				b = (speed > atk.getProc().SPEED.speed && res > 0) || (speed < atk.getProc().SPEED.speed && res < 0);
 			else
 				b = res < 0;
 			if (checkAIImmunity(atk.getProc().SPEED.speed, getProc().IMUSPEED.smartImu, b))
@@ -2114,6 +2122,8 @@ public abstract class Entity extends AbEntity {
 	 */
 	@Override
 	public void postUpdate() {
+		regenUpdate();
+
 		int hb = data.getHb();
 		long ext = health * hb % maxH;
 		if (ext == 0)
@@ -2147,8 +2157,7 @@ public abstract class Entity extends AbEntity {
 		}
 		// lethal strike
 		if (getProc().LETHAL.prob > 0 && health <= 0) {
-			boolean b = getProc().LETHAL.prob == 100 || basis.r.nextFloat() * 100 < getProc().LETHAL.prob;
-			if (status[P_LETHAL][0] == 0 && b) {
+			if (status[P_LETHAL][0] == 0 && getProc().LETHAL.perform(basis.r)) {
 				health = 1;
 				anim.getEff(P_LETHAL);
 			}
@@ -2229,16 +2238,16 @@ public abstract class Entity extends AbEntity {
 		if (attacker != null) {
 			if (attacker.dire == -1 && !attacker.traits.isEmpty()) {
 				for (int i = 0; i < traits.size(); i++) {
-					if (traits.get(i).BCTrait)
+					if (traits.get(i).id.pack.equals("000000"))
 						continue;
-					if (traits.get(i).others.contains(((MaskUnit) attacker.data).getPack()))
+					if (traits.get(i).targetForms.contains(((MaskUnit) attacker.data).getPack()))
 						return true;
 				}
 			} else if (dire == -1 && !traits.isEmpty()) {
 				for (int i = 0; i < attacker.traits.size(); i++) {
-					if (attacker.traits.get(i).BCTrait)
+					if (attacker.traits.get(i).id.pack.equals("000000"))
 						continue;
-					if (attacker.traits.get(i).others.contains(((MaskUnit) data).getPack()))
+					if (attacker.traits.get(i).targetForms.contains(((MaskUnit) data).getPack()))
 						return true;
 				}
 			}
@@ -2254,7 +2263,7 @@ public abstract class Entity extends AbEntity {
 		for (int j = 0; j < t.size(); j++)
 			if (traits.contains(t.get(j)))
 				return true;
-		return t.contains(BCTraits.get(TRAIT_TOT));
+		return t.contains(UserProfile.getBCData().traits.get(TRAIT_TOT));
 	}
 
 	/**
@@ -2303,10 +2312,46 @@ public abstract class Entity extends AbEntity {
 	}
 
 	private boolean walking = true;
+	private boolean regenDisabled = false;
+
+	private void regenerate() {
+		int amount = status[P_HPREGEN][2];
+		if (amount < 0 && !getProc().HPREGEN.noHB) { // I hope I did this right
+			damage -= amount;
+		} else {
+			health += amount;
+		}
+		if (getProc().HPREGEN.removeProcs)
+			cancelAllProc();
+		if (health < 1) {
+			regenDisabled = true;
+			if (getProc().HPREGEN.noHB)
+				preKill();
+		}
+	}
+
+	private void regenUpdate() {
+		if (getProc().HPREGEN.prob > 0 && !regenDisabled) {
+			if (regentimer > 0) {
+				if (((getProc().HPREGEN.idleTrigger && !walking && !dead) || !getProc().HPREGEN.idleTrigger) && ((getProc().HPREGEN.freezeEff && status[P_STOP][0] == 0) || !getProc().HPREGEN.freezeEff)) {
+					regentimer--;
+				}
+				if (regentimer < 1) {
+					if (getProc().HPREGEN.onlyOnce) {
+						regenDisabled = true;
+					}
+					regentimer = getProc().HPREGEN.interval;
+					if (basis.r.nextFloat() < (getProc().HPREGEN.prob / 100f)) {
+						regenerate();
+					}
+				}
+			}
+		}
+	}
 
 	/**
 	 * update the entity. order of update:
-	 *  1st iteration (movement) :   TBA, procs time tick -> move (KB, burrow, standard) -> revive
+	 *  1st iteration (movement) :   TBA  -> procs time tick -> move (KB, burrow, standard) -> revive
 	 *  2nd iteration (reactions):   validate walking OR go idle, start burrow, start attack -> update attack
 	 */
 	@Override
@@ -2314,6 +2359,9 @@ public abstract class Entity extends AbEntity {
 		// decrement TBA
 		if (waitTime > 0)
 			waitTime--;
+
+
+
 
 		updateProc();
 		barrier.update();
@@ -2429,8 +2477,10 @@ public abstract class Entity extends AbEntity {
 			pos += 0.25f * dire;
 
 		} else {
-
-			float mov = data.getSpeed() * 0.5f;
+			int speed = data.getSpeed();
+			if (speed > 0 && basis.getGlobalSpeed(dire) > -1)
+				speed = basis.getGlobalSpeed(dire);
+			float mov = speed * 0.5f;
 
 			if (status[P_SPEED][0] > 0) {
 				if (status[P_SPEED][2] == 0) {
@@ -2442,8 +2492,8 @@ public abstract class Entity extends AbEntity {
 				}
 			}
 
-			if (status[P_SPEEDUP][0] > 0) {
-				mov *= status[P_SPEEDUP][0] / 100f;
+			if (status[P_SPEEDUP][0] != 0) {
+				mov += (mov * status[P_SPEEDUP][0] / 100f);
 				mov = (float) Math.round(mov * 4f) / 4f;
 			}
 
