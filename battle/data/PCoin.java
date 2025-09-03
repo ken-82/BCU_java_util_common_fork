@@ -99,14 +99,25 @@ public class PCoin extends Data {
 
 			if(strs[2 + i * 14] != 0) {
 				int[] data = new int[14];
+
 				for (int j = 0; j < 14; j++)
 					data[j] = strs[2 + i * 14 + j];
+
 				if(data[0] >= 0 && data[0] < PC_CORRES.length && PC_CORRES[data[0]][1] == P_MINIWAVE) {
 					if(data[6] == 0 && data[7] == 0) {
 						data[6] = 20;
 						data[7] = 20;
 					}
 				}
+
+                if (data[12] != -1) {
+                    if (traitActivator != -1) {
+                        System.out.println("W/PCoin::init - traitActivator is non -1 while another trait activator index has been found : " + traitActivator + " & " + i);
+                    }
+
+                    traitActivator = i;
+                }
+
 				info.add(data);
 			}
 		}
