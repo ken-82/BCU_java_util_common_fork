@@ -12,6 +12,7 @@ import common.util.pack.Background;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 @SuppressWarnings("ForLoopReplaceableByForEach")
@@ -338,20 +339,20 @@ public class BGEffectHandler {
 
                     if (CommonStatic.getConfig().performanceModeBattle) {
                         if(v != null && moveAngle != null) {
-                            position[i].x += v[i] * Math.cos(moveAngle[i]) / 2.0;
-                            position[i].y += v[i] * Math.sin(moveAngle[i]) / 2.0;
+                            position[i].x += v[i] * (float) Math.cos(moveAngle[i]) / 2.0f;
+                            position[i].y += v[i] * (float) Math.sin(moveAngle[i]) / 2.0f;
                         } else if(velocity != null) {
-                            position[i].x += velocity[i].x / 2.0;
-                            position[i].y += velocity[i].y / 2.0;
+                            position[i].x += velocity[i].x / 2.0f;
+                            position[i].y += velocity[i].y / 2.0f;
                         }
 
                         if(angleVelocity != null) {
-                            angle[i] += angleVelocity[i] / 2.0;
+                            angle[i] += angleVelocity[i] / 2.0f;
                         }
                     } else {
                         if(v != null && moveAngle != null) {
-                            position[i].x += v[i] * Math.cos(moveAngle[i]);
-                            position[i].y += v[i] * Math.sin(moveAngle[i]);
+                            position[i].x += v[i] * (float) Math.cos(moveAngle[i]);
+                            position[i].y += v[i] * (float) Math.sin(moveAngle[i]);
                         } else if(velocity != null) {
                             position[i].x += velocity[i].x;
                             position[i].y += velocity[i].y;
@@ -381,10 +382,8 @@ public class BGEffectHandler {
                         } else {
                             wait[ind] = segment.wait.getPureRangeI();
                         }
-                    } else if(segment.wait != null)
-                        wait[ind] = segment.wait.getPureRangeI();
-                    else
-                        wait[ind] = segment.startWait.getPureRangeI();
+                    } else
+                        wait[ind] = Objects.requireNonNullElseGet(segment.wait, () -> segment.startWait).getPureRangeI();
                 } else {
                     EAnimD<BGEffectAnim.BGEffType> anim = anims[Math.min(anims.length - 1, r.nextInt(anims.length))].getEAnim(BGEffectAnim.BGEffType.DEF);
                     anim.removeBasePivot();
@@ -413,20 +412,20 @@ public class BGEffectHandler {
 
                 if (CommonStatic.getConfig().performanceModeBattle) {
                     if(v != null && moveAngle != null) {
-                        position[i].x += v[i] * Math.cos(moveAngle[i]) / 2.0;
-                        position[i].y += v[i] * Math.sin(moveAngle[i]) / 2.0;
+                        position[i].x += v[i] * (float) Math.cos(moveAngle[i]) / 2.0f;
+                        position[i].y += v[i] * (float) Math.sin(moveAngle[i]) / 2.0f;
                     } else if(velocity != null) {
-                        position[i].x += velocity[i].x / 2.0;
-                        position[i].y += velocity[i].y / 2.0;
+                        position[i].x += velocity[i].x / 2.0f;
+                        position[i].y += velocity[i].y / 2.0f;
                     }
 
                     if(angleVelocity != null) {
-                        angle[i] += angleVelocity[i] / 2.0;
+                        angle[i] += angleVelocity[i] / 2.0f;
                     }
                 } else {
                     if(v != null && moveAngle != null) {
-                        position[i].x += v[i] * Math.cos(moveAngle[i]);
-                        position[i].y += v[i] * Math.sin(moveAngle[i]);
+                        position[i].x += v[i] * (float) Math.cos(moveAngle[i]);
+                        position[i].y += v[i] * (float) Math.sin(moveAngle[i]);
                     } else if(velocity != null) {
                         position[i].x += velocity[i].x;
                         position[i].y += velocity[i].y;
