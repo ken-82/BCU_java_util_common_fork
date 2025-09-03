@@ -45,7 +45,12 @@ public abstract class DataEntity extends Data implements MaskEntity {
 		return traits;
 	}
 
-	@Override
+    @Override
+    public ArrayList<Trait> getTraitsRaw() {
+        return traits;
+    }
+
+    @Override
 	public int getHb() {
 		return hb;
 	}

@@ -39,6 +39,8 @@ public interface MaskEntity extends BattleStatic {
 
 	ArrayList<Trait> getTraits();
 
+    ArrayList<Trait> getTraitsRaw();
+
 	int getHb();
 
 	int getHp();

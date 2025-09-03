@@ -203,7 +203,7 @@ public class PCoin extends Data {
 			if (talents[i] == 0) {
 				if (type[0] == PC_TRAIT) {
 					Trait types = UserProfile.getBCData().traits.get(type[1]);
-					ans.getTraits().remove(types);
+					ans.getTraitsRaw().remove(types);
 				}
 				continue;
 			}
@@ -211,8 +211,8 @@ public class PCoin extends Data {
 			//Targettings that come with a talent, such as Hyper Mr's
 			if (data[12] > 0 && !this.trait.isEmpty() && talents[i] > 0)
 				for (Trait t : this.trait)
-					if (!ans.getTraits().contains(t))
-						ans.getTraits().add(t);
+					if (!ans.getTraitsRaw().contains(t))
+						ans.getTraitsRaw().add(t);
 
 			int maxlv = data[1];
 			int[] modifs = new int[5];
@@ -311,8 +311,8 @@ public class PCoin extends Data {
 			else if (type[0] == PC_TRAIT) {
 				Trait types = UserProfile.getBCData().traits.get(type[1]);
 
-				if (!ans.getTraits().contains(types))
-					ans.getTraits().add(types);
+				if (!ans.getTraitsRaw().contains(types))
+					ans.getTraitsRaw().add(types);
 			}
 		}
 
