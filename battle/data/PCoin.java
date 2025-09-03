@@ -47,6 +47,7 @@ public class PCoin extends Data {
 	public MaskUnit full = null;
 	@JsonField(generic = Trait.class, alias = Identifier.class)
 	public ArrayList<Trait> trait = new ArrayList<>();
+    public int traitActivator = -1;
 
 	@JsonField(block = true)
 	public int[] max;
@@ -62,12 +63,23 @@ public class PCoin extends Data {
 		trait = Trait.bitmaskToTrait(CommonStatic.parseIntN(strs[1]));
 		for (int i = 0; i < 8; i++) {
 			if(talentExist(strs, 2 + i * 14)) {
-				info.add(new int[14]);
+                int[] data = new int[14];
 
 				for (int j = 0; j < 14; j++) {
 					int v = CommonStatic.parseIntN(strs[2 + i * 14 + j]);
-					info.get(info.size() - 1)[j] = v;
+
+                    data[j] = v;
 				}
+
+                if (data[12] != -1) {
+                    if (traitActivator != -1) {
+                        System.out.println("W/PCoin::init - traitActivator is non -1 while another trait activator index has been found : " + traitActivator + " & " + i);
+                    }
+
+                    traitActivator = i;
+                }
+
+                info.add(data);
 			}
 		}
 
