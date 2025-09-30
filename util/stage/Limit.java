@@ -22,10 +22,16 @@ public class Limit extends Data implements BattleStatic {
 				mid = 3015;
 			} else if (mid == 22001) {
 				mid = 3016;
-			}
+			} else if (mid == 22002) {
+                mid = 3017;
+            }
 
 			StageMap map = DefMapColc.getMap(mid);
-			map.lim.add(this);
+
+            if (map != null) {
+                map.lim.add(this);
+            }
+
 			star = Integer.parseInt(strs[1]);
 			sid = Integer.parseInt(strs[2]);
 			rare = Integer.parseInt(strs[3]);
@@ -67,8 +73,15 @@ public class Limit extends Data implements BattleStatic {
 
 	@Override
 	public Limit clone() {
-		Limit l = new Limit();
-		l.star = star;
+		Limit l;
+
+        try {
+            l = (Limit) super.clone();
+        } catch (CloneNotSupportedException e) {
+            l = new Limit();
+        }
+
+        l.star = star;
 		l.sid = sid;
 		l.rare = rare;
 		l.num = num;

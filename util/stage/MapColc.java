@@ -677,6 +677,10 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 										}
 									}
 								}
+
+                                break;
+                            default:
+                                System.out.println("W/MapColc::init - Unknown rule ID " + ruleID + " found");
 						}
 					}
 				}
@@ -1122,6 +1126,8 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 			add(14, id -> new StageMap(id, akuOutbreak+"MSDDM/MapStageDataDM_000.csv", 0));
 			add(15, id -> new StageMap(id, abbr + "2_0_Z.csv", 3)).name = "CotC 1 Zombie";
 			add(16, id -> new StageMap(id, abbr + "2_1_Z.csv", 3)).name = "CotC 2 Zombie";
+            add(17, id -> new StageMap(id, abbr + "2_2_Z.csv", 3)).name = "CotC 3 Zombie";
+            add(18, id -> new StageMap(id, abbr + "2_2_Invasion_Z.csv", 2)).name = "CotC 3 Invasion Zombie";
 
 			VFile stz = VFile.get("./org/stage/CH/stageZ/");
 			for (VFile vf : stz.list()) {
@@ -1146,6 +1152,8 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 					maps.get(15).add(id1, id -> new Stage(id, vf, 0));
 				else if (id0 == 8)
 					maps.get(16).add(id1, id -> new Stage(id, vf, 0));
+                else if (id0 == 9)
+                    maps.get(17).add(id1, id -> new Stage(id, vf, 0));
 			}
 			VFile stw = VFile.get("./org/stage/CH/stageW/");
 			for (VFile vf : stw.list()) {
@@ -1163,10 +1171,13 @@ public abstract class MapColc extends Data implements IndexContainer.SingleIC<St
 			VFile sts = VFile.get("./org/stage/CH/stageSpace/");
 			for (VFile vf : sts.list()) {
 				String str = vf.getName();
-				if (str.length() > 20) {
-					maps.get(11).add(0, id -> new Stage(id, vf, 0));
-					continue;
-				}
+                if (str.equals("stageSpace09_Invasion_00.csv")) {
+                    maps.get(11).add(0, id -> new Stage(id, vf, 0));
+                    continue;
+                } else if (str.equals("stageSpace09_Invasion_Z_00.csv")) {
+                    maps.get(18).add(0, id -> new Stage(id, vf, 0));
+                    continue;
+                }
 				int id0, id1;
 				try {
 					id0 = Integer.parseInt(str.substring(10, 12));
