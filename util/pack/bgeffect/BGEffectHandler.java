@@ -12,7 +12,6 @@ import common.util.pack.Background;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 @SuppressWarnings("ForLoopReplaceableByForEach")
@@ -383,7 +382,7 @@ public class BGEffectHandler {
                             wait[ind] = segment.wait.getPureRangeI();
                         }
                     } else
-                        wait[ind] = Objects.requireNonNullElseGet(segment.wait, () -> segment.startWait).getPureRangeI();
+                        wait[ind] = (segment.wait == null ? segment.startWait : segment.wait).getPureRangeI();
                 } else {
                     EAnimD<BGEffectAnim.BGEffType> anim = anims[Math.min(anims.length - 1, r.nextInt(anims.length))].getEAnim(BGEffectAnim.BGEffType.DEF);
                     anim.removeBasePivot();
