@@ -133,6 +133,21 @@ public abstract class PackData implements IndexContainer {
 			int i = 0;
 			Collection<VFile> list = VFile.get("./org/enemy/").list();
 			for (VFile p : list) {
+                Collection<VFile> children = p.list();
+
+                boolean spriteFound = false;
+
+                for (VFile child : children) {
+                    if (child.name.equals(p.name + "_e.png")) {
+                        spriteFound = true;
+
+                        break;
+                    }
+                }
+
+                if (!spriteFound)
+                    continue;
+
 				enemies.add(new Enemy(p));
 				bar.accept(1.0 * (i++) / list.size());
 			}
